@@ -3,9 +3,20 @@ __FILE__
 __DIR__
 fopen($path,'r')
 fread($f,filesize($pathFile))
+fwrite
+unlink
 fseek
 ftell ?
 fgets ?
+is_file
+unlink
+
+is_dir
+scandir
+opendir
+
+
+getCwd() current working directory
 pack
 unpack
 
@@ -14,3 +25,7 @@ array_slice
 
 implode
 iconv
+strtr
+strlen(string)
+
+glob co to?

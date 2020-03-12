@@ -5,11 +5,7 @@ namespace App\Tests;
 use PHPUnit\Framework\TestCase;
 
 use App\Service\Functions;
-// use function App\Service\Functions\Hello;
 
-// function Hello(){
-//     return "Hello";
-// }
 
 class ReplacePolishEncodedCharTest extends TestCase
 {
@@ -17,8 +13,8 @@ class ReplacePolishEncodedCharTest extends TestCase
     private $path_file1 = __DIR__.'/../resources/użyte_funkcje.txt';
     private $path_file2 = __DIR__.'/../resources/Norma3/Kat/0-22/0-22R5.OP';
     private $path_file3 = __DIR__.'/../resources/litery.txt';
-    private $path_file4 = __DIR__.'/../resources/polskieZnaki.txt';
     private $path_file5 = __DIR__.'/../resources/kodowanieUTF8.txt';
+
     public function testSomething()
     {
         $this->assertTrue(true);
@@ -71,13 +67,26 @@ class ReplacePolishEncodedCharTest extends TestCase
         $polichChar = pack('C2',197,155);
         $this->assertEquals('ś',$polichChar);
     }
-    public function testReadAndConvertNormaO(Type $var = null)
+    
+    public function testWriteConvertedFile(Type $var = null)
     {
-        $f = fopen($this->path_file2,'rb');
-        $raw_data = fread($f,filesize($this->path_file2));
-        // $u_data = unpack('C*',$raw_data);
-        $convertedString = Functions::ReplaceCharsAccordingUtf8($raw_data);
-        echo $convertedString;
-
+        $convertedFileName = 'tests/convertedFile.txt';
+        $fRaw = fopen($this->path_file2,'rb');
+        $convertedString = Functions::ReplaceCharsAccordingUtf8(fread($fRaw,filesize($this->path_file2)));
+        $lenConverted = strlen($convertedString);
+        fclose($fRaw);
+        try{
+            $fConverted = fopen($convertedFileName,'wb');
+            fwrite($fConverted,$convertedString);
+        }catch(Exception $e){
+            $this->assertTrue(false);
+            return;
+        }
+        fclose($fConverted);
+        $this->assertTrue(file_exists($convertedFileName));
+        $this->assertEquals($lenConverted,filesize($convertedFileName));
+        unlink($convertedFileName);
+        $this->assertFalse(file_exists($convertedFileName));
     }
+    
 }

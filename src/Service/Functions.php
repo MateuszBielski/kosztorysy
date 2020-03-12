@@ -2,6 +2,10 @@
 
 namespace App\Service;
 
+use Symfony\Component\HttpFoundation\File\Exception\CannotWriteFileException;
+
+// use PHPUnit\Framework\MockObject\Stub\Exception;
+
 //use function foo\func;
 
 class Functions
@@ -27,7 +31,7 @@ class Functions
         var_dump($converted_str);
     }
     
-    public static function ReplaceCharsAccordingUtf8(string $str_bytes)
+    public static function ReplaceCharsAccordingUtf8First(string $str_bytes)
     {
         $str_result = "";
         $rep = null;
@@ -65,7 +69,75 @@ class Functions
 
         return $str_result;
     }
-    //inna wersja
+    //wzorowane na:
     // https://kasztelan.me/mazovia-utf-8-php-function/
+    public static function ReplaceCharsAccordingUtf8(string $str_bytes)
+    {
+        $zmiana = array(
+        chr(0x8F) => chr(0xC4).chr(0x84), 	
+        chr(0x95) => chr(0xC4).chr(0x86),
+        chr(0x90) => chr(0xC4).chr(0x98), 	
+        chr(0x9c) => chr(0xC5).chr(0x81), 	
+        chr(0xa5) => chr(0xC5).chr(0x83), 	
+        chr(0xa3) => chr(0xC3).chr(0x93), 	
+        chr(0x98) => chr(0xC5).chr(0x9A), 	
+        chr(0xa0) => chr(0xC5).chr(0xB9), 	
+        chr(0xa1) => chr(0xC5).chr(0xBB), 	
+        chr(0x86) => chr(0xC4).chr(0x85), 	
+        chr(0x8d) => chr(0xC4).chr(0x87), 	
+        chr(0x91) => chr(0xC4).chr(0x99), 	
+        chr(0x92) => chr(0xC5).chr(0x82), 	
+        chr(0xa4) => chr(0xC5).chr(0x84), 	
+        chr(0xa2) => chr(0xC3).chr(0xB3), 	
+        chr(0x9e) => chr(0xC5).chr(0x9B), 	
+        chr(0xa6) => chr(0xC5).chr(0xBA), 	
+        chr(0xa7) => chr(0xC5).chr(0xBC)
+        );
+        return strtr($str_bytes,$zmiana);
+    }
+
+    public static function CopyFileStructure($src,$dst)
+    {
+        // if(file_exists($destPathDirectory)) throw new CannotWriteFileException('Docelowy folder istnieje');
+        //mkdir($destPathDirectory);
+        // open the source directory 
+        $dir = opendir($src);  
+    
+        // Make the destination directory if not exist 
+        @mkdir($dst);  
+    
+        // Loop through the files in source directory 
+        while( $file = readdir($dir) ) {  
+    
+            if (( $file != '.' ) && ( $file != '..' )) {  
+                if ( is_dir($src . '/' . $file) )  
+                {  
+                    Functions::CopyFileStructure($src . '/' . $file, $dst . '/' . $file);  
+                }  
+                else {  
+                    copy($src . '/' . $file, $dst . '/' . $file);  
+                }  
+            }  
+        }  
+        closedir($dir); 
+    }
+    public static function RemoveDirRecursive($dirToRemove)
+    {
+        if(!file_exists($dirToRemove) || is_file($dirToRemove)) return;
+        $dir = opendir($dirToRemove);
+        while($file = readdir($dir)){
+            $fileDeeper = $dirToRemove.'/'.$file;
+            if(($file != '.') && ($file != '..')) {
+                if(is_dir($fileDeeper)){
+                    Functions::RemoveDirRecursive($fileDeeper);
+                }
+                else{
+                    unlink($fileDeeper);
+                }
+            }
+        }
+        closedir($dir);
+        rmdir($dirToRemove);
+    }
     
 }

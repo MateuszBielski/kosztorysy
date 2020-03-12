@@ -7,6 +7,7 @@
 /var/
 /vendor/
 /resources/Norma3/
+Mazovia*
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
