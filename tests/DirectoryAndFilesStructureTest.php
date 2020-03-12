@@ -24,11 +24,11 @@ class DirectoryAndFilesStructureTest extends TestCase
     {
         $sourcePathDirectory = 'tests/SourceDirLev1';
         $destPathDirectory = 'tests/CopyDirLev';
-        // Functions::CopyFileStructure($sourcePathDirectory,$destPathDirectory,'src/Service/Functions::ReplaceCharsAccordingUtf8');//Functions::
-        Functions::CopyFileStructure($sourcePathDirectory,$destPathDirectory,'Functions::ReplaceCharsAccordingUtf8');
+        Functions::CopyFileStructure($sourcePathDirectory,$destPathDirectory,
+        'App\Service\Functions::ReplaceCharsAccordingUtf8');
         $copiedFile = 'tests/CopyDirLev/SourceDirLev2_2/0-19R9.OP';
         $readText = fread(fopen($copiedFile,'rb'),filesize($copiedFile));
-        $this->assertEquals('Demontaż i montaż wahadłowe ścianki\r\n',$readText);
         Functions::RemoveDirRecursive($destPathDirectory);
+        $this->assertEquals('Demontaż i montaż wahadłowe ścianki',$readText);
     }
 }

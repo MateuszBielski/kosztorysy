@@ -98,33 +98,39 @@ class Functions
 
     public static function CopyFileStructure($src,$dst,$translateFunc = null)
     {
-        // if(file_exists($destPathDirectory)) throw new CannotWriteFileException('Docelowy folder istnieje');
-        //mkdir($destPathDirectory);
-        // open the source directory 
         $dir = opendir($src);  
     
         // Make the destination directory if not exist 
-        @mkdir($dst);  
-    
-        if ($translateFunc == null) $rewrite = 'copy';
-        else{
-            $rewrite = function($s,$d) use($translateFunc){
-                $f = fopen($d,'wb');
-                $convertedString = $translateFunc(fread($s,filesize($s)));
-                fwrite($f,$convertedString);
-                fclose($f);
-            };
-        }
+        @mkdir($dst);
+        
+        
         // Loop through the files in source directory 
         while( $file = readdir($dir) ) {  
     
             if (( $file != '.' ) && ( $file != '..' )) {  
+                
+                $sourceFileName = $src . '/' . $file;
                 if ( is_dir($src . '/' . $file) )  
                 {  
-                    Functions::CopyFileStructure($src . '/' . $file, $dst . '/' . $file);  
+                    Functions::CopyFileStructure($sourceFileName, $dst . '/' . $file,$translateFunc);  
                 }  
-                else {  
-                    $rewrite($src . '/' . $file, $dst . '/' . $file);  
+                else {
+
+                    $sourceLen = filesize($sourceFileName);
+                    if ($translateFunc != null && $sourceLen)
+                    {
+                        $rewrite = function($s,$d) use($translateFunc,$sourceLen){
+                            $newFile = fopen($d,'wb');
+                            $sourceHandle = fopen($s,'rb');
+                            $convertedString = $translateFunc(fread($sourceHandle,$sourceLen));
+                            fclose($sourceHandle);
+                            fwrite($newFile,$convertedString);
+                            fclose($newFile);
+                        };
+                    }
+                    else $rewrite = 'copy';
+
+                    $rewrite($sourceFileName, $dst . '/' . $file);  
                 }  
             }  
         }  
