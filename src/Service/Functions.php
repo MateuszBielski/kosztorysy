@@ -96,7 +96,7 @@ class Functions
         return strtr($str_bytes,$zmiana);
     }
 
-    public static function CopyFileStructure($src,$dst)
+    public static function CopyFileStructure($src,$dst,$translateFunc = null)
     {
         // if(file_exists($destPathDirectory)) throw new CannotWriteFileException('Docelowy folder istnieje');
         //mkdir($destPathDirectory);
@@ -106,6 +106,15 @@ class Functions
         // Make the destination directory if not exist 
         @mkdir($dst);  
     
+        if ($translateFunc == null) $rewrite = 'copy';
+        else{
+            $rewrite = function($s,$d) use($translateFunc){
+                $f = fopen($d,'wb');
+                $convertedString = $translateFunc(fread($s,filesize($s)));
+                fwrite($f,$convertedString);
+                fclose($f);
+            };
+        }
         // Loop through the files in source directory 
         while( $file = readdir($dir) ) {  
     
@@ -115,7 +124,7 @@ class Functions
                     Functions::CopyFileStructure($src . '/' . $file, $dst . '/' . $file);  
                 }  
                 else {  
-                    copy($src . '/' . $file, $dst . '/' . $file);  
+                    $rewrite($src . '/' . $file, $dst . '/' . $file);  
                 }  
             }  
         }  
