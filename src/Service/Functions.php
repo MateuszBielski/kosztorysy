@@ -95,6 +95,17 @@ class Functions
         );
         return strtr($str_bytes,$zmiana);
     }
+    public static function CopyOneFileWithTranslate($srcFile,$destPath,$translateFunc){
+        @mkdir($destPath);
+        $d = $destPath.basename($srcFile);
+        $newFile = fopen($d,'wb');
+        $sourceHandle = fopen($srcFile,'rb');
+        $sourceLen = filesize($srcFile);
+        $convertedString = $translateFunc(fread($sourceHandle,$sourceLen));
+        fclose($sourceHandle);
+        fwrite($newFile,$convertedString);
+        fclose($newFile);
+    }
 
     public static function CopyFileStructure($src,$dst,$translateFunc = null)
     {

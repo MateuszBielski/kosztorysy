@@ -31,4 +31,15 @@ class DirectoryAndFilesStructureTest extends TestCase
         Functions::RemoveDirRecursive($destPathDirectory);
         $this->assertEquals('Demontaż i montaż wahadłowe ścianki',$readText);
     }
+    public function testCopyOneFileWithCharReplacement()
+    {
+        $sourceFilePath = 'resources/Norma3/Kat/2-02/2-02R1.OPR';
+        $destDirPath = 'resources/Norma3/Kat/2-02/utf8/';
+        $expectedFile = $destDirPath.'2-02R1.OPR';
+        Functions::CopyOneFileWithTranslate($sourceFilePath,$destDirPath,'App\Service\Functions::ReplaceCharsAccordingUtf8');
+        $this->assertTrue(file_exists($expectedFile));
+        //wymaga usucięcia, lecz test był tworzony na potrzebę konwersji jednego pliku
+        //Functions::RemoveDirRecursive($destDirPath);
+    }
+    
 }

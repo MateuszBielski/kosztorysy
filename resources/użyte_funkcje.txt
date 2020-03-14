@@ -1,6 +1,7 @@
 file_exists()
 __FILE__   
 __DIR__
+basename
 fopen($path,'r')
 fread($f,filesize($pathFile))
 fwrite

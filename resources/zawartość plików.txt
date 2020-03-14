@@ -1,0 +1,18 @@
+.baz:
+Indeksy dla:
+    Robotnicy
+    Materiały
+    Sprzęt
+
+d^d:
+    rozdziały katalogu
+.opk
+    opis (instrukcja) dla katalogu
+2-02R1.NOR - w nazwie numer katalogu i rozdziału
+    w kolejnych 2404 wierszach liczby całkowite lub ułamkowe 
+
+.OPR
+    opis szczegółowy zasad dla rozdziału.
+.OP
+    opisy pozycji, kolumny rozdzielone znakiem$ lub oznaczone ^,
+    w każdej linii na końcu znajdują się indeksy do dalszej części pliku
