@@ -28,5 +28,8 @@ implode
 iconv
 strtr
 strlen(string)
+substr
+trim
+intval
 
 glob co to?

@@ -35,6 +35,8 @@ d^d:
     1015 - 015 pozycja materiału
     1341 - 341 pozycja materiału
     1342 - 342 j/w
+    3868 - 868 j/w - zaprawa
+    3869 - 869 j/w
     1 - pierwsza pozycja materiałów, czyli materiały pomocnicze %
     15 - piętnasta pozycja sprzętu, czyli wyciąg.
 .NOR
