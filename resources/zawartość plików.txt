@@ -3,6 +3,7 @@ Indeksy dla:
     Robotnicy
     Materiały
     Sprzęt
+    na początku trzy wiersz mówią ile kolejno będzie pozycji: Robotników, materiałów, sprzętu.
 
 d^d:
     rozdziały katalogu
@@ -13,6 +14,35 @@ d^d:
 
 .OPR
     opis szczegółowy zasad dla rozdziału.
+    oraz później kolejno dla tablic
 .OP
     opisy pozycji, kolumny rozdzielone znakiem$ lub oznaczone ^,
     w każdej linii na końcu znajdują się indeksy do dalszej części pliku
+    Zawartość wiersza:
+    24$0.7$podkłady $$$$01 $m3$2$12$1$5$1$1015$1341$1342$3868$3869$5445$5510$5478$5405$5404$5571$1$15$
+    24 - numer wiersza, w którym zaczyna się tabela szczegółowa
+    0.7 - 7 kolumn w tabeli
+    podkłady -  wspólny opis
+    m3 - jednostki
+    2 - wiersze na Robotników
+    12 wierszy na Materiały
+    1 wierszy na sprzęt
+    razem 15 wierszy na nakłady przeznaczone w pliku NOR
+    dalej:
+    numery opisów pobierane z pliku .baz
+    5
+    1
+    1015 - 015 pozycja materiału
+    1341 - 341 pozycja materiału
+    1342 - 342 j/w
+    1 - pierwsza pozycja materiałów, czyli materiały pomocnicze %
+    15 - piętnasta pozycja sprzętu, czyli wyciąg.
+.NOR
+    liczba wierszy do przeczytania kolejno:
+    te wiersze to wartości odpowiadające dla odpowiedniej pozycji z pliku .OP
+
+W programie norma otwieramy kolejno:
+KNR 2-02 Katalog 
+KNR 2-02 01    Rozdział
+KNR 2-02 0101       Tablica
+KNR 2-02 0132-01       Kolumna(może wiersz)
