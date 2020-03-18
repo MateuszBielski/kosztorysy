@@ -4,7 +4,8 @@ namespace App\Tests;
 
 use App\Entity\Circulation\Labor_N_U;
 use App\Entity\Circulation\Material_N_U;
-use App\Service\Functions;
+use App\Service\BuildUniqueCirculations;
+use App\Service\CirFunctions;
 use PHPUnit\Framework\TestCase;
 
 class CirculationTest extends TestCase
@@ -22,11 +23,33 @@ class CirculationTest extends TestCase
     public function testReadCirculationsFromBazFile()
     {
        $bazFile = 'resources/Norma3/Kat/4-04/4-04.BAZ';
-       $circulations = Functions::ReadCirculationsFromBazFile($bazFile);
+       $circulations = CirFunctions::ReadCirculationsFromBazFile($bazFile);
        $material = $circulations['M'][8];
        $this->assertEquals('gwoździe budowlane okrągłe gołe',$material->getName());
        $this->assertEquals(8,$material->getId());
-        //check id
+    }
+    public function testBuildArrayOfUniqueCirculations_notEmpty()
+    {
+        $fileSign = array('4-04','2-02','2W02');
+        $bazFile = array();
+        $uc = new BuildUniqueCirculations;
+        foreach ($fileSign as $sign) {
+            $bazFile = 'resources/Norma3/Kat/'.$sign.'/'.$sign.'.BAZ';
+            $originalCirculations = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            $uc->AddOriginalAndChangeIds($originalCirculations);
+        }
+        $uniqueCirculations = $uc->GetUniqueCirculations();
+        $this->assertGreaterThan(0,count($uniqueCirculations));
+        $result = '';
+        for($i = 1 ; $i < 7 ; $i++) {
+            $result .= $uniqueCirculations[$i]->getId();
+        }
+        $this->assertEquals('123456',$result);
+        //check state added to unique or not
+    }
+    public function _testCorrectContentOfUniqeCirculations()
+    {
+        
     }
 
 }

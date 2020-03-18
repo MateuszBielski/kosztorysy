@@ -18,6 +18,8 @@ abstract class CirculationNameAndUnit
      */
     protected $id;
 
+    // protected $idForUniqueArray;
+
     /**
      * @ORM\Column(type="string", length=255)
      */

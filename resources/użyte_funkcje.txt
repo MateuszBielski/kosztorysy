@@ -23,6 +23,8 @@ unpack
 
 count(array)
 array_slice
+in_array
+array_search
 
 implode
 iconv

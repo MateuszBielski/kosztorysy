@@ -2,9 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Circulation\Equipment_N_U;
-use App\Entity\Circulation\Labor_N_U;
-use App\Entity\Circulation\Material_N_U;
+
 
 // use PHPUnit\Framework\MockObject\Stub\Exception;
 
@@ -167,46 +165,5 @@ class Functions
         closedir($dir);
         rmdir($dirToRemove);
     }
-    public static function ReadCirculationsFromBazFile($bazFileName): array
-    {
-        // $circulations = new ArrayCollection();
-        $circulations = array();
-        $bazFile = @fopen($bazFileName,'r');
-        $n_R = intval(fgets($bazFile));
-        $n_M = intval(fgets($bazFile));
-        $n_S = intval(fgets($bazFile));
-        /*
-        for ($i = 1; $i <= $n_R; $i++) {
-            $circulation = new Labor_N_U;
-            $circulation->setParametersFromBAZline(Functions::ReplaceCharsAccordingUtf8(fgets($bazFile)));
-            $circulation->setId($i);
-            $circulations['R'][$i] = $circulation;
-        }
-        for ($i = 1; $i <= $n_M; $i++) {
-            $circulation = new Material_N_U;
-            $circulation->setParametersFromBAZline(Functions::ReplaceCharsAccordingUtf8(fgets($bazFile)));
-            $circulation->setId($i);
-            $circulations['M'][$i] = $circulation;
-        }
-        for ($i = 1; $i <= $n_S; $i++) {
-            $circulation = new Equipment_N_U;
-            $circulation->setParametersFromBAZline(Functions::ReplaceCharsAccordingUtf8(fgets($bazFile)));
-            $circulation->setId($i);
-            $circulations['S'][$i] = $circulation;
-        }
-        */
-        $read = function($n_,$className,$CircCat) use ($bazFile,$circulations){
-            for ($i = 1; $i <= $n_; $i++) {
-                $circulation = new $className;
-                $circulation->setParametersFromBAZline(Functions::ReplaceCharsAccordingUtf8(fgets($bazFile)));
-                $circulation->setId($i);
-                $circulations[$CircCat][$i] = $circulation;
-            }
-
-        };
-        $read($n_R,'App\Entity\Circulation\Labor_N_U','R');
-        $read($n_M,'App\Entity\Circulation\Material_N_U','M');
-        $read($n_S,'App\Entity\Circulation\Equipment_N_U','S');
-        return $circulations;
-    }
+    
 }
