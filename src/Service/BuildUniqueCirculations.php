@@ -13,6 +13,7 @@ class BuildUniqueCirculations
         $index = 1;
         $CircCat = array('R','M','S');
         foreach ($CircCat as $cat) {
+            if (!array_key_exists($cat,$circulations)) continue;
             foreach ($circulations[$cat] as $cir) {
                 $name = $cir->getName();
                 $foundIndex = array_search($name,$this->namesTocompare);

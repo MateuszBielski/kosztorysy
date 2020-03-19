@@ -25,6 +25,7 @@ count(array)
 array_slice
 in_array
 array_search
+array_key_exists()
 
 implode
 iconv

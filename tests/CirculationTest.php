@@ -51,9 +51,23 @@ class CirculationTest extends TestCase
         $this->assertEquals('123456',$result);
         //check state added to unique or not
     }
-    public function _testCorrectContentOfUniqeCirculations()
+    public function testCorrectContentOfUniqeCirculations()
     {
-        
+        // 5 z 3 -> 10
+        //
+        $uc = new BuildUniqueCirculations;
+        $originalCirculations = array ();
+        for ($i = 1 ; $i < 4 ; $i++) {
+            $bazFile = 'tests/BazFiles/f'.$i.'.BAZ';
+            $originalCirculations[$i] = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            $uc->AddOriginalAndChangeIds($originalCirculations[$i]);
+        }
+        $trackedMaterial = $originalCirculations[3]['M'][5];
+        $this->assertEquals(10,$trackedMaterial->getId());
+        $replacedId = $trackedMaterial->getId();
+        $uniqueCirculations = $uc->GetUniqueCirculations();
+        $foundMaterial = $uniqueCirculations[$replacedId];
+        $this->assertEquals('gips budowlany zwykły',$foundMaterial->getName());
     }
     
 
