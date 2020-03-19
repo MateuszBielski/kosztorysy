@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\CirculationNameAndUnit;
+use App\Entity\circulation\CirculationNameAndUnit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

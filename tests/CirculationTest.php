@@ -10,7 +10,11 @@ use PHPUnit\Framework\TestCase;
 
 class CirculationTest extends TestCase
 {
-       
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $entityManager; 
+    
     public function testReadCirculationFieldsFromTextLine()
     {
         $tLine = '3950000 000 060$drewno na stemple (okragłe) iglaste korowane śr. 6 do 20 cm m3';
@@ -51,5 +55,6 @@ class CirculationTest extends TestCase
     {
         
     }
+    
 
 }
