@@ -10,10 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 class CirculationTest extends TestCase
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    protected $entityManager; 
     
     public function testReadCirculationFieldsFromTextLine()
     {
@@ -31,6 +27,14 @@ class CirculationTest extends TestCase
        $material = $circulations['M'][8];
        $this->assertEquals('gwoździe budowlane okrągłe gołe',$material->getName());
        $this->assertEquals(8,$material->getId());
+    }
+    public function testReadCirculationsFromBazFile_2()
+    {
+       $bazFile = 'tests/BazFiles/f1.BAZ';
+       $circulations = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+       $material = $circulations['M'][6];
+       $this->assertEquals('folia polietylenowa szeroka (6 lub 12m) 0.2 mm',$material->getName());
+       $this->assertEquals(6,$material->getId());
     }
     public function testBuildArrayOfUniqueCirculations_notEmpty()
     {
@@ -59,15 +63,43 @@ class CirculationTest extends TestCase
         $originalCirculations = array ();
         for ($i = 1 ; $i < 4 ; $i++) {
             $bazFile = 'tests/BazFiles/f'.$i.'.BAZ';
+
             $originalCirculations[$i] = CirFunctions::ReadCirculationsFromBazFile($bazFile);
             $uc->AddOriginalAndChangeIds($originalCirculations[$i]);
         }
+        //czy id prawidłowo zamienione
         $trackedMaterial = $originalCirculations[3]['M'][5];
         $this->assertEquals(10,$trackedMaterial->getId());
         $replacedId = $trackedMaterial->getId();
         $uniqueCirculations = $uc->GetUniqueCirculations();
-        $foundMaterial = $uniqueCirculations[$replacedId];
-        $this->assertEquals('gips budowlany zwykły',$foundMaterial->getName());
+        $result = '';
+        foreach($uniqueCirculations as $item){
+            $result .= $item->getName()." ";
+        }
+        $fexpected = 'tests/BazFiles/sprawdzenieKolejnosci.txt';
+        $expected = fread(fopen($fexpected,'r'),filesize($fexpected));
+        $this->assertEquals($expected,$result);
+    }
+    public function testCorrectContentOfUniqeCirculations_2()
+    {
+        // 5 z 3 -> 10
+        //
+        $uc = new BuildUniqueCirculations;
+        $originalCirculations = array ();
+        for ($i = 4 ; $i < 6 ; $i++) {
+            $bazFile = 'tests/BazFiles/f'.$i.'.BAZ';
+            $originalCirculations[$i] = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            $uc->AddOriginalAndChangeIds($originalCirculations[$i]);
+        }
+        $trackedMaterial = $originalCirculations[4]['M'][2];
+        // $this->assertEquals(10,$trackedMaterial->getId());
+        $replacedId = $trackedMaterial->getId();
+        $uniqueCirculations = $uc->GetUniqueCirculations();
+        $result = '';
+        foreach($uniqueCirculations as $item){
+            $result .= $item->getName()." ";
+        }
+        $this->assertEquals('gwoździe drewno cegła ',$result);
     }
     
 
