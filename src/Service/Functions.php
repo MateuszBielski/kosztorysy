@@ -166,5 +166,33 @@ class Functions
         closedir($dir);
         rmdir($dirToRemove);
     }
-    
+    public static function FindFileByDirNameAndOpen($dirPath,$fileExtension)
+    {
+        // $chapterFile = @fopen($dirName.'/'.$catBaseName.'.D^D','r');
+        if (!is_dir($dirPath)) return false;
+        Functions::SlashTrim($dirPath);
+        $upperDirBaseName = strtoupper(basename($dirPath));
+        $fileNameUpperSearched = $upperDirBaseName.'.'.$fileExtension;
+        // echo $fileNameUpperSearched;
+        $dir = opendir($dirPath);
+        while($file = readdir($dir)){
+            if($file == '.' || $file == '..')continue;
+            if(strtoupper($file) == $fileNameUpperSearched) {
+                $file= $dirPath.'/'.$file;
+                return fopen($file,'r');
+            }
+            // if(!is_file($file) ) continue;
+
+        }
+        return false;
+    }
+    public static function SlashTrim(&$dirPath)
+    {
+        if (substr($dirPath,-1,1) == '/') $dirPath = rtrim($dirPath,"/");
+    }
+    public static function AppendixForDuplicateKeys($key,array $arr)
+    {
+        if (array_key_exists($key,$arr)) $key .='x';
+        return $key;
+    }
 }

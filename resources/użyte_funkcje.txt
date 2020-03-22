@@ -31,7 +31,10 @@ implode
 iconv
 strtr
 strlen(string)
+strpos
 substr
+strtoupper
+strtolower
 trim
 intval
 

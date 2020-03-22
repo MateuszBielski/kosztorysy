@@ -41,5 +41,37 @@ class DirectoryAndFilesStructureTest extends TestCase
         //wymaga usucięcia, lecz test był tworzony na potrzebę konwersji jednego pliku
         //Functions::RemoveDirRecursive($destDirPath);
     }
+    public function testSlashTrimFunction()
+    {
+        $path1 = 'resources/Norma3/Kat/KnZ-15';
+        $path2 = 'resources/Norma3/Kat/KnZ-15/';
+        $pathExpected = 'resources/Norma3/Kat/KnZ-15';
+        Functions::SlashTrim($path1);
+        Functions::SlashTrim($path2);
+        $this->assertEquals($pathExpected,$path1);
+        $this->assertEquals($pathExpected,$path2);
+    }
+    public function testFindAndOpenFileCaseInsensitive()
+    {
+        $dirPath = 'resources/Norma3/Kat/KnZ-15';
+        $openedFile = Functions::FindFileByDirNameAndOpen($dirPath,'D^D');
+        $this->assertTrue($openedFile != false);
+        fclose($openedFile);
+    }
+    public function testAppendixForDuplicateKeys()
+    {
+        $keys = array (
+                        'Rozdział 01',
+                        'Rozdział 02',
+                        'Rozdział 02',
+                        'Rozdział 03');
+        $arr = array();
+        foreach ($keys as $item){
+            $key = Functions::AppendixForDuplicateKeys($item,$arr);
+            $arr[$key] = $item;
+        }
+        $result = implode(' ',array_keys($arr));
+        $this->assertEquals('Rozdział 01 Rozdział 02 Rozdział 02x Rozdział 03',$result);
+    }
     
 }
