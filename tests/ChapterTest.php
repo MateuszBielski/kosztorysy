@@ -28,4 +28,17 @@ class ChapterTest extends TestCase
         $res = $catalogs['KNR 2-15/G']->getMyChapters()['Rozdział 06']->getDescription();
         $this->assertEquals('System wodociągowy Geberit Mepla',$res);
     }
+    public function testCountTables()
+    {
+        $chapter = new Chapter;
+        //$chapter->setMyDetailsFileBaseName('2g15r1');
+        $chapter->LoadTablesWithDescription('resources/Norma3/Kat/2G15/2G15R1.op');
+        $this->assertEquals(5,count($chapter->getTables()));
+    }
+    public function testCountTablesAfterReadingTextLine()
+    {
+        $chapter = new Chapter;
+        $chapter->readFrom('0$( Rozdzia'.chr(0x92).' 01 ) * Systemy instalacyjne$ 01$2g15r1');
+        $this->assertEquals(5,count($chapter->getTables()));
+    }
 }

@@ -58,6 +58,14 @@ class DirectoryAndFilesStructureTest extends TestCase
         $this->assertTrue($openedFile != false);
         fclose($openedFile);
     }
+    public function testFindAndOpenFileCaseInsensitiveDiffDir()
+    {
+        $dirPath = 'resources/Norma3/Kat/2G15';
+        $fileBaseName = '2g15r1';
+        $openedFile = Functions::FindFileInDirAndOpen($dirPath,$fileBaseName,'OP');
+        $this->assertTrue($openedFile != false);
+        fclose($openedFile);
+    }
     public function testAppendixForDuplicateKeys()
     {
         $keys = array (

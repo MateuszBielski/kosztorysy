@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Service\Functions;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,12 +33,25 @@ class Chapter
      * @ORM\ManyToOne(targetEntity="App\Entity\Catalog", inversedBy="myChapters")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $myCatalog;
+    private $myCatalog = false;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Table", mappedBy="myChapter", orphanRemoval=true)
+     */
+    private $tables;
+
+    private $myDetailsFileBaseName;
+    private $refToDirPath = null;
+
+    public function __construct()
+    {
+        $this->tables = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -78,16 +93,7 @@ class Chapter
 
         return $this;
     }
-    public function readFrom($line)
-    {
-        $line = Functions::ReplaceCharsAccordingUtf8($line);
-        $fields = explode('$',$line );
-        $start = strpos($fields[1],'(') + 1;
-        $stop = strpos($fields[1],')');
-        $this->name = trim(substr($fields[1],$start,$stop-$start));
-        $start = strpos($fields[1],'*') + 1;
-        $this->description = trim(substr($fields[1],$start));
-    }
+   
 
     public function getDescription(): ?string
     {
@@ -100,4 +106,95 @@ class Chapter
 
         return $this;
     }
+
+    /**
+     * @return Collection|Table[]
+     */
+    public function getTables(): Collection
+    {
+        return $this->tables;
+    }
+
+    public function addTable(Table $table): self
+    {
+        if (!$this->tables->contains($table)) {
+            $this->tables[] = $table;
+            $table->setMyChapter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTable(Table $table): self
+    {
+        if ($this->tables->contains($table)) {
+            $this->tables->removeElement($table);
+            // set the owning side to null (unless already changed)
+            if ($table->getMyChapter() === $this) {
+                $table->setMyChapter(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the value of myDetailsFileBaseName
+     */ 
+    public function getMyDetailsFileBaseName()
+    {
+        return $this->myDetailsFileBaseName;
+    }
+
+    /**
+     * Set the value of myDetailsFileBaseName
+     *
+     * @return  self
+     */ 
+    public function setMyDetailsFileBaseName($myDetailsFileBaseName)
+    {
+        $this->myDetailsFileBaseName = $myDetailsFileBaseName;
+
+        return $this;
+    }
+    
+    public function readFrom($line)
+    {
+        $line = Functions::ReplaceCharsAccordingUtf8($line);
+        $fields = explode('$',$line );
+        $start = strpos($fields[1],'(') + 1;
+        $stop = strpos($fields[1],')');
+        $this->name = trim(substr($fields[1],$start,$stop-$start));
+        $start = strpos($fields[1],'*') + 1;
+        $this->description = trim(substr($fields[1],$start));
+        // $pathToFileOP = $this->myCatalog->dirPath;
+        if($this->myCatalog)
+        {
+            $opFileName = $this->myCatalog->dirPath.'/'.trim($fields[3]).'.OP';
+
+            $this->LoadTablesWithDescription($opFileName);
+        }
+
+        
+    }
+    public function LoadTablesWithDescription($detailFileName)
+    {
+        $detailFile = fopen($detailFileName,'r');
+        //pierwsza linia niepotrzebna
+        fgets($detailFile);
+        $numLine = 2;
+        $numTable = 0;
+        $tablesBeginLine = array();
+        $tablesBeginLine[0] = INF;
+
+        while($numLine < $tablesBeginLine[0]){
+            $line = explode('$',fgets($detailFile));
+            $tablesBeginLine[$numTable] = $line[0];
+            $this->tables[] = new Table;
+            $numLine++;
+            $numTable++;
+        }
+    }
+
+    
 }

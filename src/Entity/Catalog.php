@@ -31,6 +31,7 @@ class Catalog
     private $myChapters;
 
     private $myCirculationsNU;
+    public $dirPath;
 
     public function __construct()
     {
@@ -103,6 +104,7 @@ class Catalog
     public function ReadFromDir($dirName)
     {
         if (substr($dirName,-1,1) == '/') $dirName = rtrim($dirName,"/");
+        $this->dirPath = $dirName;
         $catBaseName = baseName($dirName);
         
         $chapterFile = @fopen($dirName.'/'.$catBaseName.'.D^D','r');
@@ -114,6 +116,7 @@ class Catalog
         $myChapters = array();
         while($line = fgets($chapterFile)){
             $chapter = new Chapter;
+            $chapter->setMyCatalog($this);
             $chapter->ReadFrom($line);
             //czasem są np. dwa rozdziały 2
             $key = Functions::AppendixForDuplicateKeys($chapter->getName(),$myChapters);

@@ -169,22 +169,38 @@ class Functions
     public static function FindFileByDirNameAndOpen($dirPath,$fileExtension)
     {
         // $chapterFile = @fopen($dirName.'/'.$catBaseName.'.D^D','r');
+        // if (!is_dir($dirPath)) return false;
+        // Functions::SlashTrim($dirPath);
+        // $upperDirBaseName = strtoupper(basename($dirPath));
+        // $fileNameUpperSearched = $upperDirBaseName.'.'.$fileExtension;
+        // // echo $fileNameUpperSearched;
+        // $dir = opendir($dirPath);
+        // while($file = readdir($dir)){
+        //     if($file == '.' || $file == '..')continue;
+        //     if(strtoupper($file) == $fileNameUpperSearched) {
+        //         $file= $dirPath.'/'.$file;
+        //         return fopen($file,'r');
+        //     }
+        //     // if(!is_file($file) ) continue;
+
+        // }
+        // return false;
+        return Functions::FindFileInDirAndOpen($dirPath,basename($dirPath),$fileExtension);
+    }
+    public static function FindFileInDirAndOpen($dirPath,$fileBaseName,$fileExtension)
+    {
         if (!is_dir($dirPath)) return false;
         Functions::SlashTrim($dirPath);
-        $upperDirBaseName = strtoupper(basename($dirPath));
-        $fileNameUpperSearched = $upperDirBaseName.'.'.$fileExtension;
-        // echo $fileNameUpperSearched;
+        $upperFileBaseName = strtoupper(basename($fileBaseName));
+        $fileNameUpperSearched = $upperFileBaseName.'.'.$fileExtension;
         $dir = opendir($dirPath);
         while($file = readdir($dir)){
-            if($file == '.' || $file == '..')continue;
-            if(strtoupper($file) == $fileNameUpperSearched) {
+            if($file == '.' || $file == '..')continue; 
+            if(strtoupper($file) == $fileNameUpperSearched) {   
                 $file= $dirPath.'/'.$file;
                 return fopen($file,'r');
             }
-            // if(!is_file($file) ) continue;
-
         }
-        return false;
     }
     public static function SlashTrim(&$dirPath)
     {
