@@ -32,12 +32,17 @@ class ChapterTest extends TestCase
     {
         $chapter = new Chapter;
         //$chapter->setMyDetailsFileBaseName('2g15r1');
-        $chapter->LoadTablesWithDescription('resources/Norma3/Kat/2G15/2G15R1.op');
+        $file = fopen('resources/Norma3/Kat/2G15/2G15R1.op','r');
+        $chapter->LoadTablesWithDescription($file);
+        fclose($file);
         $this->assertEquals(5,count($chapter->getTables()));
     }
     public function testCountTablesAfterReadingTextLine()
     {
+        $catalog = new Catalog;
         $chapter = new Chapter;
+        $chapter->setMyCatalog($catalog);
+        $catalog->dirPath = 'resources/Norma3/Kat/2G15';
         $chapter->readFrom('0$( Rozdzia'.chr(0x92).' 01 ) * Systemy instalacyjne$ 01$2g15r1');
         $this->assertEquals(5,count($chapter->getTables()));
     }

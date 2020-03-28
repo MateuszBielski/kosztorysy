@@ -170,16 +170,20 @@ class Chapter
         // $pathToFileOP = $this->myCatalog->dirPath;
         if($this->myCatalog)
         {
-            $opFileName = $this->myCatalog->dirPath.'/'.trim($fields[3]).'.OP';
-
-            $this->LoadTablesWithDescription($opFileName);
+            $dirPath = $this->myCatalog->dirPath;
+            $baseName = trim($fields[3]);
+            $ext = 'OP';
+            $opFileName = $dirPath.'/'.$baseName.'.'.$ext;
+            $opFile = @fopen($opFileName,'r');
+            if(!$opFile) $opFile = Functions::FindFileInDirAndOpen($dirPath,$baseName,$ext);
+            if($opFile)$this->LoadTablesWithDescription($opFile);
         }
 
         
     }
-    public function LoadTablesWithDescription($detailFileName)
+    public function LoadTablesWithDescription($detailFile)
     {
-        $detailFile = fopen($detailFileName,'r');
+        fseek($detailFile,0);
         //pierwsza linia niepotrzebna
         fgets($detailFile);
         $numLine = 2;
