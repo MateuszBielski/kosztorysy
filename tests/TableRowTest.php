@@ -57,4 +57,15 @@ class TableRowTest extends TestCase
         $this->assertEquals('232',count($R).count($M).count($S));
 
     }
+    public function testReadCircRelativeIndicesFromReadOPsubLine()
+    {
+        $tableRow = new TableRow;
+        $mainLine = '75$0.5$deskowanie polaci dachowych $olacenie polaci dachowych latami 38x50mm,$okienko \'wole oko\'$ z tarcicy nasyc.$10 $m2$2$4$2$4$1$232$101$80$1$15$23$';
+        $subLine = '55$1$^$$$^$ - 01 $m2$2$3$2$4$1$232$80$1$15$23$';
+        $tableRow->createCompoundDescriptionAndRMS($mainLine,$subLine);
+        $m1 = $tableRow->getMaterials()[0];
+        $m2 = $tableRow->getMaterials()[1];
+        $this->assertEquals(232,$m1->getReadNameIndex());
+        $this->assertEquals(80,$m2->getReadNameIndex());
+    }
 }

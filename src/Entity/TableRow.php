@@ -103,13 +103,24 @@ class TableRow
             $res .= str_replace('^',$mainArray[$i],$subArray[$i]);
             // $res .=$mainArray[$i]." ".$subArray[$i+1]." ";
         }
-        $numR = array_key_exists(8,$subArray) ? $subArray[8] : $mainArray[8];
-        $numM = array_key_exists(9,$subArray) ? $subArray[9] : $mainArray[9];
-        $numS = array_key_exists(10,$subArray) ? $subArray[10] : $mainArray[10];
+        $posReadCircIndex = 11;
+        $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($subArray,$mainArray,&$posReadCircIndex)
+        {$numCirc = array_key_exists($ind,$subArray) ? $subArray[$ind] : $mainArray[$ind];
+            // echo "\n numCirc ".$numCirc;
+            for($i = 0 ; $i < $numCirc ; $i++){
+                $circClass = new $circClass;
+                // echo "\n".$posReadCircIndex;
+                $circClass->setReadNameIndex(array_key_exists($posReadCircIndex,$subArray) ? $subArray[$posReadCircIndex] : $mainArray[$posReadCircIndex]);
+                // echo " ".$circClass->getReadNameIndex();
+                $arrCirc[] = $circClass;
+                $posReadCircIndex++;
 
-        for($i = 0 ; $i < $numR ; $i++)$this->labors[] = new Labor;
-        for($i = 0 ; $i < $numM ; $i++)$this->materials[] = new Material;
-        for($i = 0 ; $i < $numS ; $i++)$this->equipments[] = new Equipment;
+            }
+        };
+        $readAndSetCirc(8,Labor::class,$this->labors);
+        $readAndSetCirc(9,Material::class,$this->materials);
+        $readAndSetCirc(10,Equipment::class,$this->equipments);
+
         $this->compoundDescription = trim($res);
     }
     public function getCompoundDescription()

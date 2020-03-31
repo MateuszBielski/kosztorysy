@@ -46,4 +46,13 @@ class ChapterTest extends TestCase
         $chapter->readFrom('0$( Rozdzia'.chr(0x92).' 01 ) * Systemy instalacyjne$ 01$2g15r1');
         $this->assertEquals(5,count($chapter->getTables()));
     }
+    public function testReadCircValuesFromNORfile()
+    {
+        $chapter = new Chapter;
+        $norFile = fopen('resources/Norma3/Kat/2-02/2-02R5.NOR','r');
+        $chapter->LoadCircValuesFromNOR($norFile);
+        fclose($norFile);
+        $res = $chapter->getCircValues()[4][1];
+        $this->assertEquals(0.0277,$res);
+    }
 }

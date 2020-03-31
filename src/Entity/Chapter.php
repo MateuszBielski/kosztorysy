@@ -46,6 +46,7 @@ class Chapter
     private $tables;
 
     private $myDetailsFileBaseName;
+    private $circValues = array();
     private $refToDirPath = null;
 
     public function __construct()
@@ -176,7 +177,15 @@ class Chapter
             $opFileName = $dirPath.'/'.$baseName.'.'.$ext;
             $opFile = @fopen($opFileName,'r');
             if(!$opFile) $opFile = Functions::FindFileInDirAndOpen($dirPath,$baseName,$ext);
-            if($opFile)$this->LoadTablesWithDescriptionFromOP($opFile);
+            // try{
+                if($opFile)$this->LoadTablesWithDescriptionFromOP($opFile);
+            // }catch(Exception $e){
+                // echo "\n".$e."exception.$opFileName\n";
+            // }finally{
+                // echo "\nnieprawidłowość w pliku $opFileName\n";
+            // }
+        
+            
             fclose($opFile);
         }
 
@@ -232,6 +241,15 @@ class Chapter
             $thisTable = true;
             $numTable++;
         }
+    }
+
+    public function LoadCircValuesFromNOR($norFile)
+    {
+        
+    }
+    public function getCircValues()
+    {
+        return $this->circValues;
     }
 
     

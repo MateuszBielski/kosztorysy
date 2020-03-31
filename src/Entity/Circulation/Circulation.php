@@ -21,7 +21,8 @@ class Circulation
     /**
      * @ORM\Column(type="float")
      */
-    private $value;
+    protected $value;
+    protected $readNameIndex;
 
     
     public function getId(): ?int
@@ -40,5 +41,17 @@ class Circulation
 
         return $this;
     }
-
+    public function getReadNameIndex()
+    {
+        return $this->readNameIndex;
+    }
+    public function setReadNameIndex($ind)
+    {
+        $ind = intval($ind);
+        // if (gettype($ind) != 'integer'){
+        //     echo "\n".ord($ind);
+        //     throw new \Exception('bad int value');
+        // } 
+        $this->readNameIndex = $ind;
+    }
 }
