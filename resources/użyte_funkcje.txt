@@ -26,6 +26,7 @@ array_slice
 in_array
 array_search
 array_key_exists()
+array_keys()
 
 implode
 iconv

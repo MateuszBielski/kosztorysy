@@ -33,7 +33,7 @@ class ChapterTest extends TestCase
         $chapter = new Chapter;
         //$chapter->setMyDetailsFileBaseName('2g15r1');
         $file = fopen('resources/Norma3/Kat/2G15/2G15R1.op','r');
-        $chapter->LoadTablesWithDescription($file);
+        $chapter->LoadTablesWithDescriptionFromOP($file);
         fclose($file);
         $this->assertEquals(5,count($chapter->getTables()));
     }

@@ -176,12 +176,13 @@ class Chapter
             $opFileName = $dirPath.'/'.$baseName.'.'.$ext;
             $opFile = @fopen($opFileName,'r');
             if(!$opFile) $opFile = Functions::FindFileInDirAndOpen($dirPath,$baseName,$ext);
-            if($opFile)$this->LoadTablesWithDescription($opFile);
+            if($opFile)$this->LoadTablesWithDescriptionFromOP($opFile);
+            fclose($opFile);
         }
 
         
     }
-    public function LoadTablesWithDescription($detailFile)
+    public function LoadTablesWithDescriptionFromOP($detailFile)
     {
         fseek($detailFile,0);
         //pierwsza linia niepotrzebna
@@ -190,12 +191,45 @@ class Chapter
         $numTable = 0;
         $tablesBeginLine = array();
         $tablesBeginLine[0] = INF;
+        $tablesNumRow = array();
 
         while($numLine < $tablesBeginLine[0]){
-            $line = explode('$',fgets($detailFile));
-            $tablesBeginLine[$numTable] = $line[0];
-            $this->tables[] = new Table;
+            $line = fgets($detailFile);
+            $posDelim0 = strpos($line,'$');
+            $ptrToTableDetail = substr($line,0,$posDelim0);
+            $posDelim0 = strpos($line,'.') + 1;
+            $posDelim1 = strpos($line,'$',$posDelim0);
+            $len = $posDelim1 - $posDelim0;
+            $tablesNumRow[$numTable] = substr($line,$posDelim0,$len);
+            // echo "\n".$tablesNumRow[$numTable];
+            $tablesBeginLine[$numTable] = $ptrToTableDetail;
+            $table = new Table;
+            $table->setMyChapter($this);
+            $table->setMainDescription($line);
+            $this->tables[] = $table;
             $numLine++;
+            $numTable++;
+        }
+        $totalTableCount = $numTable;
+        // $read = true;
+        $thisTable = true;
+        $numTable = 0;
+        while($numTable < $totalTableCount){
+            
+            $table = $this->tables[$numTable];
+            $mainLine = $table->getMainDescription();
+            $numRow = 0;
+            //linia tytułowa tablicy
+            fgets($detailFile);
+            while($numRow < $tablesNumRow[$numTable]){
+                $subLine = fgets($detailFile);
+                $tableRow = new TableRow;
+                $tableRow->createCompoundDescriptionAndRMS($mainLine,$subLine);
+                $table->getTableRows()[] = $tableRow;
+                $numLine++;
+                $numRow++;
+            }
+            $thisTable = true;
             $numTable++;
         }
     }
