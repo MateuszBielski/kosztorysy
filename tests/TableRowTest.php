@@ -5,6 +5,8 @@ namespace App\Tests;
 use App\Entity\Chapter;
 use App\Entity\TableRow;
 use PHPUnit\Framework\TestCase;
+require_once('src/Service/Constants.php');
+
 
 class TableRowTest extends TestCase
 {
@@ -21,7 +23,7 @@ class TableRowTest extends TestCase
     {
         $chapter = new Chapter;
         $opFile = fopen('resources/Norma3/Kat/2-02/2-02R1.OP','r');
-        $chapter->LoadTablesWithDescriptionFromOP($opFile);
+        $chapter->LoadTablesWithDescriptionFromOP($opFile,TABLE_ROW);
         fclose($opFile);
         $tables = $chapter->getTables();
         $this->assertEquals(35,count($tables));

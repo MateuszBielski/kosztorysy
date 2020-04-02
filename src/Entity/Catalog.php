@@ -101,7 +101,7 @@ class Catalog
         return $this;
     }
 
-    public function ReadFromDir($dirName)
+    public function ReadFromDir($dirName,$readLevel = false)
     {
         if (substr($dirName,-1,1) == '/') $dirName = rtrim($dirName,"/");
         $this->dirPath = $dirName;
@@ -117,10 +117,10 @@ class Catalog
         while($line = fgets($chapterFile)){
             $chapter = new Chapter;
             $chapter->setMyCatalog($this);
-            $chapter->ReadFrom($line);
+            $chapter->ReadFrom($line,$readLevel);
             //czasem są np. dwa rozdziały 2
-            $key = Functions::AppendixForDuplicateKeys($chapter->getName(),$myChapters);
             //ArrayCollection nie obsługuje array_key_exists
+            $key = Functions::AppendixForDuplicateKeys($chapter->getName(),$myChapters);
             $myChapters[$key] = 1;
             $this->myChapters[$key] = $chapter;
         }
@@ -128,7 +128,7 @@ class Catalog
         //nakłady ogólne wczytać
 
     }
-    public static function LoadFrom($pathDir,$read = false)
+    public static function LoadFrom($pathDir,$readLevel = false)
     {
         if (! is_dir($pathDir)) return;
         if (substr($pathDir,-1,1) == '/') $pathDir = rtrim($pathDir,"/");
@@ -141,13 +141,13 @@ class Catalog
             $catDir = $pathDir.'/'.$catDir;
             if(!is_dir($catDir) ) continue;
             $catalog = new Catalog;
-            if($read){
-                $catalog->ReadFromDir($catDir);
+            if(CATALOG_DIST & $readLevel){
+                $catalog->ReadFromDir($catDir,$readLevel);
                 $key = Functions::AppendixForDuplicateKeys($catalog->getName(),$catalogs);
             } 
             // $catalogs[] = $catalog;
             $catalogs[$key] = $catalog;
-            if (!$read) $key++; 
+            if (!$readLevel) $key++; 
         }
         closedir($dir);
         return $catalogs;

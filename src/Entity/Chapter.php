@@ -159,7 +159,7 @@ class Chapter
         return $this;
     }
     
-    public function readFrom($line)
+    public function readFrom($line,$readLevel = false)
     {
         $line = Functions::ReplaceCharsAccordingUtf8($line);
         $fields = explode('$',$line );
@@ -177,21 +177,13 @@ class Chapter
             $opFileName = $dirPath.'/'.$baseName.'.'.$ext;
             $opFile = @fopen($opFileName,'r');
             if(!$opFile) $opFile = Functions::FindFileInDirAndOpen($dirPath,$baseName,$ext);
-            // try{
-                if($opFile)$this->LoadTablesWithDescriptionFromOP($opFile);
-            // }catch(Exception $e){
-                // echo "\n".$e."exception.$opFileName\n";
-            // }finally{
-                // echo "\nnieprawidłowość w pliku $opFileName\n";
-            // }
-        
-            
+            if($opFile && (TABLE_DIST & $readLevel))$this->LoadTablesWithDescriptionFromOP($opFile,$readLevel);
             fclose($opFile);
         }
 
         
     }
-    public function LoadTablesWithDescriptionFromOP($detailFile)
+    public function LoadTablesWithDescriptionFromOP($detailFile,$readLevel = false)
     {
         fseek($detailFile,0);
         //pierwsza linia niepotrzebna
@@ -223,6 +215,7 @@ class Chapter
         // $read = true;
         $thisTable = true;
         $numTable = 0;
+        if (!(TABLE_ROW_DIST & $readLevel))return;
         while($numTable < $totalTableCount){
             
             $table = $this->tables[$numTable];
@@ -233,6 +226,7 @@ class Chapter
             while($numRow < $tablesNumRow[$numTable]){
                 $subLine = fgets($detailFile);
                 $tableRow = new TableRow;
+                if(DESCRIPaRMS_DIST & $readLevel)
                 $tableRow->createCompoundDescriptionAndRMS($mainLine,$subLine);
                 $table->getTableRows()[] = $tableRow;
                 $numLine++;
@@ -246,6 +240,15 @@ class Chapter
     public function LoadCircValuesFromNOR($norFile)
     {
         
+        while($numValues = fgets($norFile)){
+            $i = 0;
+            $arr = array();
+            while($i < $numValues){
+                $arr[] = floatval(fgets($norFile));
+                $i++;
+            }
+            $this->circValues[] = $arr;
+        }
     }
     public function getCircValues()
     {
