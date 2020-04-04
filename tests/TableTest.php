@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\Entity\Table;
+use App\Entity\ClTable;
 use PHPUnit\Framework\TestCase;
 
 class TableTest extends TestCase

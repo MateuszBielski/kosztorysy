@@ -23,7 +23,7 @@ class TableRow
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Table", inversedBy="tableRows")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ClTable", inversedBy="tableRows")
      * @ORM\JoinColumn(nullable=false)
      */
     private $myTable;
@@ -67,12 +67,12 @@ class TableRow
         return $this->id;
     }
 
-    public function getMyTable(): ?Table
+    public function getMyTable(): ?ClTable
     {
         return $this->myTable;
     }
 
-    public function setMyTable(?Table $myTable): self
+    public function setMyTable(?ClTable $myTable): self
     {
         $this->myTable = $myTable;
 

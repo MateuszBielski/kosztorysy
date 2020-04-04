@@ -39,7 +39,7 @@ class Chapter
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Table", mappedBy="myChapter", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ClTable", mappedBy="myChapter", orphanRemoval=true, cascade={"persist"})
      */
     private $tables;
 
@@ -107,14 +107,14 @@ class Chapter
     }
 
     /**
-     * @return Collection|Table[]
+     * @return Collection|ClTable[]
      */
     public function getTables(): Collection
     {
         return $this->tables;
     }
 
-    public function addTable(Table $table): self
+    public function addTable(ClTable $table): self
     {
         if (!$this->tables->contains($table)) {
             $this->tables[] = $table;
@@ -124,7 +124,7 @@ class Chapter
         return $this;
     }
 
-    public function removeTable(Table $table): self
+    public function removeTable(ClTable $table): self
     {
         if ($this->tables->contains($table)) {
             $this->tables->removeElement($table);
@@ -202,7 +202,7 @@ class Chapter
             $tablesNumRow[$numTable] = substr($line,$posDelim0,$len);
             // echo "\n".$tablesNumRow[$numTable];
             $tablesBeginLine[$numTable] = $ptrToTableDetail;
-            $table = new Table;
+            $table = new ClTable;
             $table->setMyChapter($this);
             $table->setMainDescription($line);
             $this->tables[] = $table;
