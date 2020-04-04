@@ -26,7 +26,7 @@ class Catalog
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Chapter", mappedBy="myCatalog", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Chapter", mappedBy="myCatalog", orphanRemoval=true, cascade={"persist"})
      */
     private $myChapters;
 
@@ -36,6 +36,7 @@ class Catalog
     public function __construct()
     {
         $this->myChapters = new ArrayCollection();
+        // $this->myChapters = array(); raczej nie zadziała z doctrine
     }
 
     public function getId(): ?int

@@ -24,9 +24,7 @@ class Chapter
      */
     private $name;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+   
     private $number;//czy potrzebne?
 
     /**
@@ -41,7 +39,7 @@ class Chapter
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Table", mappedBy="myChapter", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Table", mappedBy="myChapter", orphanRemoval=true, cascade={"persist"})
      */
     private $tables;
 

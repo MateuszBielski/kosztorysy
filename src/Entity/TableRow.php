@@ -97,6 +97,7 @@ class TableRow
         $subLine = Functions::ReplaceCharsAccordingUtf8($subLine);
         $mainArray = explode('$',$mainLine);
         $subArray = explode('$',$subLine);
+        $arrayToReadNameIndices = count($subArray) > 11 ? $subArray : $mainArray;
         $res = "";
         for($i = 2; $i < 6; $i++){
             // echo "\n".$mainArray[$i]." ".$subArray[$i+1];
@@ -104,18 +105,23 @@ class TableRow
             // $res .=$mainArray[$i]." ".$subArray[$i+1]." ";
         }
         $posReadCircIndex = 11;
-        $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($subArray,$mainArray,&$posReadCircIndex)
-        {$numCirc = array_key_exists($ind,$subArray) ? $subArray[$ind] : $mainArray[$ind];
+        $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
+        {$numCirc = $arrayToReadNameIndices[$ind];
             // echo "\n numCirc ".$numCirc;
+            // $tempArr = range(0,$numCirc-1);
+            // $tempArr = array();
             for($i = 0 ; $i < $numCirc ; $i++){
                 $circClass = new $circClass;
                 // echo "\n".$posReadCircIndex;
-                $circClass->setReadNameIndex(array_key_exists($posReadCircIndex,$subArray) ? $subArray[$posReadCircIndex] : $mainArray[$posReadCircIndex]);
+                $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
                 // echo " ".$circClass->getReadNameIndex();
-                $arrCirc[] = $circClass;
+                $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
+                //użycie zwykłej array znacznie przyspieszyłoby proces
                 $posReadCircIndex++;
 
             }
+            // $arrCirc = new ArrayCollection($tempArr);
+            // $arrCirc->createFrom($tempArr);
         };
         $readAndSetCirc(8,Labor::class,$this->labors);
         $readAndSetCirc(9,Material::class,$this->materials);

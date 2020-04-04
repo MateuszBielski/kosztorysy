@@ -23,7 +23,7 @@ class TableRowTest extends TestCase
     {
         $chapter = new Chapter;
         $opFile = fopen('resources/Norma3/Kat/2-02/2-02R1.OP','r');
-        $chapter->LoadTablesWithDescriptionFromOP($opFile,TABLE_ROW);
+        $chapter->LoadTablesWithDescriptionFromOP($opFile,DESCRIPaRMS);
         fclose($opFile);
         $tables = $chapter->getTables();
         $this->assertEquals(35,count($tables));

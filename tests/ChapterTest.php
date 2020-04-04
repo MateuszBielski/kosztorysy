@@ -25,16 +25,19 @@ class ChapterTest extends TestCase
     public function testOneChapterContentAfterLoad()
     {   
         $commonDir = 'resources/Norma3/Kat/';
-        $catalogs = Catalog::LoadFrom($commonDir,TABLE_ROW);//,CATALOG
+        $catalogs = Catalog::LoadFrom($commonDir,CHAPTER);//,CATALOGDESCRIPaRMS
         $res = $catalogs['KNR 2-15/G']->getMyChapters()['Rozdział 06']->getDescription();
         $this->assertEquals('System wodociągowy Geberit Mepla',$res);
         /*
         różne czasy wykonania łącznie 6 testów, na całym folderze z 258 katalogami dla poszczególnych poziomów odczytów:
-        CATALOG: 414 ms 4MB
-        CHAPTER: 416 ms 4MB
-        TABLE:   9.03 s 12MB
-        TABLE_ROW 28.3 S 318MB
-        potwierdza to przypuszczenie, że tworzenie dużej ilości Encji (np TableRow) pochałania dużo zasobów
+        CATALOG: 400 ms 4MB
+        CHAPTER: 395(?) ms 4MB
+        TABLE:   527 s 12MB
+        TABLE_ROW 3.48 S 70MB
+        DESCRIPaRMS 25.29 318MB
+        nie potwierdza to przypuszczenia, że tworzenie dużej ilości Encji (np TableRow) 
+        pochałania dużo zasobów, lecz że zasobożerna jest funkcja createCompoundDescriptionAndRMS, 
+        
         */
     }
     public function testCountTables()
