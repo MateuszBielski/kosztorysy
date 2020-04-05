@@ -181,6 +181,7 @@ class Chapter
 
         
     }
+    /*
     public function LoadTablesWithDescriptionFromOP($detailFile,$readLevel = false)
     {
         fseek($detailFile,0);
@@ -193,7 +194,7 @@ class Chapter
         $tablesNumRow = array();
 
         while($numLine < $tablesBeginLine[0]){
-            $line = fgets($detailFile);
+            $line = Functions::ReplaceCharsAccordingUtf8(fgets($detailFile));
             $posDelim0 = strpos($line,'$');
             $ptrToTableDetail = substr($line,0,$posDelim0);
             $posDelim0 = strpos($line,'.') + 1;
@@ -210,8 +211,6 @@ class Chapter
             $numTable++;
         }
         $totalTableCount = $numTable;
-        // $read = true;
-        $thisTable = true;
         $numTable = 0;
         if (!(TABLE_ROW_DIST & $readLevel))return;
         while($numTable < $totalTableCount){
@@ -222,10 +221,69 @@ class Chapter
             //linia tytułowa tablicy
             fgets($detailFile);
             while($numRow < $tablesNumRow[$numTable]){
-                $subLine = fgets($detailFile);
+                $subLine = Functions::ReplaceCharsAccordingUtf8(fgets($detailFile));
                 $tableRow = new TableRow;
+                $tableRow->setMyTable($table);
                 if(DESCRIPaRMS_DIST & $readLevel)
                 $tableRow->createCompoundDescriptionAndRMS($mainLine,$subLine);
+                $table->getTableRows()[] = $tableRow;
+                $numLine++;
+                $numRow++;
+            }
+            $thisTable = true;
+            $numTable++;
+        }
+    }
+    */
+    public function LoadTablesWithDescriptionFromOP($detailFile,$readLevel = false)
+    {
+        fseek($detailFile,0);
+        //pierwsza linia niepotrzebna
+        fgets($detailFile);
+        $numLine = 2;
+        $numTable = 0;
+        $tablesBeginLine = array();
+        $tablesBeginLine[0] = INF;
+        $tablesNumRow = array();
+
+        while($numLine < $tablesBeginLine[0]){
+            $line = Functions::ReplaceCharsAccordingUtf8(fgets($detailFile));
+            $posDelim0 = strpos($line,'$');
+            $ptrToTableDetail = substr($line,0,$posDelim0);
+            $posDelim0 = strpos($line,'.') + 1;
+            $posDelim1 = strpos($line,'$',$posDelim0);
+            $len = $posDelim1 - $posDelim0;
+            $tablesNumRow[$numTable] = substr($line,$posDelim0,$len);
+            // echo "\n".$tablesNumRow[$numTable];
+            $tablesBeginLine[$numTable] = $ptrToTableDetail;
+            $table = new ClTable;
+            $table->setMyChapter($this);
+            // $table->setMainDescription($line);
+            $table->SetAfterSplitLineIntoDescriptionAndIndices($line);
+            $this->tables[] = $table;
+            $numLine++;
+            $numTable++;
+        }
+        $totalTableCount = $numTable;
+        $numTable = 0;
+        if (!(TABLE_ROW_DIST & $readLevel))return;
+        while($numTable < $totalTableCount){
+            
+            $table = $this->tables[$numTable];
+            $mainDescription = $table->getMainDescription();
+            $mainIndices = $table->getMainIndices();
+            $numRow = 0;
+            //linia tytułowa tablicy
+            fgets($detailFile);
+            while($numRow < $tablesNumRow[$numTable]){
+                $subLine = Functions::ReplaceCharsAccordingUtf8(fgets($detailFile));
+                $tableRow = new TableRow;
+                $tableRow->setMyTable($table);
+                if(DESCRIPaRMS_DIST & $readLevel){
+                    $tableRow->SetAfterSplitLineIntoDescriptionAndIndices($subLine);
+                    $tableRow->createCompoundDescription($mainDescription,$tableRow->getSubDescription());
+                    $tableRow->createCompoundRMSindices($mainIndices,$tableRow->getSubIndices());
+                }
                 $table->getTableRows()[] = $tableRow;
                 $numLine++;
                 $numRow++;

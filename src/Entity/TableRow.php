@@ -29,31 +29,33 @@ class TableRow
     private $myTable;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
 
     private $compoundDescription;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $subDescription;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Labor", mappedBy="tableRow", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Labor", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"})
      */
     private $labors;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Material", mappedBy="tableRow", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Material", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"})
      */
     private $materials;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Equipment", mappedBy="tableRow", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Equipment", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"})
      */
     private $equipments;
+
+    private $subIndices;
 
     public function __construct()
     {
@@ -90,44 +92,40 @@ class TableRow
 
         return $this;
     }
-    public function createCompoundDescriptionAndRMS($mainLine,$subLine)
+    public function SetAfterSplitLineIntoDescriptionAndIndices($subLine)
     {
-        
-        $mainLine = Functions::ReplaceCharsAccordingUtf8($mainLine);
-        $subLine = Functions::ReplaceCharsAccordingUtf8($subLine);
+        $slicePos = Functions::FindSlicePosition($subLine,'$',7);
+        $this->subDescription = trim(substr($subLine,0,$slicePos - 1));
+        $this->subIndices = substr($subLine,$slicePos,strlen($subLine)-1-$slicePos);
+    }
+    public function createCompoundDescription($mainLine,$subLine)
+    {
         $mainArray = explode('$',$mainLine);
         $subArray = explode('$',$subLine);
-        $arrayToReadNameIndices = count($subArray) > 11 ? $subArray : $mainArray;
         $res = "";
-        for($i = 2; $i < 6; $i++){
-            // echo "\n".$mainArray[$i]." ".$subArray[$i+1];
-            $res .= str_replace('^',$mainArray[$i],$subArray[$i]);
-            // $res .=$mainArray[$i]." ".$subArray[$i+1]." ";
-        }
-        $posReadCircIndex = 11;
+        for($i = 2; $i < 6; $i++) $res .= str_replace('^',$mainArray[$i],$subArray[$i]);
+        $this->compoundDescription = trim($res);
+    }
+    public function createCompoundRMSindices($mainIndices,$subIndices)
+    {
+        $mainArray = explode('$',$mainIndices);
+        $subArray = explode('$',$subIndices);
+        $arrayToReadNameIndices = count($subArray) > 11 ? $subArray : $mainArray;
+        $posReadCircIndex = 4;
         $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
         {$numCirc = $arrayToReadNameIndices[$ind];
-            // echo "\n numCirc ".$numCirc;
-            // $tempArr = range(0,$numCirc-1);
-            // $tempArr = array();
             for($i = 0 ; $i < $numCirc ; $i++){
                 $circClass = new $circClass;
-                // echo "\n".$posReadCircIndex;
                 $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
-                // echo " ".$circClass->getReadNameIndex();
                 $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
                 //użycie zwykłej array znacznie przyspieszyłoby proces
                 $posReadCircIndex++;
 
             }
-            // $arrCirc = new ArrayCollection($tempArr);
-            // $arrCirc->createFrom($tempArr);
         };
-        $readAndSetCirc(8,Labor::class,$this->labors);
-        $readAndSetCirc(9,Material::class,$this->materials);
-        $readAndSetCirc(10,Equipment::class,$this->equipments);
-
-        $this->compoundDescription = trim($res);
+        $readAndSetCirc(1,Labor::class,$this->labors);
+        $readAndSetCirc(2,Material::class,$this->materials);
+        $readAndSetCirc(3,Equipment::class,$this->equipments);
     }
     public function getCompoundDescription()
     {
@@ -237,5 +235,9 @@ class TableRow
         }
 
         return $this;
+    }
+    public function getSubIndices()
+    {
+        return $this->subIndices;
     }
 }

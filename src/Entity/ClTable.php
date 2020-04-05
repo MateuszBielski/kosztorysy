@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Service\Functions;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TableRepository")
@@ -25,7 +26,7 @@ class ClTable
     private $myChapter;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true, cascade={"persist"})
      */
     private $tableRows;
 
@@ -33,6 +34,8 @@ class ClTable
      * @ORM\Column(type="string", length=255)
      */
     private $mainDescription;
+
+    private $mainIndices;
 
     public function __construct()
     {
@@ -97,5 +100,22 @@ class ClTable
         $this->mainDescription = $mainDescription;
 
         return $this;
+    } 
+    public function getMainIndices(): ?string
+    {
+        return $this->mainIndices;
+    }
+
+    public function setMainIndices(string $mainIndices): self
+    {
+        $this->mainIndices = $mainIndices;
+
+        return $this;
+    } 
+    public function SetAfterSplitLineIntoDescriptionAndIndices($line)
+    {
+        $slicePos = Functions::FindSlicePosition($line,'$',7);
+        $this->mainDescription = trim(substr($line,0,$slicePos - 1));
+        $this->mainIndices = substr($line,$slicePos,strlen($line)-1-$slicePos);
     }
 }

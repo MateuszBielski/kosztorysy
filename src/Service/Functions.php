@@ -211,4 +211,17 @@ class Functions
         if (array_key_exists($key,$arr)) $key .='x';
         return $key;
     }
+    public static function FindSlicePosition($str,$deliminator,$whichOccurence)
+    {
+        $charNum = 0;
+        $numDelim = 0;
+        // $delim = '$';
+        $len = strlen($str);
+        while($numDelim < $whichOccurence && $charNum < $len){
+            $c = $str[$charNum++];
+            if ($c == $deliminator) $numDelim++;
+            // $this->subDescription .= $c;
+        }
+        return $charNum;
+    }
 }
