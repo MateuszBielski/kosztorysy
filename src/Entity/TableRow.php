@@ -116,6 +116,7 @@ class TableRow
         {$numCirc = $arrayToReadNameIndices[$ind];
             for($i = 0 ; $i < $numCirc ; $i++){
                 $circClass = new $circClass;
+                $circClass->setTableRow($this);
                 $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
                 $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
                 //użycie zwykłej array znacznie przyspieszyłoby proces

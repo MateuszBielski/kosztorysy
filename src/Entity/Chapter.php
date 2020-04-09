@@ -177,64 +177,17 @@ class Chapter
             if(!$opFile) $opFile = Functions::FindFileInDirAndOpen($dirPath,$baseName,$ext);
             if($opFile && (TABLE_DIST & $readLevel))$this->LoadTablesWithDescriptionFromOP($opFile,$readLevel);
             fclose($opFile);
+            $ext = 'NOR';
+            $norFileName = $dirPath.'/'.$baseName.'.'.$ext;
+            $norFile = @fopen($norFileName,'r');
+            if(!$norFile) $norFile = Functions::FindFileInDirAndOpen($dirPath,$baseName,$ext);
+            if($norFile) $this->LoadCircValuesFromNOR($norFile);
+            fclose($norFile);
+            if(DESCRIPaRMS_DIST & $readLevel)$this->GiveValuesToCirculations();
         }
 
         
     }
-    /*
-    public function LoadTablesWithDescriptionFromOP($detailFile,$readLevel = false)
-    {
-        fseek($detailFile,0);
-        //pierwsza linia niepotrzebna
-        fgets($detailFile);
-        $numLine = 2;
-        $numTable = 0;
-        $tablesBeginLine = array();
-        $tablesBeginLine[0] = INF;
-        $tablesNumRow = array();
-
-        while($numLine < $tablesBeginLine[0]){
-            $line = Functions::ReplaceCharsAccordingUtf8(fgets($detailFile));
-            $posDelim0 = strpos($line,'$');
-            $ptrToTableDetail = substr($line,0,$posDelim0);
-            $posDelim0 = strpos($line,'.') + 1;
-            $posDelim1 = strpos($line,'$',$posDelim0);
-            $len = $posDelim1 - $posDelim0;
-            $tablesNumRow[$numTable] = substr($line,$posDelim0,$len);
-            // echo "\n".$tablesNumRow[$numTable];
-            $tablesBeginLine[$numTable] = $ptrToTableDetail;
-            $table = new ClTable;
-            $table->setMyChapter($this);
-            $table->setMainDescription($line);
-            $this->tables[] = $table;
-            $numLine++;
-            $numTable++;
-        }
-        $totalTableCount = $numTable;
-        $numTable = 0;
-        if (!(TABLE_ROW_DIST & $readLevel))return;
-        while($numTable < $totalTableCount){
-            
-            $table = $this->tables[$numTable];
-            $mainLine = $table->getMainDescription();
-            $numRow = 0;
-            //linia tytułowa tablicy
-            fgets($detailFile);
-            while($numRow < $tablesNumRow[$numTable]){
-                $subLine = Functions::ReplaceCharsAccordingUtf8(fgets($detailFile));
-                $tableRow = new TableRow;
-                $tableRow->setMyTable($table);
-                if(DESCRIPaRMS_DIST & $readLevel)
-                $tableRow->createCompoundDescriptionAndRMS($mainLine,$subLine);
-                $table->getTableRows()[] = $tableRow;
-                $numLine++;
-                $numRow++;
-            }
-            $thisTable = true;
-            $numTable++;
-        }
-    }
-    */
     public function LoadTablesWithDescriptionFromOP($detailFile,$readLevel = false)
     {
         fseek($detailFile,0);
@@ -312,6 +265,8 @@ class Chapter
     }
     public function GiveValuesToCirculations()
     {
+        if (!count($this->circValues)) throw new \Exception('brak wartości nakładów');
+        if (!count($this->tables)) throw new \Exception('Nie wczytane tabele');
         $numTableRow = 0;
         foreach($this->tables as $table)
         {
