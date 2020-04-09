@@ -67,4 +67,22 @@ class ChapterTest extends TestCase
         $res = $chapter->getCircValues()[4][1];
         $this->assertEquals(0.0277,$res);
     }
+    public function testGiveValuesToCirculations()
+    {
+        $chapterFilePath = 'resources/Norma3/Kat/0-39/0-39R1.';
+        $chapter = new Chapter;
+
+        $norFile = fopen($chapterFilePath.'NOR','r');
+        $chapter->LoadCircValuesFromNOR($norFile);
+        fclose($norFile);
+
+        $OpFile = fopen($chapterFilePath.'OP','r');
+        $chapter->LoadTablesWithDescriptionFromOP($OpFile,DESCRIPaRMS);
+        fclose($OpFile);
+        $tableRow17_3 = $chapter->getTables()[17]->getTableRows()[3];
+
+        $chapter->GiveValuesToCirculations();
+        $material1 = $tableRow17_3->getMaterials()[1];
+        $this->assertEquals(2.5,$material1->getValue());
+    }
 }

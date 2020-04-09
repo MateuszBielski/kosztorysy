@@ -310,6 +310,21 @@ class Chapter
     {
         return $this->circValues;
     }
-
+    public function GiveValuesToCirculations()
+    {
+        $numTableRow = 0;
+        foreach($this->tables as $table)
+        {
+            foreach($table->getTableRows() as $tr)
+            {
+                $tableRowValues = $this->circValues[$numTableRow];
+                $numTrV = 0;
+                foreach($tr->getLabors() as $R) $R->setValue($tableRowValues[$numTrV++]);
+                foreach($tr->getMaterials() as $M) $M->setValue($tableRowValues[$numTrV++]);
+                foreach($tr->getEquipments() as $S) $S->setValue($tableRowValues[$numTrV++]);
+                $numTableRow++;
+            }
+        }
+    }
     
 }
