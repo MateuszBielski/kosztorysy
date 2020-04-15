@@ -14,6 +14,9 @@ class PersistanceOptimizer
    private $chapters;
    private $tables;
    private $tableRows;
+   private $labors;
+   private $materials;
+   private $equipments;
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->em = $entityManager;
@@ -23,6 +26,9 @@ class PersistanceOptimizer
         $this->chapters = array();
         $this->tables = array();
         $this->tableRows = array();
+        $this->labors = array();
+        $this->materials = array();
+        $this->equipments = array();
     }
 
     public function RetirieveLastAutoIncFor(string $tableName)
@@ -44,6 +50,9 @@ class PersistanceOptimizer
                     foreach ($tab->getTableRows() as $tr)
                     {
                         $this->tableRows[] = $tr;
+                        foreach($tr->getLabors() as $R){$this->labors[] = $R;};
+                        foreach($tr->getMaterials() as $M){$this->materials[] = $M;};
+                        foreach($tr->getEquipments() as $S){$this->equipments[] = $S;};
                     }
 
                 }
@@ -66,5 +75,17 @@ class PersistanceOptimizer
     public function getTableRows()
     {
         return $this->tableRows;
+    }
+    public function getLabors()
+    {
+        return $this->labors;
+    }
+    public function getMaterials()
+    {
+        return $this->materials;
+    }
+    public function getEquipments()
+    {
+        return $this->equipments;
     }
 }

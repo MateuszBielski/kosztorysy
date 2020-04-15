@@ -44,13 +44,16 @@ class PersistanceOptimizerTest extends KernelTestCase
         $catFile2 = 'resources/Norma3/Kat/2-01/';
 
         $catalog1 = new Catalog;
-        $catalog1->ReadFromDir($catFile1,TABLE_ROW);
+        $catalog1->ReadFromDir($catFile1,DESCRIPaRMS);
         $catalog2 = new Catalog;
-        $catalog2->ReadFromDir($catFile2,TABLE_ROW);
+        $catalog2->ReadFromDir($catFile2,DESCRIPaRMS);
         $this->po->Aggregate(array($catalog1,$catalog2));
         $this->assertEquals(25+7,count($this->po->getChapters()));
         $this->assertEquals(679,count($this->po->getTables()));
         $this->assertEquals(4603,count($this->po->getTableRows()));
+        $this->assertEquals(11499,count($this->po->getLabors()));
+        $this->assertEquals(26318,count($this->po->getMaterials()));
+        $this->assertEquals(9430,count($this->po->getEquipments()));
         
     }
     protected function tearDown(): void
