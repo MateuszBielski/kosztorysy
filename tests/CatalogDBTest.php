@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Catalog;
 use App\Entity\Chapter;
+use App\Entity\TableRow;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 
@@ -12,7 +13,7 @@ class CatalogDBTest extends KernelTestCase
     private $entityManager;
     private $repCatalog;
     private $repChapter;
-    // private $repTableRow;
+    private $repTableRow;
     
     protected function setUp()
     {
@@ -23,6 +24,7 @@ class CatalogDBTest extends KernelTestCase
         $this->entityManager = $doctrine->getManager();
         $this->repCatalog = $doctrine->getRepository(Catalog::class);
         $this->repChapter = $doctrine->getRepository(Chapter::class);
+        $this->repTableRow = $doctrine->getRepository(TableRow::class);
     }
     public function testCountChaptersPersistedCatalog()
     {
@@ -77,6 +79,48 @@ class CatalogDBTest extends KernelTestCase
         $tableRow17_2 = $chapter->getTables()[17]->getTableRows()[2];
         $equipment = $tableRow17_2->getEquipments()[0];
         $this->assertEquals(0.0024,$equipment->getValue());
+    }
+    public function _testTableRowRepFindByDescrFragment(Type $var = null)
+    {
+        $this->entityManager->getConnection()->beginTransaction();
+        $catFile = 'resources/Norma3/Kat/2-02/';
+        $catalog = new Catalog;
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS);//TABLE
+        $this->entityManager->persist($catalog);
+        // $this->entityManager->flush();
+        $tabRows = $this->repTableRow->findByDescriptionFragment('odgromników');
+        $this->entityManager->getConnection()->rollBack();
+    }
+    public function testRemovePersistedChapter()
+    {
+        $this->entityManager->getConnection()->beginTransaction();
+        $catFile = 'resources/Norma3/Kat/0-15/';
+        $catalog = new Catalog;
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS);//TABLE
+        $this->entityManager->persist($catalog);
+        $this->entityManager->flush();
+        // $tabRows = $this->repTableRow->findByDescriptionFragment('odgromników');
+        $this->entityManager->remove($catalog);
+        $this->entityManager->flush();
+        $chapter = $this->repChapter->findOneBy(array('name'=>'Rozdział 05'));
+        $this->entityManager->getConnection()->rollBack();
+        $this->assertEquals(null,$chapter);
+    }
+    public function testPersistWithoutRollback()
+    {
+        // $this->entityManager->getConnection()->beginTransaction();
+        $catFile = 'resources/Norma3/Kat/0-12/';
+        $catalog = new Catalog;
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS);//TABLE
+        // $this->entityManager->persist($catalog);
+        // $this->entityManager->flush();
+        // $tabRows = $this->repTableRow->findByDescriptionFragment('odgromników');
+        $catToRemove = $this->repCatalog->findOneBy(array('name' => 'KNR   0-12'));
+        $this->entityManager->remove($catToRemove);
+        // $this->entityManager->flush();
+        // $chapter = $this->repChapter->findOneBy(array('name'=>'Rozdział 05'));
+        // $this->entityManager->getConnection()->rollBack();
+        // $this->assertEquals(null,$chapter);
     }
     protected function tearDown(): void
     {

@@ -96,7 +96,7 @@ class TableRow
     {
         $slicePos = Functions::FindSlicePosition($subLine,'$',7);
         $this->subDescription = trim(substr($subLine,0,$slicePos - 1));
-        $this->subIndices = substr($subLine,$slicePos,strlen($subLine)-1-$slicePos);
+        $this->subIndices = trim(substr($subLine,$slicePos,strlen($subLine)-1-$slicePos));
     }
     public function createCompoundDescription($mainLine,$subLine)
     {
@@ -110,7 +110,7 @@ class TableRow
     {
         $mainArray = explode('$',$mainIndices);
         $subArray = explode('$',$subIndices);
-        $arrayToReadNameIndices = count($subArray) > 11 ? $subArray : $mainArray;
+        $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
         $posReadCircIndex = 4;
         $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
         {$numCirc = $arrayToReadNameIndices[$ind];

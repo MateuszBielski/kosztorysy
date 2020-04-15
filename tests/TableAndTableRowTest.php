@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Catalog;
 use App\Entity\Chapter;
 use App\Entity\ClTable;
 use App\Entity\TableRow;
@@ -35,6 +36,19 @@ class TableAndTableRowTest extends TestCase
         // }
         $this->assertEquals(12,count($tableRows6));
         $this->assertEquals('Ściany budynków jednokond.o wys.pow. 4.5m z bloczków z bet.komórkow.gr.37cm',$tableRow8->getCompoundDescription());
+    }
+    public function testCountRMSreadingFromChapterFiles()
+    {
+        $chapterFile = fopen('resources/Norma3/Kat/2-02/2-02R1.OP','r');
+        $chapter = new Chapter;
+        $chapter->LoadTablesWithDescriptionFromOP($chapterFile,DESCRIPaRMS);
+        fclose($chapterFile);
+        $tableRow = $chapter->getTables()[24]->getTableRows()[4];
+        $R = $tableRow->getLabors();
+        $M = $tableRow->getMaterials();
+        $S = $tableRow->getEquipments();
+        $this->assertEquals('231',count($R).count($M).count($S));
+
     }
     public function testCountRMSFromReadOPmainLine()
     {

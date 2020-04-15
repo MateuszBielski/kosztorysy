@@ -18,6 +18,19 @@ class TableRowRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TableRow::class);
     }
+    /**
+     * @return TableRow[]
+     */
+    public function findByDescriptionFragment($fragment)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.description LIKE :val')
+            ->setParameter('val', $fragment)
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
     // /**
     //  * @return TableRow[] Returns an array of TableRow objects

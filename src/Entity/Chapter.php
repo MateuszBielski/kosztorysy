@@ -268,17 +268,36 @@ class Chapter
         if (!count($this->circValues)) throw new \Exception('brak wartości nakładów');
         if (!count($this->tables)) throw new \Exception('Nie wczytane tabele');
         $numTableRow = 0;
+        $numTable = 0;
         foreach($this->tables as $table)
         {
+            $numRow = 0;
             foreach($table->getTableRows() as $tr)
             {
                 $tableRowValues = $this->circValues[$numTableRow];
+                $cR = count($tr->getLabors());
+                $cM = count($tr->getMaterials());
+                $cS = count($tr->getEquipments());
+                $isToMuchRMS = $cR + $cM + $cS - count($tableRowValues);
+
+                if ($isToMuchRMS > 0)
+                {
+                    echo "\nProblem w: ".$this->name." tabl ".$numTable." wiersz ".$numRow;
+                    echo ' liczba wartości dla RMS '.count($tableRowValues);
+                    echo ', R '.$cR.', M '.$cM.', S '.$cS;
+                    for($i = 0; $i < $isToMuchRMS;$i++)$tableRowValues[] = 0.0;
+                    // $numTableRow++;
+                    // continue;
+                }
                 $numTrV = 0;
                 foreach($tr->getLabors() as $R) $R->setValue($tableRowValues[$numTrV++]);
                 foreach($tr->getMaterials() as $M) $M->setValue($tableRowValues[$numTrV++]);
                 foreach($tr->getEquipments() as $S) $S->setValue($tableRowValues[$numTrV++]);
+
                 $numTableRow++;
+                $numRow++;
             }
+            $numTable++;
         }
     }
     
