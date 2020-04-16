@@ -92,6 +92,7 @@ class PersistanceOptimizer
         $chapterId = $this->RetirieveLastAutoIncFor('chapter');
         $tableId = $this->RetirieveLastAutoIncFor('cl_table');
         $tableRowId = $this->RetirieveLastAutoIncFor('table_row');
+        $circulationId = $this->RetirieveLastAutoIncFor('circulation');
         foreach($catalogs as $cat)
         {
             // $cat->setId($catalogId++);
@@ -107,9 +108,24 @@ class PersistanceOptimizer
                     {
                         $this->tableRows[$tableRowId] = $tr;
                         $this->tableRowsParentId[$tableRowId] = $tableId;
-                        foreach($tr->getLabors() as $R){$this->labors[] = $R;};
-                        foreach($tr->getMaterials() as $M){$this->materials[] = $M;};
-                        foreach($tr->getEquipments() as $S){$this->equipments[] = $S;};
+                        foreach($tr->getLabors() as $R)
+                        {
+                            $this->labors[$circulationId] = $R;
+                            $this->laborsParentId[$circulationId] = $tableRowId;
+                            $circulationId++;
+                        }
+                        foreach($tr->getMaterials() as $M)
+                        {
+                            $this->materials[$circulationId] = $M;
+                            $this->materialsParentId[$circulationId] = $tableRowId;
+                            $circulationId++;
+                        }
+                        foreach($tr->getEquipments() as $S)
+                        {
+                            $this->equipments[$circulationId] = $S;
+                            $this->equipmentsParentId[$circulationId] = $tableRowId;
+                            $circulationId++;
+                        }
                         $tableRowId++;
                     }
                     $tableId++;
@@ -132,9 +148,8 @@ class PersistanceOptimizer
             $query .= '; insert into chapter values ';
             foreach($this->chapters as $id => $chap)
             {
-                $query .='('.$id.','.$this->chaptersParentId[$id].',\''.$chap->getName().'\',\''.$chap->getDescription().'\'),';
+                $query .='('.$id.','.$this->chaptersParentId[$id].',\''.$chap->getName().'\',\''.$chap->getDescription().'\'),';//."\n"
             }
-            // echo "\n".$queryInsertChapter;
             $query = rtrim($query,",");
         } 
 
@@ -155,6 +170,26 @@ class PersistanceOptimizer
             {
                 $query .='('.$id.','.$this->tableRowsParentId[$id].',\''.$tr->getSubDescription().'\'),';//."\n"
             }
+            $query = rtrim($query,",");
+        }
+        if (count($this->labors) || count($this->materials) || count($this->equipments))
+        {
+            $query .= '; insert into circulation values ';
+            foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getValue()},'labor'),";
+            foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getValue()},'material'),";
+            foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getValue()},'equipment'),";
+            $query = rtrim($query,",");
+
+            $query .= '; insert into labor values ';
+            foreach ($this->labors as $id => $lab) $query .="($id,{$this->laborsParentId[$id]}),";
+            $query = rtrim($query,",");
+
+            $query .= '; insert into material values ';
+            foreach ($this->materials as $id => $mat) $query .="($id,{$this->materialsParentId[$id]}),";
+            $query = rtrim($query,",");
+
+            $query .= '; insert into equipment values ';
+            foreach ($this->equipments as $id => $equ) $query .="($id,{$this->equipmentsParentId[$id]}),";
             $query = rtrim($query,",");
         }
         // echo "\nDługość zapytania: ".strlen($query);

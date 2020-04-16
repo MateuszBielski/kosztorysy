@@ -23,7 +23,7 @@ class TableRow
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ClTable", inversedBy="tableRows")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ClTable", inversedBy="tableRows", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $myTable;
@@ -41,17 +41,17 @@ class TableRow
     private $subDescription;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Labor", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Labor", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
      */
     private $labors;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Material", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Material", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
      */
     private $materials;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Equipment", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Equipment", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
      */
     private $equipments;
 
@@ -131,6 +131,12 @@ class TableRow
     public function getCompoundDescription()
     {
        return $this->compoundDescription;
+    }
+    public function CompoundDescription()
+    {
+        
+        $this->createCompoundDescription($this->myTable->getMainDescription(),$this->subDescription);
+        return $this->compoundDescription;
     }
 
     public function getSubDescription(): ?string
@@ -240,5 +246,11 @@ class TableRow
     public function getSubIndices()
     {
         return $this->subIndices;
+    }
+    public function getTotalLaborValue()
+    {
+        $res = 0.0;
+        foreach($this->labors as $lab) $res += $lab->getValue();
+        return $res;
     }
 }

@@ -99,7 +99,9 @@ class PersistanceOptimizerTest extends KernelTestCase
     public function testPersistTableRows()
     {
         $catFile1 = 'resources/Norma3/Kat/2-02/';
-        $catFile2 = 'resources/Norma3/Kat/2-01/';
+        $catFile2 = 'resources/Norma3/Kat/2-01/'; 
+        // $catFile1 = 'resources/Norma3/Kat/0-44/';
+        // $catFile2 = 'resources/Norma3/Kat/0-41/';
 
         $catalog1 = new Catalog;
         $catalog1->ReadFromDir($catFile1,DESCRIPaRMS);
@@ -114,9 +116,18 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->conn->rollBack();
         // $this->conn->commit();
         // $f = fopen('query.txt','w');
-        // fwrite($f,$this->po->getQuery());
-        // fclose($f);
+        // foreach($tabRows as $tr)
+        // {
+            // echo "\n".$tabRows[2]->CompoundDescription();
+            // }
+            // fwrite($f,$this->po->getQuery());
+            // fclose($f);
         $this->assertEquals(4,count($tabRows));
+        
+        $material = $tabRows[2]->getMaterials()[0];
+        // echo "\nXX".count($tabRows[2]->getMaterials());
+        $this->assertEquals(0.3908,$tabRows[2]->getTotalLaborValue());
+        $this->assertEquals(0.097,$material->getValue());
     }
     protected function tearDown(): void
     {
