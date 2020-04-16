@@ -23,9 +23,10 @@ class TableRowRepository extends ServiceEntityRepository
      */
     public function findByDescriptionFragment($fragment)
     {
-        return $this->createQueryBuilder('t')
-            ->where('t.description LIKE :val')
-            ->setParameter('val', $fragment)
+        return $this->createQueryBuilder('tr')
+            ->leftJoin('tr.myTable','myTable')
+            ->where('tr.subDescription LIKE :val or myTable.mainDescription LIKE :val')
+            ->setParameter('val', '%'.$fragment.'%')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()

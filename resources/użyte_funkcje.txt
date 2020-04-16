@@ -37,6 +37,8 @@ substr
 strtoupper
 strtolower
 trim
+ltrim
+rtrim
 intval
 
 glob co to?

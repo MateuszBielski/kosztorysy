@@ -92,6 +92,7 @@ class Functions
         chr(0x9e) => chr(0xC5).chr(0x9B),//ś	
         chr(0xa6) => chr(0xC5).chr(0xBA),//ź	
         chr(0xa7) => chr(0xC5).chr(0xBC),//ż
+        chr(0x27) => chr(0x5f)// apostrof na dolną spację
         // chr(0x20) => chr(0x2b) //spacja na +
         );
         return strtr($str_bytes,$zmiana);

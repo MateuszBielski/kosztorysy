@@ -45,7 +45,7 @@ class Chapter
 
     private $myDetailsFileBaseName;
     private $circValues = array();
-    private $refToDirPath = null;
+    // private $myCatalogId= null;
 
     public function __construct()
     {
@@ -282,9 +282,9 @@ class Chapter
 
                 if ($isToMuchRMS > 0)
                 {
-                    echo "\nProblem w: ".$this->name." tabl ".$numTable." wiersz ".$numRow;
-                    echo ' liczba wartości dla RMS '.count($tableRowValues);
-                    echo ', R '.$cR.', M '.$cM.', S '.$cS;
+                    // echo "\nProblem w: ".$this->name." tabl ".$numTable." wiersz ".$numRow;
+                    // echo ' liczba wartości dla RMS '.count($tableRowValues);
+                    // echo ', R '.$cR.', M '.$cM.', S '.$cS;
                     for($i = 0; $i < $isToMuchRMS;$i++)$tableRowValues[] = 0.0;
                     // $numTableRow++;
                     // continue;

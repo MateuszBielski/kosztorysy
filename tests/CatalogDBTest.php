@@ -80,6 +80,7 @@ class CatalogDBTest extends KernelTestCase
         $equipment = $tableRow17_2->getEquipments()[0];
         $this->assertEquals(0.0024,$equipment->getValue());
     }
+    //poniższy test powinien działać ale wykonanie zajmuje około minuty
     public function _testTableRowRepFindByDescrFragment(Type $var = null)
     {
         $this->entityManager->getConnection()->beginTransaction();
@@ -87,9 +88,10 @@ class CatalogDBTest extends KernelTestCase
         $catalog = new Catalog;
         $catalog->ReadFromDir($catFile,DESCRIPaRMS);//TABLE
         $this->entityManager->persist($catalog);
-        // $this->entityManager->flush();
+        $this->entityManager->flush();
         $tabRows = $this->repTableRow->findByDescriptionFragment('odgromników');
         $this->entityManager->getConnection()->rollBack();
+        $this->assertEquals(4,count($tabRows));
     }
     public function testRemovePersistedChapter()
     {
@@ -106,7 +108,7 @@ class CatalogDBTest extends KernelTestCase
         $this->entityManager->getConnection()->rollBack();
         $this->assertEquals(null,$chapter);
     }
-    public function testPersistWithoutRollback()
+    public function _testPersistWithoutRollback()
     {
         // $this->entityManager->getConnection()->beginTransaction();
         $catFile = 'resources/Norma3/Kat/0-12/';
