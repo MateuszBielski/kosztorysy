@@ -110,6 +110,7 @@ class PersistanceOptimizer
                         $this->tableRowsParentId[$tableRowId] = $tableId;
                         foreach($tr->getLabors() as $R)
                         {
+                            //dla każdego nakładu w tym miejscu dokonać podmiany indeksu dla nazwy nakładu, jesli jest odczytany
                             $this->labors[$circulationId] = $R;
                             $this->laborsParentId[$circulationId] = $tableRowId;
                             $circulationId++;

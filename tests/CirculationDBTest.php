@@ -32,14 +32,17 @@ class CirculationDBTest extends KernelTestCase
         $this->entityManager = $doctrine->getManager();
         $this->repM = $doctrine->getRepository(Material_N_U::class);    
         $this->repRMS = $doctrine->getRepository(CirculationNameAndUnit::class);
-        $this->circulations4_04 = CirFunctions::ReadCirculationsFromBazFile('resources/Norma3/Kat/4-04/4-04.BAZ');
+        $bazFile = @fopen('resources/Norma3/Kat/4-04/4-04.BAZ','r');
+        $this->circulations4_04 = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+        fclose($bazFile);
 
         $fileSign = array('2-02','2W02');
         $bazFile = array();
         $uc = new BuildUniqueCirculations;
         foreach ($fileSign as $sign) {
-            $bazFile = 'resources/Norma3/Kat/'.$sign.'/'.$sign.'.BAZ';
+            $bazFile = @fopen('resources/Norma3/Kat/'.$sign.'/'.$sign.'.BAZ','r');
             $originalCirculations = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            fclose($bazFile);
             $uc->AddOriginalAndChangeIds($originalCirculations);
         }
         $uc->AddOriginalAndChangeIds($this->circulations4_04);
@@ -66,6 +69,19 @@ class CirculationDBTest extends KernelTestCase
         $foundMaterial = $this->repRMS->find($IdTrackedMaterial);
         $this->assertEquals('gwoździe budowlane okrągłe gołe',$foundMaterial->getName());
         $this->entityManager->getConnection()->rollBack();
+    }
+    public function testPersistUniqueCirculationsAsOwnMethod(Type $var = null)
+    {
+        $uc = new BuildUniqueCirculations($this->entityManager);
+        $uc->setUniqueCirculations($this->uniqueCirculations);
+        $this->entityManager->getConnection()->beginTransaction();
+        $IdTrackedMaterial = $this->circulations4_04['M'][8]->getId();
+        // $this->MapOverUniqueCirculations($this->entityManager,'persist',$this->uniqueCirculations);        //unique
+        // $this->entityManager->flush();
+        $uc->PersistUniqueCirculations();
+        $foundMaterial = $this->repRMS->find($IdTrackedMaterial);
+        $this->entityManager->getConnection()->rollBack();
+        $this->assertEquals('gwoździe budowlane okrągłe gołe',$foundMaterial->getName());
     }
     //jeśli w bazie już będą jakieś nakłady, jak będzie przechodził proces unifikacji?
 

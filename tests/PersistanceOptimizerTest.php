@@ -5,6 +5,7 @@ namespace App\Tests;
 use App\Entity\Catalog;
 use App\Entity\Chapter;
 use App\Entity\TableRow;
+use App\Service\BuildUniqueCirculations;
 use App\Service\PersistanceOptimizer;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -96,7 +97,7 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->conn->rollBack();
         $this->assertEquals(32,count($foundChapters));
     }
-    public function testPersistTableRows()
+    public function _testPersistTableRows()
     {
         $catFile1 = 'resources/Norma3/Kat/2-02/';
         $catFile2 = 'resources/Norma3/Kat/2-01/'; 
@@ -128,6 +129,38 @@ class PersistanceOptimizerTest extends KernelTestCase
         // echo "\nXX".count($tabRows[2]->getMaterials());
         $this->assertEquals(0.3908,$tabRows[2]->getTotalLaborValue());
         $this->assertEquals(0.097,$material->getValue());
+    }
+    public function testRetrieveCirculationNamesFromDB(Type $var = null)
+    {
+        $catFileNames = array('resources/Norma3/Kat/KNZ-14/',
+                                'resources/Norma3/Kat/S-215/');
+        $catalogs = array ();
+
+        // $uniqueCirculations = null;
+        for($i = 0 ; $i < 2 ; $i++)
+        {
+            $catalog = new Catalog;
+            $catalog->ReadFromDir($catFileNames[$i],DESCRIPaRMS|BAZ_FILE_DIST);
+            $catalogs[] = $catalog;
+        }
+
+        $this->po->Aggregate($catalogs);
+
+        $uc = new BuildUniqueCirculations($this->entityManager);
+        $uc->AddCirculationsFromCatalogCollection($catalogs);
+        
+        $this->conn->beginTransaction();
+        $uc->persistUniqueCirculations();
+        $this->po->persist();
+        $tabRows = $this->repTableRow->findByDescriptionFragment('gęstożebrowy');
+        $this->conn->rollBack();
+        // foreach($tabRows as $tr){
+        //     echo "\nXX {$tr->getTotalLaborValue()} {$tr->CompoundDescription()}";
+        // }
+        $tr = $tabRows[2];
+        $this->assertEquals(1.4187,$tr->getTotalLaborValue());
+        $this->assertEquals(8.3,$tr->getMaterials()[0]->getValue());
+        // $this->po->setCirculationIndicesAfterUnique($uniqueCirculations);
     }
     protected function tearDown(): void
     {

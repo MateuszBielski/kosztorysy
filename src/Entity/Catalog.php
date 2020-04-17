@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\CirFunctions;
 use App\Service\Functions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -104,7 +105,7 @@ class Catalog
 
         return $this;
     }
-
+    
     public function ReadFromDir($dirName,$readLevel = false)
     {
         if (substr($dirName,-1,1) == '/') $dirName = rtrim($dirName,"/");
@@ -129,8 +130,14 @@ class Catalog
             $this->myChapters[$key] = $chapter;
         }
         fclose($chapterFile);
-        //nakłady ogólne wczytać
-
+        if ($readLevel & BAZ_FILE_DIST) {
+            $bazFile = @fopen($dirName.'/'.$catBaseName.'.BAZ','r');
+            if (!$bazFile) {
+                $bazFile = Functions::FindFileByDirNameAndOpen($dirName,'BAZ');
+            }
+            $this->myCirculationsNU = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            fclose($bazFile);
+        }
     }
     public static function LoadFrom($pathDir,$readLevel = false)
     {

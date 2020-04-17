@@ -7,6 +7,9 @@ use App\Entity\Circulation\Material_N_U;
 use App\Service\BuildUniqueCirculations;
 use App\Service\CirFunctions;
 use PHPUnit\Framework\TestCase;
+use App\Entity\Catalog;
+
+require_once('src/Service/Constants.php');
 
 class CirculationTest extends TestCase
 {
@@ -22,16 +25,18 @@ class CirculationTest extends TestCase
     //testReadCirculationsFromCatalogPath() -czy warto?
     public function testReadCirculationsFromBazFile()
     {
-       $bazFile = 'resources/Norma3/Kat/4-04/4-04.BAZ';
+       $bazFile = @fopen('resources/Norma3/Kat/4-04/4-04.BAZ','r');
        $circulations = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+       fclose($bazFile);
        $material = $circulations['M'][8];
        $this->assertEquals('gwoździe budowlane okrągłe gołe',$material->getName());
        $this->assertEquals(8,$material->getId());
     }
     public function testReadCirculationsFromBazFile_2()
     {
-       $bazFile = 'tests/BazFiles/f1.BAZ';
+       $bazFile = @fopen('tests/BazFiles/f1.BAZ','r');
        $circulations = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+       fclose($bazFile);
        $material = $circulations['M'][6];
        $this->assertEquals('folia polietylenowa szeroka (6 lub 12m) 0.2 mm',$material->getName());
        $this->assertEquals(6,$material->getId());
@@ -42,8 +47,9 @@ class CirculationTest extends TestCase
         $bazFile = array();
         $uc = new BuildUniqueCirculations;
         foreach ($fileSign as $sign) {
-            $bazFile = 'resources/Norma3/Kat/'.$sign.'/'.$sign.'.BAZ';
+            $bazFile = @fopen('resources/Norma3/Kat/'.$sign.'/'.$sign.'.BAZ','r');
             $originalCirculations = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            fclose($bazFile);
             $uc->AddOriginalAndChangeIds($originalCirculations);
         }
         $uniqueCirculations = $uc->GetUniqueCirculations();
@@ -62,9 +68,9 @@ class CirculationTest extends TestCase
         $uc = new BuildUniqueCirculations;
         $originalCirculations = array ();
         for ($i = 1 ; $i < 4 ; $i++) {
-            $bazFile = 'tests/BazFiles/f'.$i.'.BAZ';
-
+            $bazFile = @fopen('tests/BazFiles/f'.$i.'.BAZ','r');
             $originalCirculations[$i] = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            fclose($bazFile);
             $uc->AddOriginalAndChangeIds($originalCirculations[$i]);
         }
         //czy id prawidłowo zamienione
@@ -87,8 +93,10 @@ class CirculationTest extends TestCase
         $uc = new BuildUniqueCirculations;
         $originalCirculations = array ();
         for ($i = 4 ; $i < 6 ; $i++) {
-            $bazFile = 'tests/BazFiles/f'.$i.'.BAZ';
+            $bazFile = @fopen('tests/BazFiles/f'.$i.'.BAZ','r');
+
             $originalCirculations[$i] = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            fclose($bazFile);
             $uc->AddOriginalAndChangeIds($originalCirculations[$i]);
         }
         $trackedMaterial = $originalCirculations[4]['M'][2];
@@ -101,6 +109,21 @@ class CirculationTest extends TestCase
         }
         $this->assertEquals('gwoździe drewno cegła ',$result);
     }
-    
+    public function testAddCirculationsFromCatalogCollection()
+    {
+        $catFileNames = array('resources/Norma3/Kat/KNZ-14/',
+                            'resources/Norma3/Kat/S-215/',
+                        'resources/Norma3/Kat/0-10/');
+        $catalogs = array();
+        for($i = 0 ; $i < 3 ; $i++)
+        {
+            $catalog = new Catalog;
+            $catalog->ReadFromDir($catFileNames[$i],BAZ_FILE_DIST);
+            $catalogs[] = $catalog;
+        }
+        $uc = new BuildUniqueCirculations;
+        $uc->AddCirculationsFromCatalogCollection($catalogs);
+        $this->assertEquals(272,count($uc->GetUniqueCirculations()));//272 nie było dokładnie liczone
+    }
 
 }

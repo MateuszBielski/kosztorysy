@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Catalog;
 use PHPUnit\Framework\TestCase;
+require_once('src/Service/Constants.php');
 
 class CatalogTest extends TestCase
 {
@@ -54,6 +55,15 @@ class CatalogTest extends TestCase
         $commonDir = 'resources/Norma3/Kat/';
         $catalogs = Catalog::LoadFrom($commonDir);
         $this->assertEquals(258,count($catalogs));
+    }
+    public function testLoadBazFilesDuringReadCatDir()
+    {
+        $catFile = 'resources/Norma3/Kat/0-10/';
+        $catalog = new Catalog;
+        $catalog->ReadFromDir($catFile,BAZ_FILE_DIST);
+        $circ = $catalog->getMyCirculationsNU();
+        $this->assertEquals('pianka izolacyjna',$circ['M'][4]->getName());
+
     }
     
     //konkretna treść rozdziału po załadowaniu wszytskiego

@@ -9,11 +9,11 @@ use App\Entity\Circulation\Material_N_U;
 class CirFunctions
 {
 
-    public static function ReadCirculationsFromBazFile($bazFileName): array
+    public static function ReadCirculationsFromBazFile($bazFile): array
     {
         // $circulations = new ArrayCollection();
         $circulations = array();
-        $bazFile = @fopen($bazFileName,'r');
+        // $bazFile = @fopen($bazFileName,'r');
         $n_R = intval(fgets($bazFile));
         $n_M = intval(fgets($bazFile));
         $n_S = intval(fgets($bazFile));
