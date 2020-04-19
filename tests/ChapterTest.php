@@ -25,7 +25,7 @@ class ChapterTest extends TestCase
     public function testOneChapterContentAfterLoad()
     {   
         $commonDir = 'resources/Norma3/Kat/';
-        $catalogs = Catalog::LoadFrom($commonDir,CHAPTER);//,CATALOGDESCRIPaRMS
+        $catalogs = Catalog::LoadFrom($commonDir,CHAPTER);//,DESCRIPaRMS|OPTIMIZE_TR CHAPTER
         $res = $catalogs['KNR 2-15/G']->getMyChapters()['Rozdział 06']->getDescription();
         $this->assertEquals('System wodociągowy Geberit Mepla',$res);
         /*
@@ -38,6 +38,20 @@ class ChapterTest extends TestCase
         nie potwierdza to przypuszczenia, że tworzenie dużej ilości Encji (np TableRow) 
         pochałania dużo zasobów, lecz że zasobożerna jest funkcja createCompoundDescriptionAndRMS, 
         
+        */
+    }
+    //test wykonuje się ponad pół minuty
+    public function _testOneChapterContentAfterLoad_optimizedTableRow()
+    {   
+        $commonDir = 'resources/Norma3/Kat/';
+        $catalogs = Catalog::LoadFrom($commonDir,DESCRIPaRMS|OPTIMIZE_TR);//,DESCRIPaRMS|OPTIMIZE_TR CHAPTER
+        $res = $catalogs['KNR 2-15/G']->getMyChapters()['Rozdział 06']->getDescription();
+        $this->assertEquals('System wodociągowy Geberit Mepla',$res);
+        /*
+        czas wykonania dla:
+         DESCRIPaRMS|OPTIMIZE_TR 33.07 seconds, Memory: 402.00 MB
+         DESCRIPaRMS            35.97 seconds, Memory: 422.00 MB
+         mały zysk... czyli jest jakieś drugie wąskie gardło zapewne w GiveValuesToCirculations
         */
     }
     public function testCountTables()
@@ -78,6 +92,24 @@ class ChapterTest extends TestCase
 
         $OpFile = fopen($chapterFilePath.'OP','r');
         $chapter->LoadTablesWithDescriptionFromOP($OpFile,DESCRIPaRMS);
+        fclose($OpFile);
+        $tableRow17_3 = $chapter->getTables()[17]->getTableRows()[3];
+
+        $chapter->GiveValuesToCirculations();
+        $material1 = $tableRow17_3->getMaterials()[1];
+        $this->assertEquals(2.5,$material1->getValue());
+    }
+    public function testGiveValuesToCirculations_optimizedTableRow()
+    {
+        $chapterFilePath = 'resources/Norma3/Kat/0-39/0-39R1.';
+        $chapter = new Chapter;
+
+        $norFile = fopen($chapterFilePath.'NOR','r');
+        $chapter->LoadCircValuesFromNOR($norFile);
+        fclose($norFile);
+
+        $OpFile = fopen($chapterFilePath.'OP','r');
+        $chapter->LoadTablesWithDescriptionFromOP($OpFile,DESCRIPaRMS|OPTIMIZE_TR);
         fclose($OpFile);
         $tableRow17_3 = $chapter->getTables()[17]->getTableRows()[3];
 

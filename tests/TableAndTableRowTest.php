@@ -85,6 +85,17 @@ class TableAndTableRowTest extends TestCase
         $this->assertEquals(232,$m1->getReadNameIndex());
         $this->assertEquals(80,$m2->getReadNameIndex());
     }
+    public function testReadCircRelativeIndicesFromReadOPsubLine_optimizedTableRow()
+    {
+        $tableRow = new TableRow;
+        $mainLine = 'm2$2$4$2$4$1$232$101$80$1$15$23$';
+        $subLine = 'm2$2$3$2$4$1$232$80$1$15$23$';
+        $tableRow->createCompoundRMSindices_optimized($mainLine,$subLine);
+        $m1 = $tableRow->getMaterials()[0];
+        $m2 = $tableRow->getMaterials()[1];
+        $this->assertEquals(232,$m1->getReadNameIndex());
+        $this->assertEquals(80,$m2->getReadNameIndex());
+    }
     // public function testCropLineToDescriptionAndSet()
     public function testSetAfterSplitLineIntoDescriptionAndIndices_TableRow()
     {

@@ -183,7 +183,13 @@ class Chapter
             if(!$norFile) $norFile = Functions::FindFileInDirAndOpen($dirPath,$baseName,$ext);
             if($norFile) $this->LoadCircValuesFromNOR($norFile);
             fclose($norFile);
-            if(DESCRIPaRMS_DIST & $readLevel)$this->GiveValuesToCirculations();
+            try
+            {
+                if(DESCRIPaRMS_DIST & $readLevel)$this->GiveValuesToCirculations();
+            }catch(\Exception $e){
+                echo "\n".$e->getMessage();
+            }
+
         }
 
         
@@ -235,7 +241,8 @@ class Chapter
                 if(DESCRIPaRMS_DIST & $readLevel){
                     $tableRow->SetAfterSplitLineIntoDescriptionAndIndices($subLine);
                     $tableRow->createCompoundDescription($mainDescription,$tableRow->getSubDescription());
-                    $tableRow->createCompoundRMSindices($mainIndices,$tableRow->getSubIndices());
+                    $createIndices =  (OPTIMIZE_TR & $readLevel) ? "createCompoundRMSindices_optimized" : "createCompoundRMSindices";
+                    $tableRow->$createIndices($mainIndices,$tableRow->getSubIndices());
                 }
                 $table->getTableRows()[] = $tableRow;
                 $numLine++;
@@ -265,8 +272,16 @@ class Chapter
     }
     public function GiveValuesToCirculations()
     {
-        if (!count($this->circValues)) throw new \Exception('brak wartości nakładów');
-        if (!count($this->tables)) throw new \Exception('Nie wczytane tabele');
+        $idName = $this->myCatalog ? "{$this->myCatalog->getName()}" : "";
+        $idName .= " {$this->name}";
+        if (!count($this->circValues)) throw new \Exception('brak wartości nakładów'.$idName);
+        if (!count($this->tables)) throw new \Exception('Nie wczytane tabele'.$idName);
+        $totalNumberOfTableRows = 0;
+        foreach($this->tables as $table)
+        {
+            $totalNumberOfTableRows += count($table->getTableRows());
+        }
+        if ($totalNumberOfTableRows > count($this->circValues)) throw new \Exception('nie prawidłowa ilość wartości w NOR '.$idName);
         $numTableRow = 0;
         $numTable = 0;
         foreach($this->tables as $table)

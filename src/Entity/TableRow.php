@@ -57,6 +57,11 @@ class TableRow
 
     private $subIndices;
 
+    private $laborsArray;
+    private $materialsArray;
+    private $equipmentsArray;
+    private $optimized = false;
+
     public function __construct()
     {
         $this->labors = new ArrayCollection();
@@ -108,11 +113,72 @@ class TableRow
     }
     public function createCompoundRMSindices($mainIndices,$subIndices)
     {
+        $this->CompoundIndices($mainIndices,$subIndices,
+        $this->labors,
+        $this->materials,
+        $this->equipments);
+        // $mainArray = explode('$',$mainIndices);
+        // $subArray = explode('$',$subIndices);
+        // $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
+        // $posReadCircIndex = 4;
+        // $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
+        // {$numCirc = $arrayToReadNameIndices[$ind];
+        //     for($i = 0 ; $i < $numCirc ; $i++){
+        //         $circClass = new $circClass;
+        //         $circClass->setTableRow($this);
+        //         $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
+        //         $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
+        //         //użycie zwykłej array znacznie przyspieszyłoby proces
+        //         $posReadCircIndex++;
+
+        //     }
+        // };
+        // $readAndSetCirc(1,Labor::class,$this->labors);
+        // $readAndSetCirc(2,Material::class,$this->materials);
+        // $readAndSetCirc(3,Equipment::class,$this->equipments);
+    }
+    public function createCompoundRMSindices_optimized($mainIndices,$subIndices)
+    {
+        $this->optimized = true;
+        $this->labors = null;
+        $this->materials = null;
+        $this->equipments = null;
+        $this->laborsArray = array();
+        $this->materialsArray = array();
+        $this->equipmentsArray = array();
+        $this->CompoundIndices($mainIndices,$subIndices,
+                                $this->laborsArray,
+                                $this->materialsArray,
+                                $this->equipmentsArray);
+        // $mainArray = explode('$',$mainIndices);
+        // $subArray = explode('$',$subIndices);
+        // $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
+        // $posReadCircIndex = 4;
+        // //ważna jest referencja dla &$arrCirc - inaczej zwykła array nie chce działać
+        // $readAndSetCirc = function($ind,$circClass,&$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
+        // {$numCirc = $arrayToReadNameIndices[$ind];
+        //     for($i = 0 ; $i < $numCirc ; $i++){
+        //         $circClass = new $circClass;
+        //         $circClass->setTableRow($this);
+        //         $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
+        //         $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
+        //         //użycie zwykłej array znacznie przyspieszyłoby proces
+        //         $posReadCircIndex++;
+
+        //     }
+        // };
+        // $readAndSetCirc(1,Labor::class,$this->laborsArray);
+        // $readAndSetCirc(2,Material::class,$this->materialsArray);
+        // $readAndSetCirc(3,Equipment::class,$this->equipmentsArray);
+    }
+    private function CompoundIndices($mainIndices,$subIndices,&$labors,&$materials,&$equipments)
+    {
         $mainArray = explode('$',$mainIndices);
         $subArray = explode('$',$subIndices);
         $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
         $posReadCircIndex = 4;
-        $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
+        //ważna jest referencja dla &$arrCirc - inaczej zwykła array nie chce działać
+        $readAndSetCirc = function($ind,$circClass,&$arrCirc) use (&$arrayToReadNameIndices,&$posReadCircIndex)
         {$numCirc = $arrayToReadNameIndices[$ind];
             for($i = 0 ; $i < $numCirc ; $i++){
                 $circClass = new $circClass;
@@ -124,9 +190,9 @@ class TableRow
 
             }
         };
-        $readAndSetCirc(1,Labor::class,$this->labors);
-        $readAndSetCirc(2,Material::class,$this->materials);
-        $readAndSetCirc(3,Equipment::class,$this->equipments);
+        $readAndSetCirc(1,Labor::class,$labors);
+        $readAndSetCirc(2,Material::class,$materials);
+        $readAndSetCirc(3,Equipment::class,$equipments);
     }
     public function getCompoundDescription()
     {
@@ -154,9 +220,9 @@ class TableRow
     /**
      * @return Collection|Labor[]
      */
-    public function getLabors(): Collection
+    public function getLabors()//: Collection
     {
-        return $this->labors;
+        return $this->optimized ? $this->laborsArray : $this->labors;
     }
 
     public function addLabor(Labor $labor): self
@@ -185,9 +251,9 @@ class TableRow
     /**
      * @return Collection|Material[]
      */
-    public function getMaterials(): Collection
+    public function getMaterials()//: Collection
     {
-        return $this->materials;
+        return $this->optimized ? $this->materialsArray : $this->materials;
     }
 
     public function addMaterial(Material $material): self
@@ -216,9 +282,9 @@ class TableRow
     /**
      * @return Collection|Equipment[]
      */
-    public function getEquipments(): Collection
+    public function getEquipments()//: Collection
     {
-        return $this->equipments;
+        return $this->optimized ? $this->equipmentsArray : $this->equipments;
     }
 
     public function addEquipment(Equipment $equipment): self
@@ -252,5 +318,9 @@ class TableRow
         $res = 0.0;
         foreach($this->labors as $lab) $res += $lab->getValue();
         return $res;
+    }
+    public function setOptimized()
+    {
+        $this->optimized = true;
     }
 }
