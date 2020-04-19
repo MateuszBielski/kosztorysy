@@ -97,6 +97,27 @@ class TableRow
 
         return $this;
     }
+    public function setValuesToCirculations(array $values)
+    {
+        $cR = count($this->getLabors());
+        $cM = count($this->getMaterials());
+        $cS = count($this->getEquipments());
+        $isToMuchRMS = $cR + $cM + $cS - count($values);
+
+        if ($isToMuchRMS > 0)
+        {
+            // echo "\nProblem w: ".$this->name." tabl ".$numTable." wiersz ".$numRow;
+            // echo ' liczba wartości dla RMS '.count($tableRowValues);
+            // echo ', R '.$cR.', M '.$cM.', S '.$cS;
+            for($i = 0; $i < $isToMuchRMS;$i++)$values[] = 0.0;
+            // $numTableRow++;
+            // continue;
+        }
+        $numTrV = 0;
+        foreach($this->getLabors() as $R) $R->setValue($values[$numTrV++]);
+        foreach($this->getMaterials() as $M) $M->setValue($values[$numTrV++]);
+        foreach($this->getEquipments() as $S) $S->setValue($values[$numTrV++]);
+    }
     public function SetAfterSplitLineIntoDescriptionAndIndices($subLine)
     {
         $slicePos = Functions::FindSlicePosition($subLine,'$',7);
@@ -308,6 +329,12 @@ class TableRow
         }
 
         return $this;
+    }
+    public function getCirculations()
+    {
+        $res = array();
+        
+        return array_merge($this->getLabors(),$this->getMaterials(),$this->getEquipments());
     }
     public function getSubIndices()
     {

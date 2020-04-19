@@ -119,5 +119,22 @@ class TableAndTableRowTest extends TestCase
         $this->assertEquals($expecDesc,$table->getMainDescription());
         $this->assertEquals($expecInd,$table->getMainIndices());
     }
+    public function testRemoveZeroCirculations(Type $var = null)
+    {
+        $tableRow = new TableRow;
+        $subIndices = 'elem.$4$7$3$10$9$11$1$241$746$182$187$568$1$65$18$43$23$';
+        $tableRow->createCompoundRMSindices($subIndices,'');
+        $values = range(1,15);
+        $values[2] = 0;
+        $values[5] = 0;
+        $values[7] = 0;
+        $values[12] = 0;
+        $tableRow->setValuesToCirculations($values);
+        // foreach($tableRow->getMaterials() as $M)
+        // {
+        //     echo "\nXX".$M->getValue();
+        // }
+        $this->assertEquals(10,count($tableRow->getCirculations()));
+    }
 
 }
