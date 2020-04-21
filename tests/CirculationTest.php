@@ -30,7 +30,6 @@ class CirculationTest extends TestCase
        fclose($bazFile);
        $material = $circulations['M'][8];
        $this->assertEquals('gwoździe budowlane okrągłe gołe',$material->getName());
-       $this->assertEquals(8,$material->getId());
     }
     public function testReadCirculationsFromBazFile_2()
     {

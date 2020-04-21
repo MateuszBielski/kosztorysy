@@ -243,6 +243,8 @@ class Chapter
                     $tableRow->createCompoundDescription($mainDescription,$tableRow->getSubDescription());
                     $createIndices =  (OPTIMIZE_TR & $readLevel) ? "createCompoundRMSindices_optimized" : "createCompoundRMSindices";
                     $tableRow->$createIndices($mainIndices,$tableRow->getSubIndices());
+                    if(BAZ_FILE_DIST & $readLevel)
+                    $tableRow->SelectNameAndUnitToCirculations($this->myCatalog->getMyCirculationsNU());
                 }
                 $table->getTableRows()[] = $tableRow;
                 $numLine++;

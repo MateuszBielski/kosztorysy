@@ -4,6 +4,10 @@ namespace App\Tests;
 
 use App\Entity\Catalog;
 use App\Entity\Chapter;
+use App\Entity\Circulation\Equipment;
+use App\Entity\Circulation\Equipment_N_U;
+use App\Entity\Circulation\Material;
+use App\Entity\Circulation\Material_N_U;
 use App\Entity\ClTable;
 use App\Entity\TableRow;
 use PHPUnit\Framework\TestCase;
@@ -130,11 +134,32 @@ class TableAndTableRowTest extends TestCase
         $values[7] = 0;
         $values[12] = 0;
         $tableRow->setValuesToCirculations($values);
-        // foreach($tableRow->getMaterials() as $M)
-        // {
-        //     echo "\nXX".$M->getValue();
-        // }
         $this->assertEquals(10,count($tableRow->getCirculations()));
+    }
+    public function testSetCircNameAndUnit()
+    {
+        // $catalog = new Catalog;
+        // $chapter = new Chapter;
+        // $table = new ClTable;
+        $materialNamed = new Material_N_U;
+        $materialNamed->setName('belki drewniane');
+        $equipmentNamed = new Equipment_N_U;
+        $equipmentNamed->setName('ciężarówka');
+        $nameAndUnitArray = array();
+        $nameAndUnitArray['M'][245] = $materialNamed;
+        $nameAndUnitArray['S'][21] = $equipmentNamed;
+        $tableRow = new TableRow;
+        $material = new Material;
+        $material->setReadNameIndex(245);
+        $tableRow->addMaterial($material);
+
+        $equipment = new Equipment;
+        $equipment->setReadNameIndex(21);
+        $tableRow->addEquipment($equipment);
+        $tableRow->SelectNameAndUnitToCirculations($nameAndUnitArray);
+
+        $this->assertEquals('belki drewniane',$tableRow->getMaterials()[0]->getName());
+        $this->assertEquals('ciężarówka',$tableRow->getEquipments()[0]->getName());
     }
 
 }

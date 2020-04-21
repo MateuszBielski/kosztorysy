@@ -105,13 +105,73 @@ class Catalog
 
         return $this;
     }
-    
+    public function AssignNamesAndUnitforCirculation()
+    {
+        foreach($this->myChapters as $chap)
+        {
+            foreach($chap->getTables() as $tab)
+            {
+                foreach($tab->getTableRows() as $tr)
+                {
+                    $tr->SelectNameAndUnitToCirculations($this->myCirculationsNU);
+                }
+            }
+        }
+    }
+    // public function ReadFromDir($dirName,$readLevel = false)
+    // {
+    //     if (substr($dirName,-1,1) == '/') $dirName = rtrim($dirName,"/");
+    //     $this->dirPath = $dirName;
+    //     $catBaseName = baseName($dirName);
+        
+    //     $chapterFile = @fopen($dirName.'/'.$catBaseName.'.D^D','r');
+    //     if (!$chapterFile) {
+    //         $chapterFile = Functions::FindFileByDirNameAndOpen($dirName,'D^D');
+    //     }
+    //     $firstRow = explode('$',fgets($chapterFile));
+    //     $this->name = trim($firstRow[0]);
+    //     $myChapters = array();
+    //     while($line = fgets($chapterFile)){
+    //         $chapter = new Chapter;
+    //         $chapter->setMyCatalog($this);
+    //         $chapter->ReadFrom($line,$readLevel);
+    //         //czasem są np. dwa rozdziały 2
+    //         //ArrayCollection nie obsługuje array_key_exists
+    //         $key = Functions::AppendixForDuplicateKeys($chapter->getName(),$myChapters);
+    //         $myChapters[$key] = 1;
+    //         $this->myChapters[$key] = $chapter;
+    //     }
+    //     fclose($chapterFile);
+    //     if ($readLevel & BAZ_FILE_DIST) {
+    //         $bazFile = @fopen($dirName.'/'.$catBaseName.'.BAZ','r');
+    //         if (!$bazFile) {
+    //             $bazFile = Functions::FindFileByDirNameAndOpen($dirName,'BAZ');
+    //         }
+    //         $this->myCirculationsNU = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+    //         fclose($bazFile);
+
+    //         //skoro są załadowane nazwy do używania przez wszystkie, to należy dla każdego tableRow
+    //         //załadować odpowiednie circ_n_u
+    //         $this->AssignNamesAndUnitforCirculation();
+    //     }
+    // }
     public function ReadFromDir($dirName,$readLevel = false)
     {
         if (substr($dirName,-1,1) == '/') $dirName = rtrim($dirName,"/");
         $this->dirPath = $dirName;
         $catBaseName = baseName($dirName);
-        
+        if ($readLevel & BAZ_FILE_DIST) {
+            $bazFile = @fopen($dirName.'/'.$catBaseName.'.BAZ','r');
+            if (!$bazFile) {
+                $bazFile = Functions::FindFileByDirNameAndOpen($dirName,'BAZ');
+            }
+            $this->myCirculationsNU = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+            fclose($bazFile);
+
+            //skoro są załadowane nazwy do używania przez wszystkie, to należy dla każdego tableRow
+            //załadować odpowiednie circ_n_u
+            // $this->AssignNamesAndUnitforCirculation();
+        }
         $chapterFile = @fopen($dirName.'/'.$catBaseName.'.D^D','r');
         if (!$chapterFile) {
             $chapterFile = Functions::FindFileByDirNameAndOpen($dirName,'D^D');
@@ -130,14 +190,7 @@ class Catalog
             $this->myChapters[$key] = $chapter;
         }
         fclose($chapterFile);
-        if ($readLevel & BAZ_FILE_DIST) {
-            $bazFile = @fopen($dirName.'/'.$catBaseName.'.BAZ','r');
-            if (!$bazFile) {
-                $bazFile = Functions::FindFileByDirNameAndOpen($dirName,'BAZ');
-            }
-            $this->myCirculationsNU = CirFunctions::ReadCirculationsFromBazFile($bazFile);
-            fclose($bazFile);
-        }
+        
     }
     public static function LoadFrom($pathDir,$readLevel = false)
     {

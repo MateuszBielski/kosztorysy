@@ -97,6 +97,25 @@ class TableRow
 
         return $this;
     }
+    public function SelectNameAndUnitToCirculations($catalogCirculationN_U)
+    {
+       foreach($this->getLabors() as $R)
+       {
+           $ind = $R->getReadNameIndex();
+           $R->setNameAndUnit($catalogCirculationN_U['R'][$ind]);
+
+       }
+       foreach($this->getMaterials() as $M)
+       {
+           $ind = $M->getReadNameIndex();
+           $M->setNameAndUnit($catalogCirculationN_U['M'][$ind]);
+       }
+       foreach($this->getEquipments() as $S)
+       {
+            $ind = $S->getReadNameIndex();
+           $S->setNameAndUnit($catalogCirculationN_U['S'][$ind]);
+       }
+    }
     public function setValuesToCirculations(array $values)
     {
         $cR = count($this->getLabors());
@@ -117,6 +136,24 @@ class TableRow
         foreach($this->getLabors() as $R) $R->setValue($values[$numTrV++]);
         foreach($this->getMaterials() as $M) $M->setValue($values[$numTrV++]);
         foreach($this->getEquipments() as $S) $S->setValue($values[$numTrV++]);
+        $this->RemoveZeroValueCirculations();
+    }
+    public function RemoveZeroValueCirculations()
+    {
+        $zeroArray = function($circ){
+            foreach($circ as $key => $c){
+                if($c->getValue() == 0)unset($c);
+            }
+        };
+        $zeroArrayCollection = function($circ){
+            foreach($circ as $c){
+                if($c->getValue() == 0)$circ->removeElement($c);
+            }
+        };
+        $zero = $this->optimized ? $zeroArray : $zeroArrayCollection;
+        $zero($this->getLabors());
+        $zero($this->getMaterials());
+        $zero($this->getEquipments());
     }
     public function SetAfterSplitLineIntoDescriptionAndIndices($subLine)
     {
@@ -204,9 +241,10 @@ class TableRow
             for($i = 0 ; $i < $numCirc ; $i++){
                 $circClass = new $circClass;
                 $circClass->setTableRow($this);
-                $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
+                $indexCircN_U = $arrayToReadNameIndices[$posReadCircIndex];
+                $circClass->setReadNameIndex($indexCircN_U);
                 $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
-                //użycie zwykłej array znacznie przyspieszyłoby proces
+                //użycie zwykłej array znacznie przyspieszyłoby proces - tak myślałem dopóki nie sprawdziłem
                 $posReadCircIndex++;
 
             }
@@ -333,8 +371,10 @@ class TableRow
     public function getCirculations()
     {
         $res = array();
-        
-        return array_merge($this->getLabors(),$this->getMaterials(),$this->getEquipments());
+        foreach($this->getLabors() as $r)$res[] = $r;
+        foreach($this->getMaterials() as $m)$res[] = $m;
+        foreach($this->getEquipments() as $s)$res[] = $s;
+        return $res;
     }
     public function getSubIndices()
     {
@@ -343,7 +383,7 @@ class TableRow
     public function getTotalLaborValue()
     {
         $res = 0.0;
-        foreach($this->labors as $lab) $res += $lab->getValue();
+        foreach($this->getLabors() as $lab) $res += $lab->getValue();
         return $res;
     }
     public function setOptimized()

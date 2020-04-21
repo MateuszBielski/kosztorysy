@@ -17,11 +17,12 @@ class CirFunctions
         $n_R = intval(fgets($bazFile));
         $n_M = intval(fgets($bazFile));
         $n_S = intval(fgets($bazFile));
-        $read = function($n_,$className,$CircCat) use (&$bazFile,&$circulations){
+        $uniqueId = 1;
+        $read = function($n_,$className,$CircCat) use (&$bazFile,&$circulations,&$uniqueId){
             for ($i = 1; $i <= $n_; $i++) {
                 $circulation = new $className;
                 $circulation->setParametersFromBAZline(Functions::ReplaceCharsAccordingUtf8(fgets($bazFile)));
-                $circulation->setId($i);
+                $circulation->setId($uniqueId++);
                 $circulations[$CircCat][$i] = $circulation;
             }
 

@@ -61,9 +61,9 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->assertEquals(25+7,count($this->po->getChapters()));
         $this->assertEquals(679,count($this->po->getTables()));
         $this->assertEquals(4603,count($this->po->getTableRows()));
-        $this->assertEquals(11499,count($this->po->getLabors()));
-        $this->assertEquals(26318,count($this->po->getMaterials()));
-        $this->assertEquals(9430,count($this->po->getEquipments()));
+        $this->assertEquals(10707,count($this->po->getLabors()));
+        $this->assertEquals(19806,count($this->po->getMaterials()));
+        $this->assertEquals(7606,count($this->po->getEquipments()));
         
     }
     public function testPersistCatalogs()
@@ -160,6 +160,7 @@ class PersistanceOptimizerTest extends KernelTestCase
         $tr = $tabRows[2];
         $this->assertEquals(1.4187,$tr->getTotalLaborValue());
         $this->assertEquals(8.3,$tr->getMaterials()[0]->getValue());
+        $this->assertEquals('beton B-15',$tr->getMaterials()[2]->getName());
         // $this->po->setCirculationIndicesAfterUnique($uniqueCirculations);
     }
     protected function tearDown(): void

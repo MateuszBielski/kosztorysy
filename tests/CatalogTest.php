@@ -65,7 +65,19 @@ class CatalogTest extends TestCase
         $this->assertEquals('pianka izolacyjna',$circ['M'][4]->getName());
 
     }
-    
+    public function testAssignNamesAndUnitforCirculation()
+    {
+        $catFile = 'resources/Norma3/Kat/2W18/';
+        $catalog = new Catalog;
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS|BAZ_FILE_DIST);
+        // echo "\nXXX".count($catalog->getMyChapters());
+        // foreach($catalog->getMyChapters() as $cat){
+        //     echo "\n".$cat->getName();
+        // }
+        $tr = $catalog->getMyChapters()['Rozdział 08']->getTables()[8]->getTableRows()[2];
+        $this->assertEquals('rury wodociągowe ciśnieniowe z polietylenu',$tr->getMaterials()[0]->getName());
+        $this->assertEquals('samochód dostawczy 0.9 t',$tr->getEquipments()[0]->getName());
+    }
     //konkretna treść rozdziału po załadowaniu wszytskiego
     //get file names/paths from random cat directory
 }

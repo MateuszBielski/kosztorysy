@@ -176,9 +176,9 @@ class PersistanceOptimizer
         if (count($this->labors) || count($this->materials) || count($this->equipments))
         {
             $query .= '; insert into circulation values ';
-            foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getValue()},'labor'),";
-            foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getValue()},'material'),";
-            foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getValue()},'equipment'),";
+            foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'labor'),";
+            foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'material'),";
+            foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'equipment'),";
             $query = rtrim($query,",");
 
             $query .= '; insert into labor values ';

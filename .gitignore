@@ -8,6 +8,7 @@
 /vendor/
 /resources/Norma3/
 Mazovia*
+/src/Migrations/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

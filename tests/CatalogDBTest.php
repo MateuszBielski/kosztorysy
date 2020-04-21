@@ -70,7 +70,7 @@ class CatalogDBTest extends KernelTestCase
         $this->entityManager->getConnection()->beginTransaction();
         $catFile = 'resources/Norma3/Kat/0-39/';
         $catalog = new Catalog;
-        $catalog->ReadFromDir($catFile,DESCRIPaRMS);//TABLE
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS|BAZ_FILE_DIST);//TABLE
         $this->entityManager->persist($catalog);
         $this->entityManager->flush();
         $chapter = $this->repChapter->findOneBy(array('name'=>'Rozdział 01'));
@@ -98,7 +98,7 @@ class CatalogDBTest extends KernelTestCase
         $this->entityManager->getConnection()->beginTransaction();
         $catFile = 'resources/Norma3/Kat/0-15/';
         $catalog = new Catalog;
-        $catalog->ReadFromDir($catFile,DESCRIPaRMS);//TABLE
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS|BAZ_FILE_DIST);//TABLE
         $this->entityManager->persist($catalog);
         $this->entityManager->flush();
         // $tabRows = $this->repTableRow->findByDescriptionFragment('odgromników');
