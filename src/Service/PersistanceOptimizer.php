@@ -110,7 +110,6 @@ class PersistanceOptimizer
                         $this->tableRowsParentId[$tableRowId] = $tableId;
                         foreach($tr->getLabors() as $R)
                         {
-                            //dla każdego nakładu w tym miejscu dokonać podmiany indeksu dla nazwy nakładu, jesli jest odczytany
                             $this->labors[$circulationId] = $R;
                             $this->laborsParentId[$circulationId] = $tableRowId;
                             $circulationId++;
@@ -176,9 +175,9 @@ class PersistanceOptimizer
         if (count($this->labors) || count($this->materials) || count($this->equipments))
         {
             $query .= '; insert into circulation values ';
-            foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'labor'),";
-            foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'material'),";
-            foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'equipment'),";
+            foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'labor',{$circ->getGroupNumber()}),";
+            foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'material',{$circ->getGroupNumber()}),";
+            foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'equipment',{$circ->getGroupNumber()}),";
             $query = rtrim($query,",");
 
             $query .= '; insert into labor values ';

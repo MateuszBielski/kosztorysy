@@ -42,7 +42,7 @@ class PersistanceOptimizerTest extends KernelTestCase
     zebrać wszystkie katalogi do jednej tablicy
     podobnie rozdziały, tablice, i nakłady
     */
-    public function _testCountAggregatedCatlogs(Type $var = null)
+    public function _testCountAggregatedCatalogs(Type $var = null)
     {
         $commonDir = 'resources/Norma3/Kat/';
         $this->po->Aggregate(Catalog::LoadFrom($commonDir));
@@ -97,47 +97,40 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->conn->rollBack();
         $this->assertEquals(32,count($foundChapters));
     }
+    //jest długi i robi to samo, co następny
     public function _testPersistTableRows()
     {
         $catFile1 = 'resources/Norma3/Kat/2-02/';
         $catFile2 = 'resources/Norma3/Kat/2-01/'; 
-        // $catFile1 = 'resources/Norma3/Kat/0-44/';
-        // $catFile2 = 'resources/Norma3/Kat/0-41/';
 
         $catalog1 = new Catalog;
-        $catalog1->ReadFromDir($catFile1,DESCRIPaRMS);
+        $catalog1->ReadFromDir($catFile1,DESCRIPaRMS|BAZ_FILE_DIST);//
         $catalog2 = new Catalog;
-        $catalog2->ReadFromDir($catFile2,DESCRIPaRMS);
+        $catalog2->ReadFromDir($catFile2,DESCRIPaRMS|BAZ_FILE_DIST);//
+        $chapters = $catalog1->getMyChapters();
+        $uc = new BuildUniqueCirculations($this->entityManager);
+        $uc->AddCirculationsFromCatalogCollection(array($catalog1,$catalog2));
         $this->po->Aggregate(array($catalog1,$catalog2));
-        // echo "\nXXX".count($this->po->getTables());
-        // echo "\nXXX".count($this->po->getTableRows());
         $this->conn->beginTransaction();
+        $uc->persistUniqueCirculations();
         $this->po->persist();
         $tabRows = $this->repTableRow->findByDescriptionFragment('odgromników');
         $this->conn->rollBack();
-        // $this->conn->commit();
-        // $f = fopen('query.txt','w');
-        // foreach($tabRows as $tr)
-        // {
-            // echo "\n".$tabRows[2]->CompoundDescription();
-            // }
-            // fwrite($f,$this->po->getQuery());
-            // fclose($f);
         $this->assertEquals(4,count($tabRows));
         
         $material = $tabRows[2]->getMaterials()[0];
-        // echo "\nXX".count($tabRows[2]->getMaterials());
         $this->assertEquals(0.3908,$tabRows[2]->getTotalLaborValue());
         $this->assertEquals(0.097,$material->getValue());
     }
     public function testRetrieveCirculationNamesFromDB(Type $var = null)
     {
         $catFileNames = array('resources/Norma3/Kat/KNZ-14/',
-                                'resources/Norma3/Kat/S-215/');
+                                'resources/Norma3/Kat/S-215/',
+                                'resources/Norma3/Kat/2-02/');
         $catalogs = array ();
 
         // $uniqueCirculations = null;
-        for($i = 0 ; $i < 2 ; $i++)
+        for($i = 0 ; $i < 3 ; $i++)
         {
             $catalog = new Catalog;
             $catalog->ReadFromDir($catFileNames[$i],DESCRIPaRMS|BAZ_FILE_DIST);
@@ -152,16 +145,27 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->conn->beginTransaction();
         $uc->persistUniqueCirculations();
         $this->po->persist();
-        $tabRows = $this->repTableRow->findByDescriptionFragment('gęstożebrowy');
+        $tr = $this->repTableRow->findByDescriptionFragment('gęstożebrowy')[2];
+        $trOdgrom = $this->repTableRow->findByDescriptionFragment('odgromników')[2];
         $this->conn->rollBack();
         // foreach($tabRows as $tr){
-        //     echo "\nXX {$tr->getTotalLaborValue()} {$tr->CompoundDescription()}";
+        //     echo "\n{$tr->CompoundDescription()} ".count($tr->getMaterials());
+        //     foreach($tr->getCirculations() as $cir)
+        //     {
+        //         echo "\n   {$cir->getNameAndUnit()->getName()} {$cir->getValue()}";
+        //     }
         // }
-        $tr = $tabRows[2];
         $this->assertEquals(1.4187,$tr->getTotalLaborValue());
         $this->assertEquals(8.3,$tr->getMaterials()[0]->getValue());
         $this->assertEquals('beton B-15',$tr->getMaterials()[2]->getName());
+        $this->assertEquals(0.3908,$trOdgrom->getTotalLaborValue());
+        $this->assertEquals(0.097,$trOdgrom->getMaterials()[0]->getValue());
         // $this->po->setCirculationIndicesAfterUnique($uniqueCirculations);
+    }
+
+    public function testReadGroupNumber()
+    {
+        # code...
     }
     protected function tearDown(): void
     {

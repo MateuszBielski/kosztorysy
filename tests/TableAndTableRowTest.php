@@ -161,5 +161,15 @@ class TableAndTableRowTest extends TestCase
         $this->assertEquals('belki drewniane',$tableRow->getMaterials()[0]->getName());
         $this->assertEquals('ciężarówka',$tableRow->getEquipments()[0]->getName());
     }
+    public function testCirculationReadGroupOptionsNumber()
+    {
+        $tableRow = new TableRow;
+        $subIndices = 'm3$7$6$11$1028$1029$1030$13$2004$2004$2004$242$45$4$80$243$1$3024$3024$3024$4019$4019$4019$25$42$5026$5026$5026$';
+        $tableRow->createCompoundRMSindices($subIndices,'');
+        $labors = $tableRow->getLabors();
+        $equipments = $tableRow->getEquipments();
+        $this->assertEquals(2,$labors[5]->getGroupNumber());
+        $this->assertEquals(4,$equipments[4]->getGroupNumber());
+    }
 
 }

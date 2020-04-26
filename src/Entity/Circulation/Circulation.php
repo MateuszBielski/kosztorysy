@@ -28,7 +28,12 @@ class Circulation
      * @ORM\ManyToOne(targetEntity="App\Entity\Circulation\CirculationNameAndUnit",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $nameAndUnit;
+    protected $nameAndUnit;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $groupNumber = 0;
 
     
     public function getId(): ?int
@@ -55,7 +60,11 @@ class Circulation
     public function setReadNameIndex($ind)
     {
         $ind = intval($ind);
-        if($ind > 999)$ind = $ind%1000;
+        if($ind > 999){
+            $indRest = $ind%1000;
+            $this->groupNumber = ($ind-$indRest)/1000;
+            $ind = $indRest;
+        }
         // if (gettype($ind) != 'integer'){
         //     echo "\n".ord($ind);
         //     throw new \Exception('bad int value');
@@ -75,6 +84,18 @@ class Circulation
     public function setNameAndUnit(?CirculationNameAndUnit $nameAndUnit): self
     {
         $this->nameAndUnit = $nameAndUnit;
+
+        return $this;
+    }
+
+    public function getGroupNumber(): ?int
+    {
+        return $this->groupNumber;
+    }
+
+    public function setGroupNumber(?int $groupNumber): self
+    {
+        $this->groupNumber = $groupNumber;
 
         return $this;
     }
