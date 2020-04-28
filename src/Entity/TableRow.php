@@ -62,6 +62,11 @@ class TableRow
     private $equipmentsArray;
     private $optimized = false;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $myNumber;
+
     public function __construct()
     {
         $this->labors = new ArrayCollection();
@@ -99,22 +104,29 @@ class TableRow
     }
     public function SelectNameAndUnitToCirculations($catalogCirculationN_U)
     {
-       foreach($this->getLabors() as $R)
-       {
-           $ind = $R->getReadNameIndex();
-           $R->setNameAndUnit($catalogCirculationN_U['R'][$ind]);
-
-       }
-       foreach($this->getMaterials() as $M)
-       {
-           $ind = $M->getReadNameIndex();
-           $M->setNameAndUnit($catalogCirculationN_U['M'][$ind]);
-       }
-       foreach($this->getEquipments() as $S)
-       {
-            $ind = $S->getReadNameIndex();
-           $S->setNameAndUnit($catalogCirculationN_U['S'][$ind]);
-       }
+        $selectFor = function($circArray,$circLetter) use (&$catalogCirculationN_U)
+        {
+            foreach($circArray as $circ)
+            {
+                $ind = $circ->getReadNameIndex();
+                if(array_key_exists($ind,$catalogCirculationN_U[$circLetter]))
+                $circ->setNameAndUnit($catalogCirculationN_U[$circLetter][$ind]);
+                else
+                {
+                    //problem pojawiał się rzadko w robociźnie dlatego przyjmiemy pierwszą grupę robotników istniejącą:
+                    $circ->setNameAndUnit(reset($catalogCirculationN_U[$circLetter]));
+                    
+                    // $table = $this->myTable;
+                    // $chapter = $table->getMyChapter();
+                    // $catalog = $chapter->getMyCatalog();
+                    // echo "\n"."Problem z indeksami {$circLetter} w {$catalog->getName()} {$chapter->getName()} {$table->getMyNumber()} {$this->myNumber}";
+                }
+     
+            }
+        };
+        $selectFor($this->getLabors(),'R');
+        $selectFor($this->getMaterials(),'M');
+        $selectFor($this->getEquipments(),'S');
     }
     public function setValuesToCirculations(array $values)
     {
@@ -168,6 +180,7 @@ class TableRow
         $res = "";
         for($i = 2; $i < 6; $i++) $res .= str_replace('^',$mainArray[$i],$subArray[$i]);
         $this->compoundDescription = trim($res);
+        $this->myNumber = $this->ExtractMyNumber(end($subArray));
     }
     public function createCompoundRMSindices($mainIndices,$subIndices)
     {
@@ -389,5 +402,21 @@ class TableRow
     public function setOptimized()
     {
         $this->optimized = true;
+    }
+
+    public function getMyNumber(): ?int
+    {
+        return $this->myNumber;
+    }
+
+    public function setMyNumber(?int $myNumber): self
+    {
+        $this->myNumber = $myNumber;
+
+        return $this;
+    }
+    public function ExtractMyNumber(string $text)
+    {
+        return intval(trim($text," -"));
     }
 }

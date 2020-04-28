@@ -171,5 +171,35 @@ class TableAndTableRowTest extends TestCase
         $this->assertEquals(2,$labors[5]->getGroupNumber());
         $this->assertEquals(4,$equipments[4]->getGroupNumber());
     }
-
+    public function testTableExtractMyNumber()
+    {
+        $table = new ClTable;
+        $textLine = "****   TABLICA  09    ****";
+        $this->assertEquals(9,$table->ExtractMyNumber($textLine));
+    }
+    public function testTableOwnNumber()
+    {
+        $chapter = new Chapter;
+        $opFile = fopen('resources/Norma3/Kat/2-02/2-02R2.OP','r');
+        $chapter->LoadTablesWithDescriptionFromOP($opFile,TABLE_ROW);
+        fclose($opFile);
+        $table = $chapter->getTables()[48];
+        $this->assertEquals(87,$table->getMyNumber());
+    }
+    public function testTableRowExtractMyNumber()
+    {
+        $text = " - 06 ";
+        $tableRow = new TableRow;
+        $this->assertEquals(6,$tableRow->ExtractMyNumber($text));
+    }
+    public function testTableRowOwnNumber()
+    {
+        $chapter = new Chapter;
+        $opFile = fopen('resources/Norma3/Kat/2-02/2-02R2.OP','r');
+        $chapter->LoadTablesWithDescriptionFromOP($opFile,DESCRIPaRMS);
+        fclose($opFile);
+        $table = $chapter->getTables()[12];
+        $tableRow = $table->getTableRows()[11];
+        $this->assertEquals(12,$tableRow->getMyNumber());
+    }
 }

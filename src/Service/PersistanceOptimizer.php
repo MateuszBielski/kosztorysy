@@ -135,7 +135,7 @@ class PersistanceOptimizer
             $catalogId++;
         }
     }
-    public function persist()
+    private function GenerateSqlQuery(): string
     {
         $query = 'insert into catalog values ';
         foreach($this->catalogs as $id => $cat)
@@ -158,17 +158,17 @@ class PersistanceOptimizer
             $query .= '; insert into cl_table values ';
             foreach( $this->tables as $id => $tab)
             {
-                $query .='('.$id.','.$this->tablesParentId[$id].',\''.$tab->getMainDescription().'\'),';//."\n"
+                $query .='('.$id.','.$this->tablesParentId[$id].',\''.$tab->getMainDescription().'\','.$tab->getMyNumber().'),';//."\n"
             }
             $query = rtrim($query,",");
         }
 
         if (count($this->tableRows) > 0) 
         {
-            $query .= '; insert into table_row (id,my_table_id,sub_description) values ';
+            $query .= '; insert into table_row (id,my_table_id,sub_description,my_number) values ';
             foreach( $this->tableRows as $id => $tr)
             {
-                $query .='('.$id.','.$this->tableRowsParentId[$id].',\''.$tr->getSubDescription().'\'),';//."\n"
+                $query .='('.$id.','.$this->tableRowsParentId[$id].',\''.$tr->getSubDescription().'\','.$tr->getMyNumber().'),';//."\n"
             }
             $query = rtrim($query,",");
         }
@@ -192,8 +192,22 @@ class PersistanceOptimizer
             foreach ($this->equipments as $id => $equ) $query .="($id,{$this->equipmentsParentId[$id]}),";
             $query = rtrim($query,",");
         }
+        return $query;
+    }
+    public function persist()
+    {
+        
         // echo "\nDługość zapytania: ".strlen($query);
         // $this->query = $query;
-        $this->conn->executeQuery($query);
+        $this->conn->executeQuery($this->GenerateSqlQuery());
     }
+
+    public function GenerateSqlFile($baseName)
+    {
+        $fileName = $baseName.".sql";
+        $fileToSave = fopen($fileName,'w');
+        fwrite($fileToSave,$this->GenerateSqlQuery());
+        fclose($fileToSave);
+    }
+   
 }

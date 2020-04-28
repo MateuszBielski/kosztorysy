@@ -53,7 +53,7 @@ class CatalogTest extends TestCase
     public function testLoadCatalogsFromCommonDirWithoutRead()
     {
         $commonDir = 'resources/Norma3/Kat/';
-        $catalogs = Catalog::LoadFrom($commonDir);
+        $catalogs = Catalog::LoadFrom($commonDir);//DESCRIPaRMS|BAZ_FILE_DIST
         $this->assertEquals(258,count($catalogs));
     }
     public function testLoadBazFilesDuringReadCatDir()

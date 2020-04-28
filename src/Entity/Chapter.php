@@ -39,7 +39,7 @@ class Chapter
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ClTable", mappedBy="myChapter", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ClTable", mappedBy="myChapter", orphanRemoval=true, cascade={"persist"},fetch="EAGER")
      */
     private $tables;
 
@@ -233,13 +233,14 @@ class Chapter
             $mainIndices = $table->getMainIndices();
             $numRow = 0;
             //linia tytułowa tablicy
-            fgets($detailFile);
+            $table->setMyNumber($table->ExtractMyNumber(fgets($detailFile)));
             while($numRow < $tablesNumRow[$numTable]){
                 $subLine = Functions::ReplaceCharsAccordingUtf8(fgets($detailFile));
                 $tableRow = new TableRow;
                 $tableRow->setMyTable($table);
                 if(DESCRIPaRMS_DIST & $readLevel){
                     $tableRow->SetAfterSplitLineIntoDescriptionAndIndices($subLine);
+                    //tu również numer wiersza się ustala
                     $tableRow->createCompoundDescription($mainDescription,$tableRow->getSubDescription());
                     $createIndices =  (OPTIMIZE_TR & $readLevel) ? "createCompoundRMSindices_optimized" : "createCompoundRMSindices";
                     $tableRow->$createIndices($mainIndices,$tableRow->getSubIndices());

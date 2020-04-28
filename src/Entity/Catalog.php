@@ -27,7 +27,7 @@ class Catalog
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Chapter", mappedBy="myCatalog", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Chapter", mappedBy="myCatalog", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
      */
     private $myChapters;
 
@@ -165,12 +165,12 @@ class Catalog
             if (!$bazFile) {
                 $bazFile = Functions::FindFileByDirNameAndOpen($dirName,'BAZ');
             }
-            $this->myCirculationsNU = CirFunctions::ReadCirculationsFromBazFile($bazFile);
-            fclose($bazFile);
-
-            //skoro są załadowane nazwy do używania przez wszystkie, to należy dla każdego tableRow
-            //załadować odpowiednie circ_n_u
-            // $this->AssignNamesAndUnitforCirculation();
+            if (!$bazFile){
+                echo "\n"."Brak pliku BAZ w katalogu ".$dirName;
+            }else{
+                $this->myCirculationsNU = CirFunctions::ReadCirculationsFromBazFile($bazFile);
+                fclose($bazFile);
+            }
         }
         $chapterFile = @fopen($dirName.'/'.$catBaseName.'.D^D','r');
         if (!$chapterFile) {

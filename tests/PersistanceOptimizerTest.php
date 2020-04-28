@@ -136,7 +136,10 @@ class PersistanceOptimizerTest extends KernelTestCase
             $catalog->ReadFromDir($catFileNames[$i],DESCRIPaRMS|BAZ_FILE_DIST);
             $catalogs[] = $catalog;
         }
-
+            // foreach($catalogs[2]->getMyChapters() as $k => $chap)
+            // {
+            //     echo "\n".$k." ".$chap->getName();
+            // }
         $this->po->Aggregate($catalogs);
 
         $uc = new BuildUniqueCirculations($this->entityManager);
@@ -147,26 +150,22 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->po->persist();
         $tr = $this->repTableRow->findByDescriptionFragment('gęstożebrowy')[2];
         $trOdgrom = $this->repTableRow->findByDescriptionFragment('odgromników')[2];
+        $cat2_02 = $this->repCatalog->findOneBy(array('name' => 'KNR   2-02'));
         $this->conn->rollBack();
-        // foreach($tabRows as $tr){
-        //     echo "\n{$tr->CompoundDescription()} ".count($tr->getMaterials());
-        //     foreach($tr->getCirculations() as $cir)
-        //     {
-        //         echo "\n   {$cir->getNameAndUnit()->getName()} {$cir->getValue()}";
-        //     }
-        // }
+        
         $this->assertEquals(1.4187,$tr->getTotalLaborValue());
         $this->assertEquals(8.3,$tr->getMaterials()[0]->getValue());
         $this->assertEquals('beton B-15',$tr->getMaterials()[2]->getName());
         $this->assertEquals(0.3908,$trOdgrom->getTotalLaborValue());
         $this->assertEquals(0.097,$trOdgrom->getMaterials()[0]->getValue());
-        // $this->po->setCirculationIndicesAfterUnique($uniqueCirculations);
+        //testGroupNumber
+        $tables = $cat2_02->getMyChapters()[1]->getTables();
+        $trCheckGroupNumber = $tables[36]->getTableRows()[0];
+        $equipToCheck = $trCheckGroupNumber->getEquipments()[9];
+        
+        $this->assertEquals(6,$equipToCheck->getGroupNumber());
     }
-
-    public function testReadGroupNumber()
-    {
-        # code...
-    }
+    
     protected function tearDown(): void
     {
         parent::tearDown();

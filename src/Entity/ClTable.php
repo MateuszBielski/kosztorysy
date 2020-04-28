@@ -26,7 +26,7 @@ class ClTable
     private $myChapter;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true, cascade={"persist"},fetch="EAGER")
      */
     private $tableRows;
 
@@ -36,6 +36,11 @@ class ClTable
     private $mainDescription;
 
     private $mainIndices;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $myNumber;
 
     public function __construct()
     {
@@ -117,5 +122,21 @@ class ClTable
         $slicePos = Functions::FindSlicePosition($line,'$',7);
         $this->mainDescription = trim(substr($line,0,$slicePos - 1));
         $this->mainIndices = substr($line,$slicePos,strlen($line)-1-$slicePos);
+    }
+
+    public function getMyNumber(): ?int
+    {
+        return $this->myNumber;
+    }
+
+    public function setMyNumber(?int $myNumber): self
+    {
+        $this->myNumber = $myNumber;
+
+        return $this;
+    }
+    public function ExtractMyNumber(string $textLine)
+    {
+        return intval(substr(trim($textLine," *"),9));
     }
 }
