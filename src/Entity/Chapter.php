@@ -20,7 +20,7 @@ class Chapter
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=80)
      */
     private $name;
 
@@ -163,9 +163,9 @@ class Chapter
         $fields = explode('$',$line );
         $start = strpos($fields[1],'(') + 1;
         $stop = strpos($fields[1],')');
-        $this->name = trim(substr($fields[1],$start,$stop-$start));
+        $this->name = Functions::RemoveLongSpaces(trim(substr($fields[1],$start,$stop-$start)));
         $start = strpos($fields[1],'*') + 1;
-        $this->description = trim(substr($fields[1],$start));
+        $this->description = Functions::RemoveLongSpaces(trim(substr($fields[1],$start)));
         // $pathToFileOP = $this->myCatalog->dirPath;
         if($this->myCatalog)
         {

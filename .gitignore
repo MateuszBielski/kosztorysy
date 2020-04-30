@@ -9,7 +9,7 @@
 /resources/Norma3/
 Mazovia*
 /src/Migrations/
-load.sql
+*.sql
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###

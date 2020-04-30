@@ -93,9 +93,10 @@ class Functions
         chr(0xa6) => chr(0xC5).chr(0xBA),//ź	
         chr(0xa7) => chr(0xC5).chr(0xBC),//ż
         chr(0x27) => chr(0x5f)// apostrof na dolną spację
+        //chr(0xd1) => ''//usunięcie dziwnego znaku który odrzuca baza danych.
         // chr(0x20) => chr(0x2b) //spacja na +
         );
-        return strtr($str_bytes,$zmiana);
+        return iconv("UTF-8","UTF-8//IGNORE",strtr($str_bytes,$zmiana));
     }
     public static function CopyOneFileWithTranslate($srcFile,$destPath,$translateFunc){
         @mkdir($destPath);
@@ -224,5 +225,9 @@ class Functions
             // $this->subDescription .= $c;
         }
         return $charNum;
+    }
+    public static function RemoveLongSpaces(string $sSpaces)
+    {
+        return preg_replace('/[ ]{2,}/',' ',$sSpaces);
     }
 }

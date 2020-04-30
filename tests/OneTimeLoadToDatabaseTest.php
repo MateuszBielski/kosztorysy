@@ -59,7 +59,7 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $uc->AddCirculationsFromCatalogCollection($catalogs);
         
         // $this->conn->beginTransaction();
-        $uc->persistUniqueCirculations();
+        // $uc->persistUniqueCirculations();
 
         $this->po->Aggregate($catalogs);
         $this->po->GenerateSqlFile('loadAll');
@@ -67,4 +67,55 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $result = $fileSql != false;
         $this->assertTrue($result);
     }
+    /*
+    łądowanie na dell:30 kwi 2020
+    Query OK, 258 rows affected (0,55 sec)
+    Records: 258  Duplicates: 0  Warnings: 0
+
+    Query OK, 2151 rows affected (1,28 sec)
+    Records: 2151  Duplicates: 0  Warnings: 0
+
+    Query OK, 23840 rows affected (1,52 sec)
+    Records: 23840  Duplicates: 0  Warnings: 0
+
+    Query OK, 172057 rows affected (8,99 sec)
+    Records: 172057  Duplicates: 0  Warnings: 0
+
+    Query OK, 1020807 rows affected (3 min 20,44 sec)
+    Records: 1020807  Duplicates: 0  Warnings: 0
+
+    Query OK, 268810 rows affected (19,87 sec)
+    Records: 268810  Duplicates: 0  Warnings: 0
+
+    Query OK, 507788 rows affected (15,73 sec)
+    Records: 507788  Duplicates: 0  Warnings: 0
+
+    Query OK, 244209 rows affected (9,74 sec)
+    Records: 244209  Duplicates: 0  Warnings: 0
+
+    lub przy wyłączonej przeglądarce i vsc:
+    Query OK, 258 rows affected (0,11 sec)
+    Records: 258  Duplicates: 0  Warnings: 0
+
+    Query OK, 2151 rows affected (0,16 sec)
+    Records: 2151  Duplicates: 0  Warnings: 0
+
+    Query OK, 23840 rows affected (1,37 sec)
+    Records: 23840  Duplicates: 0  Warnings: 0
+
+    Query OK, 172057 rows affected (6,90 sec)
+    Records: 172057  Duplicates: 0  Warnings: 0
+
+    Query OK, 1020807 rows affected (1 min 13,58 sec)
+    Records: 1020807  Duplicates: 0  Warnings: 0
+
+    Query OK, 268810 rows affected (11,79 sec)
+    Records: 268810  Duplicates: 0  Warnings: 0
+
+    Query OK, 507788 rows affected (15,61 sec)
+    Records: 507788  Duplicates: 0  Warnings: 0
+
+    Query OK, 244209 rows affected (6,19 sec)
+    Records: 244209  Duplicates: 0  Warnings: 0
+    */
 }

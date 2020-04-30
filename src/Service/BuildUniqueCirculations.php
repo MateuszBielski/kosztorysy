@@ -19,6 +19,7 @@ class BuildUniqueCirculations
 
     public function AddOriginalAndChangeIds($circulations)
     {
+        if(!is_array($circulations))return;
         $CircCat = array('R','M','S');
         foreach ($CircCat as $cat) {
             if (!array_key_exists($cat,$circulations)) continue;

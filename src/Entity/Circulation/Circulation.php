@@ -21,7 +21,7 @@ class Circulation
     /**
      * @ORM\Column(type="float")
      */
-    protected $value;
+    protected $value = 0.0;
     protected $readNameIndex;
 
     /**

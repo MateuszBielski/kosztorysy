@@ -22,7 +22,7 @@ class Catalog
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=36)
      */
     private $name;
 

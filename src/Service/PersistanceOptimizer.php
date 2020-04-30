@@ -135,7 +135,7 @@ class PersistanceOptimizer
             $catalogId++;
         }
     }
-    private function GenerateSqlQuery(): string
+    private function GenerateSqlQueryLongLines(): string
     {
         $query = 'insert into catalog values ';
         foreach($this->catalogs as $id => $cat)
@@ -193,20 +193,78 @@ class PersistanceOptimizer
             $query = rtrim($query,",");
         }
         return $query;
+    }private function GenerateSqlQuery(): string
+    {
+        $query = 'insert into catalog values ';
+        foreach($this->catalogs as $id => $cat)
+        {
+            $query .='('.$id.',\''.$cat->getName().'\'),';
+        }
+        $query = rtrim($query,",");
+        if (count($this->chapters) > 0)
+        {
+            $query .= '; insert into chapter values ';
+            foreach($this->chapters as $id => $chap)
+            {
+                $query .='('.$id.','.$this->chaptersParentId[$id].',\''.$chap->getName().'\',\''.$chap->getDescription().'\'),';//."\n"
+            }
+            $query = rtrim($query,",");
+        } 
+
+        if (count($this->tables) > 0)
+        {
+            // $query .= '; insert into cl_table values ';
+            foreach( $this->tables as $id => $tab)
+            {
+                $query .='; insert into cl_table values ('.$id.','.$this->tablesParentId[$id].',\''.$tab->getMainDescription().'\','.$tab->getMyNumber().')';//."\n"
+            }
+            $query = rtrim($query,",");
+        }
+
+        if (count($this->tableRows) > 0) 
+        {
+            // $query .= '; insert into table_row (id,my_table_id,sub_description,my_number) values ';
+            foreach( $this->tableRows as $id => $tr)
+            {
+                $query .='; insert into table_row (id,my_table_id,sub_description,my_number) values ('.$id.','.$this->tableRowsParentId[$id].',\''.$tr->getSubDescription().'\','.$tr->getMyNumber().')';//."\n"
+            }
+            $query = rtrim($query,",");
+        }
+        if (count($this->labors) || count($this->materials) || count($this->equipments))
+        {
+            $query .= '; insert into circulation values ';
+            foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'labor',{$circ->getGroupNumber()}),";
+            foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'material',{$circ->getGroupNumber()}),";
+            foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'equipment',{$circ->getGroupNumber()}),";
+            $query = rtrim($query,",");
+
+            $query .= '; insert into labor values ';
+            foreach ($this->labors as $id => $lab) $query .="($id,{$this->laborsParentId[$id]}),";
+            $query = rtrim($query,",");
+
+            $query .= '; insert into material values ';
+            foreach ($this->materials as $id => $mat) $query .="($id,{$this->materialsParentId[$id]}),";
+            $query = rtrim($query,",");
+
+            $query .= '; insert into equipment values ';
+            foreach ($this->equipments as $id => $equ) $query .="($id,{$this->equipmentsParentId[$id]}),";
+            $query = rtrim($query,",");
+        }
+        return $query;
     }
     public function persist()
     {
         
         // echo "\nDługość zapytania: ".strlen($query);
         // $this->query = $query;
-        $this->conn->executeQuery($this->GenerateSqlQuery());
+        $this->conn->executeQuery($this->GenerateSqlQueryLongLines());
     }
 
     public function GenerateSqlFile($baseName)
     {
         $fileName = $baseName.".sql";
         $fileToSave = fopen($fileName,'w');
-        fwrite($fileToSave,$this->GenerateSqlQuery());
+        fwrite($fileToSave,$this->GenerateSqlQueryLongLines());
         fclose($fileToSave);
     }
    
