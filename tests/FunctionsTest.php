@@ -25,4 +25,10 @@ class FunctionsTest extends TestCase
         $converted = iconv("UTF-8","UTF-8//IGNORE",$rawUTF8);
         $this->assertEquals('łopat$a c_ięgno żarówka',$converted);
     }
+    public function testShortenText()
+    {
+        $text = 'Roboty remontowe i modernizacyjne budowlane elektrowni,elektrociepłowni i ciepłowni zawodowych [Energobudowa 1987, biuletyny do 9 1996]';
+        $expected  = 'Roboty remontowe i modern...';
+        $this->assertEquals($expected,Functions::ShortenText($text,25));
+    }
 }

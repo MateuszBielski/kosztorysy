@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ClTable{% endblock %}
+
+{% block body %}
+    <h3>{{ cl_table.getFullName() }}</h3>
+    Tablica {{ cl_table.myNumber }} {{ cl_table.getDescription() }}
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ cl_table.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        {% for tr in cl_table.tableRows %}
+            <tr>
+                <td>
+                    <a href="{{ path('table_row_show', {'id': tr.id}) }}">{{ tr.myNumber }} {{ tr.CompoundDescription }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {# <a href="{{ path('cl_table_index') }}">back to list</a> #}
+
+    <a href="{{ path('cl_table_edit', {'id': cl_table.id}) }}">edit</a>
+
+    {{ include('cl_table/_delete_form.html.twig') }}
+{% endblock %}

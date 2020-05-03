@@ -202,4 +202,39 @@ class TableAndTableRowTest extends TestCase
         $tableRow = $table->getTableRows()[11];
         $this->assertEquals(12,$tableRow->getMyNumber());
     }
+    public function testTableGetFullName()
+    {
+        $catalog = new Catalog;
+        $catalog->setName('KNR 2-02');
+        $chapter = new Chapter;
+        $chapter->setMyCatalog($catalog);
+        $chapter->setName('Rozdział 05');
+        $table = new ClTable;
+        $table->setMyChapter($chapter);
+        $table->setMyNumber(3);
+        $this->assertEquals('KNR 2-02 0503',$table->getFullName());
+    }
+    public function testTableRowGetFullName()
+    {
+        $catalog = new Catalog;
+        $catalog->setName('KNR 2-02');
+        $chapter = new Chapter;
+        $chapter->setMyCatalog($catalog);
+        $chapter->setName('Rozdział 05');
+        $table = new ClTable;
+        $table->setMyChapter($chapter);
+        $table->setMyNumber(3);
+        $tableRow = new TableRow;
+        $tableRow->setMyTable($table);
+        $tableRow->setMyNumber(2);
+        $this->assertEquals('KNR 2-02 0503-02',$tableRow->getFullName());
+    }
+    public function testTableGetDescription()
+    {
+        $textLine = '5$0.2$Krycie dachów papą termozgrzewalną dkd na podłożu$ betonowym$,$ drewnianym$27 $m2$2$11$3$2$1$2$3$4$5$6$7$8$9$10$11$1$2$3$4$';
+        $table = new ClTable;
+        $table->SetAfterSplitLineIntoDescriptionAndIndices($textLine);
+        $this->assertEquals('Krycie dachów papą termozgrzewalną dkd na podłożu betonowym, drewnianym',$table->getDescription());
+        //sprawdzić opis dla tablicy KNR 5-16 0204
+    }
 }

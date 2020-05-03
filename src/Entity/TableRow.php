@@ -419,4 +419,8 @@ class TableRow
     {
         return intval(trim($text," -"));
     }
+    public function getFullName()
+    {
+        return $this->myTable->getFullName().'-'.sprintf("%02d",$this->myNumber);
+    }
 }

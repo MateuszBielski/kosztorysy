@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit ClTable{% endblock %}
+
+{% block body %}
+    <h3>Edit ClTable</h3>
+
+    {{ include('cl_table/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('cl_table_index') }}">back to list</a>
+
+    {{ include('cl_table/_delete_form.html.twig') }}
+{% endblock %}

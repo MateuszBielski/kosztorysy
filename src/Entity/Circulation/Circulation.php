@@ -75,6 +75,10 @@ class Circulation
     {
         return $this->nameAndUnit->getName(); 
     }
+    public function getUnit()
+    {
+        return $this->nameAndUnit->getUnit();
+    }
 
     public function getNameAndUnit(): ?CirculationNameAndUnit
     {

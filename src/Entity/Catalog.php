@@ -27,12 +27,17 @@ class Catalog
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Chapter", mappedBy="myCatalog", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\Chapter", mappedBy="myCatalog", orphanRemoval=true, cascade={"persist"}, fetch="LAZY")
      */
     private $myChapters;
 
     private $myCirculationsNU;
     public $dirPath;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $description;
 
     public function __construct()
     {
@@ -192,21 +197,39 @@ class Catalog
         fclose($chapterFile);
         
     }
+    // public function ReadAndSetDescriptions(Type $var = null)
+    // {
+    //     # code...
+    // }
     public static function LoadFrom($pathDir,$readLevel = false)
     {
         if (! is_dir($pathDir)) return;
         if (substr($pathDir,-1,1) == '/') $pathDir = rtrim($pathDir,"/");
+        $descriptions = array();
+        $descFile = fopen($pathDir.'/d^d','r');
+        
+        while($d_dLine = fgets($descFile))
+        {
+            $arr = explode('$',$d_dLine);
+            $descriptions[strtoupper(reset($arr))] = trim(Functions::ReplaceCharsAccordingUtf8(end($arr)));
+        }
         $dir = opendir($pathDir);
         $catalogs = array();
         $key = 0;
         while($catDir = readdir($dir))
         {
             if($catDir == '.' || $catDir == '..')continue;
-            $catDir = $pathDir.'/'.$catDir;
-            if(!is_dir($catDir) ) continue;
+            $catDirPath = $pathDir.'/'.$catDir;
+            if(!is_dir($catDirPath) ) continue;
             $catalog = new Catalog;
             if(CATALOG_DIST & $readLevel){
-                $catalog->ReadFromDir($catDir,$readLevel);
+                $catalog->ReadFromDir($catDirPath,$readLevel);
+                $catDir = strtoupper($catDir);
+                if(array_key_exists($catDir,$descriptions))
+                    $catalog->setDescription($descriptions[$catDir]);
+                else{
+                    echo "\nnie ma folderu: $catDir";
+                }
                 $key = Functions::AppendixForDuplicateKeys($catalog->getName(),$catalogs);
             } 
             // $catalogs[] = $catalog;
@@ -214,7 +237,29 @@ class Catalog
             if (!$readLevel) $key++; 
         }
         closedir($dir);
+
         return $catalogs;
+    }
+    public static function ExtractDescription($textLine)
+    {
+        $arr = explode('$',$textLine);
+        return trim(end($arr));
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+    public function ShortenDescription($cutAfter)
+    {
+        return Functions::ShortenText($this->description,$cutAfter);
     }
 
 }

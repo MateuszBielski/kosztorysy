@@ -78,6 +78,18 @@ class CatalogTest extends TestCase
         $this->assertEquals('rury wodociągowe ciśnieniowe z polietylenu',$tr->getMaterials()[0]->getName());
         $this->assertEquals('samochód dostawczy 0.9 t',$tr->getEquipments()[0]->getName());
     }
-    //konkretna treść rozdziału po załadowaniu wszytskiego
-    //get file names/paths from random cat directory
+    public function testCatalogDescription()
+    {
+        $d_dLine = 'Z-NK2$TZKNC N-K/II $ Malarstwo sztalugowe [(N.Z.) PPKZ 1982]';
+        $this->assertEquals('Malarstwo sztalugowe [(N.Z.) PPKZ 1982]',Catalog::ExtractDescription($d_dLine));
+
+    }
+    public function testLoadDescriptions(Type $var = null)
+    {
+        $commonDir = 'resources/Norma3/Kat/';
+        $catalogs = Catalog::LoadFrom($commonDir,CATALOG);//DESCRIPaRMS|BAZ_FILE_DIST
+        $res = $catalogs['KNR  13-24']->getDescription();
+        $expect = 'Roboty rem.i modern.maszyn i urządzeń,rurociągów technolog. oraz konstr.metal.elektrowni,elektrociep.i ciepłowni zaw. [Energobudowa wyd.II 1989, biuletyny do 9 1996]';
+        $this->assertEquals($expect,$res);
+    }
 }

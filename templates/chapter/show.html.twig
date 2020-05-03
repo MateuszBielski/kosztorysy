@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chapter{% endblock %}
+
+{% block body %}
+    <h3>{{ chapter.getFullName() }}</h3>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ chapter.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ chapter.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ chapter.description }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+    <table>
+        {% for cl_tab in chapter.tables %}
+            <tr>
+                <td>
+                    <a href="{{ path('cl_table_show', {'id': cl_tab.id}) }}">tablica {{cl_tab.myNumber }}</a>
+                    {{ cl_tab.getDescription() }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {# <a href="{{ path('chapter_index') }}">back to list</a> #}
+
+    <a href="{{ path('chapter_edit', {'id': chapter.id}) }}">edit</a>
+
+    {{ include('chapter/_delete_form.html.twig') }}
+{% endblock %}

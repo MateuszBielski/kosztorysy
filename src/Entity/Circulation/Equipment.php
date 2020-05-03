@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Equipment extends Circulation
 {
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\TableRow", inversedBy="equipment")
+     * @ORM\ManyToOne(targetEntity="App\Entity\TableRow", inversedBy="equipments")
      * @ORM\JoinColumn(nullable=false)
      */
     private $tableRow;

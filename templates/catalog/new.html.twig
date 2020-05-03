@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Catalog{% endblock %}
+
+{% block body %}
+    <h3>Create new Catalog</h3>
+
+    {{ include('catalog/_form.html.twig') }}
+
+    <a href="{{ path('catalog_index') }}">back to list</a>
+{% endblock %}

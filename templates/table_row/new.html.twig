@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New TableRow{% endblock %}
+
+{% block body %}
+    <h3>Create new TableRow</h3>
+
+    {{ include('table_row/_form.html.twig') }}
+
+    <a href="{{ path('table_row_index') }}">back to list</a>
+{% endblock %}

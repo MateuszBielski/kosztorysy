@@ -26,7 +26,7 @@ class ClTable
     private $myChapter;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true, cascade={"persist"},fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true, cascade={"persist"},fetch="LAZY")
      */
     private $tableRows;
 
@@ -138,5 +138,17 @@ class ClTable
     public function ExtractMyNumber(string $textLine)
     {
         return intval(substr(trim($textLine," *"),9));
+    }
+    public function getFullName()
+    {
+        return $this->myChapter->getFullName().sprintf("%02d",$this->myNumber);
+    }
+    public function getDescription()
+    {
+        $arr = explode('$',$this->mainDescription);
+        array_shift($arr);
+        array_shift($arr);
+        array_pop($arr);
+        return implode('',$arr);
     }
 }

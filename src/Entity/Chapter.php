@@ -39,7 +39,7 @@ class Chapter
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ClTable", mappedBy="myChapter", orphanRemoval=true, cascade={"persist"},fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\ClTable", mappedBy="myChapter", orphanRemoval=true, cascade={"persist"},fetch="LAZY")
      */
     private $tables;
 
@@ -292,32 +292,17 @@ class Chapter
             // $numRow = 0;
             foreach($table->getTableRows() as $tr)
             {
-                // $tableRowValues = $this->circValues[$numTableRow];
                 $tr->setValuesToCirculations($this->circValues[$numTableRow]);
-                // $cR = count($tr->getLabors());
-                // $cM = count($tr->getMaterials());
-                // $cS = count($tr->getEquipments());
-                // $isToMuchRMS = $cR + $cM + $cS - count($tableRowValues);
-
-                // if ($isToMuchRMS > 0)
-                // {
-                //     // echo "\nProblem w: ".$this->name." tabl ".$numTable." wiersz ".$numRow;
-                //     // echo ' liczba wartości dla RMS '.count($tableRowValues);
-                //     // echo ', R '.$cR.', M '.$cM.', S '.$cS;
-                //     for($i = 0; $i < $isToMuchRMS;$i++)$tableRowValues[] = 0.0;
-                //     // $numTableRow++;
-                //     // continue;
-                // }
-                // $numTrV = 0;
-                // foreach($tr->getLabors() as $R) $R->setValue($tableRowValues[$numTrV++]);
-                // foreach($tr->getMaterials() as $M) $M->setValue($tableRowValues[$numTrV++]);
-                // foreach($tr->getEquipments() as $S) $S->setValue($tableRowValues[$numTrV++]);
-
                 $numTableRow++;
                 // $numRow++;
             }
             $numTable++;
         }
+    }
+    public function getFullName()
+    {
+        $num = preg_grep('/[0-9]+/',explode(' ',$this->name));
+        return $this->myCatalog->getName().' '.end($num);
     }
     
 }

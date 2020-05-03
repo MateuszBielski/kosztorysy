@@ -117,4 +117,14 @@ class ChapterTest extends TestCase
         $material1 = $tableRow17_3->getMaterials()[1];
         $this->assertEquals(2.5,$material1->getValue());
     }
+    public function testGetFullName()
+    {
+        $catalog = new Catalog;
+        $catalog->setName('KNR 2-02');
+        $chapter = new Chapter;
+        $chapter->setMyCatalog($catalog);
+        $chapter->setName('Rozdział 05');
+        $this->assertEquals('KNR 2-02 05',$chapter->getFullName());
+        
+    }
 }

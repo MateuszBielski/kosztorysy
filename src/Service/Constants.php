@@ -2,11 +2,11 @@
 
 namespace App\Service;
 
-// class Constants
-// {
-//     define('SIX',6);
+class Constants
+{
+    // define('SIX',6);
 
-// }
+}
 // const SIX = 6;
 define('SIX',6);
 define('CATALOG',0b10000000);

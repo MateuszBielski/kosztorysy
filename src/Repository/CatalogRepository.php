@@ -18,7 +18,13 @@ class CatalogRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Catalog::class);
     }
-
+    public function findAllIndexedByName()
+    {
+        return $this->createQueryBuilder('o','o.name')
+            // ->where('o.replacedBy is null')
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return Catalog[] Returns an array of Catalog objects
     //  */
