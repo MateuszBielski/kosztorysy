@@ -7,6 +7,8 @@ use App\Entity\Chapter;
 use App\Entity\TableRow;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+require_once('src/Service/Constants.php');
+
 
 class CatalogDBTest extends KernelTestCase
 {

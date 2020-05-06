@@ -7,6 +7,7 @@ use App\Service\PersistanceOptimizer;
 use App\Service\BuildUniqueCirculations;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+require_once('src/Service/Constants.php');
 
 class OneTimeLoadToDatabaseTest extends KernelTestCase
 {
@@ -49,7 +50,7 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $result = $fileSql != false;
         $this->assertTrue($result);
     }
-    public function _testOptimizerCreateSql()
+    public function testOptimizerCreateSql()
     {
         $commonDir = 'resources/Norma3/Kat/';
         $catalogs = Catalog::LoadFrom($commonDir,DESCRIPaRMS|BAZ_FILE_DIST);
@@ -59,7 +60,7 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $uc->AddCirculationsFromCatalogCollection($catalogs);
         
         // $this->conn->beginTransaction();
-        // $uc->persistUniqueCirculations();
+        $uc->persistUniqueCirculations();
 
         $this->po->Aggregate($catalogs);
         $this->po->GenerateSqlFile('loadAll');
@@ -68,7 +69,19 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $this->assertTrue($result);
     }
     /*
-    łądowanie na dell:30 kwi 2020
+    mysql -u root -p
+
+    set global net_buffer_length=1000000; --Set network buffer length to a large byte number
+
+    set global max_allowed_packet=1000000000; --Set maximum allowed packet size to a large byte number
+
+    SET foreign_key_checks = 0; --Disable foreign key checking to avoid delays,errors and unwanted behaviour
+
+    source file.sql --Import your sql dump file
+
+    SET foreign_key_checks = 1;
+    
+    ładowanie na dell:30 kwi 2020
     Query OK, 258 rows affected (0,55 sec)
     Records: 258  Duplicates: 0  Warnings: 0
 
@@ -117,5 +130,31 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
 
     Query OK, 244209 rows affected (6,19 sec)
     Records: 244209  Duplicates: 0  Warnings: 0
+
+    Na kompie w pracy:
+    Query OK, 258 rows affected (0,15 sec)
+    Records: 258  Duplicates: 0  Warnings: 0
+
+    Query OK, 2151 rows affected (0,70 sec)
+    Records: 2151  Duplicates: 0  Warnings: 0
+
+    Query OK, 23840 rows affected (2,36 sec)
+    Records: 23840  Duplicates: 0  Warnings: 0
+
+    Query OK, 172057 rows affected (5,35 sec)
+    Records: 172057  Duplicates: 0  Warnings: 0
+
+    Query OK, 1020807 rows affected (40,40 sec)
+    Records: 1020807  Duplicates: 0  Warnings: 0
+
+    Query OK, 268810 rows affected (9,00 sec)
+    Records: 268810  Duplicates: 0  Warnings: 0
+
+    Query OK, 507788 rows affected (11,23 sec)
+    Records: 507788  Duplicates: 0  Warnings: 0
+
+    Query OK, 244209 rows affected (5,99 sec)
+    Records: 244209  Duplicates: 0  Warnings: 0
+
     */
 }

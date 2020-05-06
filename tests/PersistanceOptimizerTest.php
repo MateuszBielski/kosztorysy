@@ -4,10 +4,13 @@ namespace App\Tests;
 
 use App\Entity\Catalog;
 use App\Entity\Chapter;
+use App\Entity\Circulation\Material;
 use App\Entity\TableRow;
 use App\Service\BuildUniqueCirculations;
 use App\Service\PersistanceOptimizer;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+
+require_once('src/Service/Constants.php');
 
 class PersistanceOptimizerTest extends KernelTestCase
 {
@@ -17,6 +20,7 @@ class PersistanceOptimizerTest extends KernelTestCase
     private $repCatalog;
     private $repChapter;
     private $repTableRow;
+    private $repCirculation;
 
     protected function setUp()
     {
@@ -30,6 +34,8 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->repCatalog = $doctrine->getRepository(Catalog::class);
         $this->repChapter = $doctrine->getRepository(Chapter::class);
         $this->repTableRow = $doctrine->getRepository(TableRow::class);
+        $this->repMaterial = $doctrine->getRepository(Material::class);
+
     }
     public function testReadAutoIncrementValues()
     {
@@ -124,13 +130,14 @@ class PersistanceOptimizerTest extends KernelTestCase
     }
     public function testRetrieveCirculationNamesFromDB(Type $var = null)
     {
-        $catFileNames = array('resources/Norma3/Kat/KNZ-14/',
-                                'resources/Norma3/Kat/S-215/',
+        $catFileNames = array('resources/Norma3/Kat/KNZ-14/'
+                                ,'resources/Norma3/Kat/S-215/',
                                 'resources/Norma3/Kat/2-02/');
         $catalogs = array ();
 
         // $uniqueCirculations = null;
-        for($i = 0 ; $i < 3 ; $i++)
+        $c = count($catFileNames);
+        for($i = 0 ; $i < $c ; $i++)
         {
             $catalog = new Catalog;
             $catalog->ReadFromDir($catFileNames[$i],DESCRIPaRMS|BAZ_FILE_DIST);
@@ -148,10 +155,17 @@ class PersistanceOptimizerTest extends KernelTestCase
         $this->conn->beginTransaction();
         $uc->persistUniqueCirculations();
         $this->po->persist();
+        // $this->conn->commit();
+        // $this->po->GenerateSqlFile('KNZ-14');
         $tr = $this->repTableRow->findByDescriptionFragment('gęstożebrowy')[2];
         $trOdgrom = $this->repTableRow->findByDescriptionFragment('odgromników')[2];
         $cat2_02 = $this->repCatalog->findOneBy(array('name' => 'KNR   2-02'));
-        $this->conn->rollBack();
+        
+        // foreach($cat2_02->getMyChapters() as $k => $chap)
+        // {
+        //     echo "\n".$k." ".$chap->getDescription();
+        // }
+        // echo "\nxx".count($this->repMaterial->findAll());
         
         $this->assertEquals(1.4187,$tr->getTotalLaborValue());
         $this->assertEquals(8.3,$tr->getMaterials()[0]->getValue());
@@ -164,6 +178,7 @@ class PersistanceOptimizerTest extends KernelTestCase
         $equipToCheck = $trCheckGroupNumber->getEquipments()[9];
         
         $this->assertEquals(6,$equipToCheck->getGroupNumber());
+        $this->conn->rollBack();
     }
     
     protected function tearDown(): void

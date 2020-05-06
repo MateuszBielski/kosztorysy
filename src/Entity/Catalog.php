@@ -37,7 +37,7 @@ class Catalog
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $description;
+    private $description = 'brak opisu';
 
     public function __construct()
     {

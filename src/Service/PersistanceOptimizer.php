@@ -140,7 +140,8 @@ class PersistanceOptimizer
         $query = 'insert into catalog values ';
         foreach($this->catalogs as $id => $cat)
         {
-            $query .='('.$id.',\''.$cat->getName().'\'),';
+            // $query .='('.$id.',\''.$cat->getName().'\'),';
+            $query .='('.$id.',\''.$cat->getName().'\',\''.$cat->getDescription().'\'),';
         }
         $query = rtrim($query,",");
         if (count($this->chapters) > 0)
@@ -174,7 +175,7 @@ class PersistanceOptimizer
         }
         if (count($this->labors) || count($this->materials) || count($this->equipments))
         {
-            $query .= '; insert into circulation values ';
+            $query .= '; insert into circulation (id,name_and_unit_id,value,discriminator,group_number) values ';
             foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'labor',{$circ->getGroupNumber()}),";
             foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'material',{$circ->getGroupNumber()}),";
             foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'equipment',{$circ->getGroupNumber()}),";
@@ -192,13 +193,15 @@ class PersistanceOptimizer
             foreach ($this->equipments as $id => $equ) $query .="($id,{$this->equipmentsParentId[$id]}),";
             $query = rtrim($query,",");
         }
+        // echo "\nXX".strlen($query);
         return $query;
     }private function GenerateSqlQuery(): string
     {
         $query = 'insert into catalog values ';
         foreach($this->catalogs as $id => $cat)
         {
-            $query .='('.$id.',\''.$cat->getName().'\'),';
+            // $query .='('.$id.',\''.$cat->getName().'\')';
+            $query .='('.$id.',\''.$cat->getName().'\',\''.$cat->getDescription().'\'),';
         }
         $query = rtrim($query,",");
         if (count($this->chapters) > 0)
@@ -232,7 +235,7 @@ class PersistanceOptimizer
         }
         if (count($this->labors) || count($this->materials) || count($this->equipments))
         {
-            $query .= '; insert into circulation values ';
+            $query .= '; insert into circulation (id,name_and_unit_id,value,discriminator,group_number) values ';
             foreach ($this->labors as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'labor',{$circ->getGroupNumber()}),";
             foreach ($this->materials as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'material',{$circ->getGroupNumber()}),";
             foreach ($this->equipments as $id => $circ) $query .= "($id,{$circ->getNameAndUnit()->getId()},{$circ->getValue()},'equipment',{$circ->getGroupNumber()}),";
