@@ -25,6 +25,23 @@ class CatalogRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findAllByName()
+    {
+        return $this->createQueryBuilder('o')
+            ->orderBy('o.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByNameDescription($str)
+    {
+        return $this->createQueryBuilder('o')
+        ->andWhere('o.description like :par1')
+        ->setParameter('par1','%'.$str.'%')
+        ->orderBy('o.name', 'ASC')
+        ->getQuery()
+        // ->setMaxResults(10)
+        ->getResult();
+    }
     // /**
     //  * @return Catalog[] Returns an array of Catalog objects
     //  */

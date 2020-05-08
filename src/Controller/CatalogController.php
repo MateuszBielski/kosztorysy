@@ -23,9 +23,19 @@ class CatalogController extends AbstractController
     public function index(CatalogRepository $catalogRepository): Response
     {
         return $this->render('catalog/index.html.twig', [
-            'catalogs' => $catalogRepository->findAll(),
+            'catalogs' => $catalogRepository->findAllByName(),
         ]);
     }
+    /**
+     * @Route("/indexAjax", name="catalog_indexAjax", methods={"GET", "POST"})
+     */
+    public function indexAjax(Request $request,CatalogRepository $catalogRepository): Response
+    {
+        return $this->render('catalog/indexAjax.html.twig', [
+            'catalogs' => $catalogRepository->findByNameDescription($request->query->get("str")),
+            ]);
+    }
+
     /**
      * @Route("/completeDescription", name="catalog_complete_description", methods={"GET"})
      */
