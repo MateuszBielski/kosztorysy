@@ -32,7 +32,7 @@ class CatalogRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    public function findByNameDescription($str)
+    public function findByNameDescriptionOld($str)
     {
         return $this->createQueryBuilder('o')
         ->andWhere('o.description like :par1')
@@ -41,6 +41,33 @@ class CatalogRepository extends ServiceEntityRepository
         ->getQuery()
         // ->setMaxResults(10)
         ->getResult();
+    }
+    public function findByNameDescription($stringToExplode)
+    {
+        # code...
+    }
+    public function _findByNamePortion(string $stringToExplode)
+    {
+        $string= explode(" ",$stringToExplode);
+        $result = $this->createQueryBuilder('o','o.id');
+       
+       if (count($string) > 1) {
+        $result = $result
+            ->where('o.firstName LIKE :string0 or o.surname LIKE :string0')
+            ->setParameter('string0', '%'.$string[0].'%')
+            ->andWhere('o.firstName LIKE :string1 or o.surname LIKE :string1')
+            ->setParameter('string1', '%'.$string[1].'%'); 
+       } else {
+        $result = $result
+            ->where('o.firstName LIKE :string OR o.surname LIKE :string OR o.nrPrawaZawodu LIKE :string')
+            ->setParameter('string', '%'.$stringToExplode.'%');
+       }
+       $result = $result
+       ->setMaxResults(50)
+       ->getQuery()
+       ->getResult();
+
+        return $result;
     }
     // /**
     //  * @return Catalog[] Returns an array of Catalog objects
