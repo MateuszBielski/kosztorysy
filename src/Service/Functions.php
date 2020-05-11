@@ -218,4 +218,9 @@ class Functions
         
         return strlen($text) > $numChars ? substr($text,0,$numChars).'...': $text;
     }
+    public static function IsCatalogName($request)
+    {
+        
+        return preg_match('/([KNRSTZB]{3,6} )?([0-9]{1,2}-)?[0-9]{,2}/',$request) ? true:false;
+    }
 }

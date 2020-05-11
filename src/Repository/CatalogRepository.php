@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Catalog;
+use App\Service\Functions;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -42,9 +43,46 @@ class CatalogRepository extends ServiceEntityRepository
         // ->setMaxResults(10)
         ->getResult();
     }
+    public function findByNameDescriptionOld1($stringToExplode)
+    {
+        $query = $this->createQueryBuilder('o');
+        //oddzielnie nazwy katalogów
+        if(Functions::IsCatalogName($stringToExplode))
+        {
+            $strings = explode(' ',$stringToExplode);
+            $num = 0;
+            foreach($strings as $str)
+            {
+                $query = $query->setParameter('str'.$num,'%'.$str.'%')->andWhere('o.name LIKE :str'.$num);
+                $num++;
+            }
+        }else
+        {
+
+            $strings = explode(' ',$stringToExplode);
+            $num = 0;
+            foreach($strings as $str)
+            {
+                $query = $query->setParameter('str'.$num,'%'.$str.'%')->andWhere('o.description LIKE :str'.$num);
+                $num++;
+            }
+        }
+        
+        return $query->orderBy('o.name', 'ASC')->getQuery()->getResult();
+    }
     public function findByNameDescription($stringToExplode)
     {
-        # code...
+        $query = $this->createQueryBuilder('o');
+        
+        $strings = explode(' ',$stringToExplode);
+        $num = 0;
+        foreach($strings as $str)
+        {
+            $query = $query->setParameter('str'.$num,'%'.$str.'%')->andWhere('o.description LIKE :str'.$num)->orWhere('o.name LIKE :str'.$num);
+            $num++;
+        }
+        
+        return $query->orderBy('o.name', 'ASC')->getQuery()->getResult();
     }
     public function _findByNamePortion(string $stringToExplode)
     {

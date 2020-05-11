@@ -31,4 +31,21 @@ class FunctionsTest extends TestCase
         $expected  = 'Roboty remontowe i modern...';
         $this->assertEquals($expected,Functions::ShortenText($text,25));
     }
+    public function testIsCatalogName()
+    {
+        $requestsTrue = array('KN 0-15','Nr 35','02','KNR AL-01','knr 2-0');
+        foreach($requestsTrue as $req)
+        {
+            $res= Functions::IsCatalogName($req) ? 'tak':'nie';
+            echo "\n$req ".$res;
+        }
+        foreach($requestsTrue as $req)$this->assertTrue(Functions::IsCatalogName($req));
+        $requestsFalse = array('naw','bud','rem');
+        foreach($requestsFalse as $req)
+        {
+            $res= Functions::IsCatalogName($req) ? 'tak':'nie';
+            echo "\n$req ".$res;
+        }
+        foreach($requestsFalse as $req)$this->assertFalse(Functions::IsCatalogName($req));
+    }
 }
