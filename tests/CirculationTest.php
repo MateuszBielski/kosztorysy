@@ -124,5 +124,30 @@ class CirculationTest extends TestCase
         $uc->AddCirculationsFromCatalogCollection($catalogs);
         $this->assertEquals(272,count($uc->GetUniqueCirculations()));//272 nie było dokładnie liczone
     }
+    public function testAddOriginalAndChangeIds()
+    {
+        $rob1 = new Labor_N_U;
+        $rob2 = new Labor_N_U;
+        $rob3 = new Labor_N_U;
+        $rob1->setName('robotnicy');
+        $rob1->setUnit('r-g');
+
+        $rob2->setName('robotnicy');
+        $rob2->setUnit('r-d');
+        $rob3->setName('robotnicy');
+        $rob3->setUnit('r-g');
+        $cir1 = array();
+        $cir2 = array();
+        
+        $cir1['R'][] = $rob1;
+        $cir1['R'][] = $rob2;
+        $cir2['R'][] = $rob3;
+        
+        $uc = new BuildUniqueCirculations;
+        $uc->AddOriginalAndChangeIds($cir1);
+        $uc->AddOriginalAndChangeIds($cir2);
+
+        $this->assertEquals(2,count($uc->GetUniqueCirculations()));
+    }
 
 }

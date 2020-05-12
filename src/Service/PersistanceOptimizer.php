@@ -24,6 +24,7 @@ class PersistanceOptimizer
    private $laborsParentId;
    private $materialsParentId;
    private $equipmentsParentId;
+   private $uniqueCirculations;
 
    private $query;
     public function __construct(EntityManagerInterface $entityManager)
@@ -135,9 +136,41 @@ class PersistanceOptimizer
             $catalogId++;
         }
     }
+    public function setUniqueCirculations(array $uniqueCirculations)
+    {
+        $this->uniqueCirculations = $uniqueCirculations;
+    }
     private function GenerateSqlQueryLongLines(): string
     {
-        $query = 'insert into catalog values ';
+        $query = '';
+        if(is_array($this->uniqueCirculations) && count($this->uniqueCirculations))
+        {
+            $query .= 'insert into circulation_name_and_unit (id,name,unit,eto,discriminator) values ';
+            foreach($this->uniqueCirculations['R'] as $Rnu)$query .= "({$Rnu->getId()},{$Rnu->getName()},{$Rnu->getUnit()},{$Rnu->getEto()},'labor_n_u'),";
+            foreach($this->uniqueCirculations['M'] as $Mnu)$query .= "({$Mnu->getId()},{$Mnu->getName()},{$Mnu->getUnit()},{$Mnu->getEto()},'material_n_u'),";
+            foreach($this->uniqueCirculations['S'] as $Snu)$query .= "({$Snu->getId()},{$Snu->getName()},{$Snu->getUnit()},{$Snu->getEto()},'equipment_n_u'),";
+            $query = rtrim($query,",");
+            if (count($this->uniqueCirculations['R']))
+            {
+                $query .= '; insert into labor_n_u values ';
+                foreach($this->uniqueCirculations['R'] as $Rnu)$query .= "({$Rnu->getId()}),";
+                $query = rtrim($query,",");
+            }
+            if (count($this->uniqueCirculations['M']))
+            {
+                $query .= '; insert into material_n_u values ';
+                foreach($this->uniqueCirculations['M'] as $Mnu)$query .= "({$Mnu->getId()}),";
+                $query = rtrim($query,",");
+            }
+            if (count($this->uniqueCirculations['S']))
+            {
+                $query .= '; insert into equipment_n_u values ';
+                foreach($this->uniqueCirculations['S'] as $Snu)$query .= "({$Snu->getId()}),";
+                $query = rtrim($query,",");
+            }
+            $query .= '; ';
+        }
+        $query .= 'insert into catalog values ';
         foreach($this->catalogs as $id => $cat)
         {
             // $query .='('.$id.',\''.$cat->getName().'\'),';

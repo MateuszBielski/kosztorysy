@@ -153,7 +153,8 @@ class PersistanceOptimizerTest extends KernelTestCase
         $uc->AddCirculationsFromCatalogCollection($catalogs);
         
         $this->conn->beginTransaction();
-        $uc->persistUniqueCirculations();
+        // $uc->persistUniqueCirculations();
+        $this->po->setUniqueCirculations($uc->GetUniqueCirculations());
         $this->po->persist();
         // $this->conn->commit();
         // $this->po->GenerateSqlFile('KNZ-14');

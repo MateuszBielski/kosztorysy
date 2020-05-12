@@ -24,7 +24,7 @@ class BuildUniqueCirculations
         foreach ($CircCat as $cat) {
             if (!array_key_exists($cat,$circulations)) continue;
             foreach ($circulations[$cat] as $cir) {
-                $name = $cir->getName();
+                $name = $cir->getName().$cir->getUnit();
                 
                 $foundIndex = array_search($name,$this->namesTocompare);
                 if ($foundIndex ){
