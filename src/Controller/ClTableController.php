@@ -21,10 +21,29 @@ class ClTableController extends AbstractController
     public function index(TableRepository $tableRepository): Response
     {
         return $this->render('cl_table/index.html.twig', [
-            'cl_tables' => $tableRepository->findAll(),
+            // 'cl_tables' => $tableRepository->findAll(),
+            'cl_tables' => array(),
         ]);
     }
 
+    /**
+     * @Route("/indexAjax/", name="cl_table_indexAjax", methods={"GET", "POST"})
+     */
+    public function indexAjax(Request $request,TableRepository $tableRepository): Response
+    {
+        return $this->render('cl_table/indexAjax.html.twig', [
+            'cl_tables' => $tableRepository->findByDescription($request->query->get("str")),
+        ]);
+    }
+    /**
+     * @Route("/indexAjaxDebug/", name="cl_table_indexAjax_debug", methods={"GET", "POST"})
+     */
+    public function indexAjaxDebug(Request $request,TableRepository $tableRepository): Response
+    {
+        return $this->render('cl_table/index.html.twig', [
+            'cl_tables' => $tableRepository->findByDescription($request->query->get("str")),
+        ]);
+    }
     /**
      * @Route("/new", name="cl_table_new", methods={"GET","POST"})
      */

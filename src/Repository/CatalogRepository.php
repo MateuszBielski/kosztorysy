@@ -78,7 +78,7 @@ class CatalogRepository extends ServiceEntityRepository
         $num = 0;
         foreach($strings as $str)
         {
-            $query = $query->setParameter('str'.$num,'%'.$str.'%')->andWhere('o.description LIKE :str'.$num)->orWhere('o.name LIKE :str'.$num);
+            $query = $query->setParameter('str'.$num,'%'.$str.'%')->andWhere('o.description LIKE :str'.$num.' OR o.name LIKE :str'.$num);
             $num++;
         }
         

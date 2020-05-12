@@ -1,37 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ClTable index{% endblock %}
+{% block title %}Tabele{% endblock %}
 
+{% block scripts %}
+        <script type="text/javascript" src="../../js/jquery-2.1.3.min.js"></script>
+        <script type="text/javascript" src="../../js/jquery-ui.js"></script>
+        <script type="text/javascript" src="../../js/findTable.js"></script>
+{% endblock %}
 {% block body %}
-    <h3>ClTable index</h3>
+    <h3>Tabele</h3>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>MainDescription</th>
-                <th>MyNumber</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for cl_table in cl_tables %}
-            <tr>
-                <td>{{ cl_table.id }}</td>
-                <td>{{ cl_table.mainDescription }}</td>
-                <td>{{ cl_table.myNumber }}</td>
-                <td>
-                    <a href="{{ path('cl_table_show', {'id': cl_table.id}) }}">show</a>
-                    <a href="{{ path('cl_table_edit', {'id': cl_table.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div id="div_wyszukaj">
+        wyszukaj
+        <input id="input_find_table" type="tekst" placeholder="nazwa lub opis" size="30">
+    </div>
+    <div id="kontener">kontener</div>
+    {{ include('cl_table/indexAjax.html.twig') }}
+
 
     <a href="{{ path('cl_table_new') }}">Create new</a>
 {% endblock %}
+
+

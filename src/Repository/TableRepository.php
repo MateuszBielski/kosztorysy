@@ -46,5 +46,37 @@ class TableRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+    */ 
+    public function findAll()
+    {
+        return $this->createQueryBuilder('ct')
+            // ->where('o.replacedBy is null')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByDescription($stringToExplode)
+    {
+        $query = $this->createQueryBuilder('ct');
+        
+        $strings = explode(' ',$stringToExplode);
+        $num = 0;
+        foreach($strings as $str)
+        {
+            $query = $query->setParameter('str'.$num,'%'.$str.'%')->andWhere('ct.mainDescription LIKE :str'.$num);
+            $num++;
+        }
+        $query = $query
+            ->select('cat,chap,ct')
+            ->innerJoin('ct.myChapter','chap')
+            ->innerJoin('chap.myCatalog','cat')
+            ->orderBy('cat.name','ASC')
+            ->addOrderBy('chap.name','ASC')
+            ->addOrderBy('ct.myNumber','ASC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+
+        return $query;
+    }
 }
