@@ -88,4 +88,9 @@ abstract class CirculationNameAndUnit
         $this->eto = $params[0];
         $this->name = $params[1];
     }
+    public function GenerateQueryToInsert()
+    {
+        return "({$this->id},'{$this->name}','{$this->unit}','{$this->eto}',";
+    }
+    public abstract function AddSelfToCorrectSubArray(array &$separatedArray);
 }

@@ -8,6 +8,7 @@ use App\Service\BuildUniqueCirculations;
 use App\Service\CirFunctions;
 use PHPUnit\Framework\TestCase;
 use App\Entity\Catalog;
+use App\Entity\Circulation\Equipment_N_U;
 
 require_once('src/Service/Constants.php');
 
@@ -148,6 +149,30 @@ class CirculationTest extends TestCase
         $uc->AddOriginalAndChangeIds($cir2);
 
         $this->assertEquals(2,count($uc->GetUniqueCirculations()));
+    }
+    public function testGenerateQueryToInsert()
+    {
+        $tLine = '3950000 000 060$drewno na stemple (okragłe) iglaste korowane śr. 6 do 20 cm m3';
+        $material = new Material_N_U;
+        $material->setParametersFromBAZline($tLine);
+        $material->setId(12);
+        $expectedQuery = "(12,'drewno na stemple (okragłe) iglaste korowane śr. 6 do 20 cm','m3','3950000 000 060','material_n_u'),";
+        $this->assertEquals($expectedQuery,$material->GenerateQueryToInsert());
+    }
+    public function testAddSelfToCorrectSubArray()
+    {
+        $circulationsNUseparated = array();
+        $circulations = array(
+            new Labor_N_U,
+            new Labor_N_U,
+            new Material_N_U,
+            new Material_N_U,
+            new Equipment_N_U,
+            new Material_N_U,
+            new Equipment_N_U
+        );
+        foreach($circulations as $cir)$cir->AddSelfToCorrectSubArray($circulationsNUseparated);
+        $this->assertEquals('232',count($circulationsNUseparated['R']).count($circulationsNUseparated['M']).count($circulationsNUseparated['S']));
     }
 
 }

@@ -50,7 +50,7 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $result = $fileSql != false;
         $this->assertTrue($result);
     }
-    public function testOptimizerCreateSql()
+    public function _testOptimizerCreateSql()
     {
         $commonDir = 'resources/Norma3/Kat/';
         $catalogs = Catalog::LoadFrom($commonDir,DESCRIPaRMS|BAZ_FILE_DIST);
@@ -59,10 +59,8 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $uc = new BuildUniqueCirculations($this->entityManager);
         $uc->AddCirculationsFromCatalogCollection($catalogs);
         
-        // $this->conn->beginTransaction();
-        $uc->persistUniqueCirculations();
-
         $this->po->Aggregate($catalogs);
+        $this->po->setUniqueCirculations($uc->GetUniqueCirculations());
         $this->po->GenerateSqlFile('loadAll');
         $fileSql = @fopen('loadAll.sql','r');
         $result = $fileSql != false;
@@ -73,7 +71,7 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
 
     set global net_buffer_length=1000000; --Set network buffer length to a large byte number
 
-    set global max_allowed_packet=1000000000; --Set maximum allowed packet size to a large byte number
+    set global max_allowed_packet=100000000; --Set maximum allowed packet size to a large byte number
 
     SET foreign_key_checks = 0; --Disable foreign key checking to avoid delays,errors and unwanted behaviour
 

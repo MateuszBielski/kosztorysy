@@ -143,17 +143,12 @@ class PersistanceOptimizerTest extends KernelTestCase
             $catalog->ReadFromDir($catFileNames[$i],DESCRIPaRMS|BAZ_FILE_DIST);
             $catalogs[] = $catalog;
         }
-            // foreach($catalogs[2]->getMyChapters() as $k => $chap)
-            // {
-            //     echo "\n".$k." ".$chap->getName();
-            // }
         $this->po->Aggregate($catalogs);
 
         $uc = new BuildUniqueCirculations($this->entityManager);
         $uc->AddCirculationsFromCatalogCollection($catalogs);
         
         $this->conn->beginTransaction();
-        // $uc->persistUniqueCirculations();
         $this->po->setUniqueCirculations($uc->GetUniqueCirculations());
         $this->po->persist();
         // $this->conn->commit();
@@ -161,12 +156,6 @@ class PersistanceOptimizerTest extends KernelTestCase
         $tr = $this->repTableRow->findByDescriptionFragment('gęstożebrowy')[2];
         $trOdgrom = $this->repTableRow->findByDescriptionFragment('odgromników')[2];
         $cat2_02 = $this->repCatalog->findOneBy(array('name' => 'KNR   2-02'));
-        
-        // foreach($cat2_02->getMyChapters() as $k => $chap)
-        // {
-        //     echo "\n".$k." ".$chap->getDescription();
-        // }
-        // echo "\nxx".count($this->repMaterial->findAll());
         
         $this->assertEquals(1.4187,$tr->getTotalLaborValue());
         $this->assertEquals(8.3,$tr->getMaterials()[0]->getValue());

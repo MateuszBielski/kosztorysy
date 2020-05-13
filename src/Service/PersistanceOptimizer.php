@@ -146,26 +146,29 @@ class PersistanceOptimizer
         if(is_array($this->uniqueCirculations) && count($this->uniqueCirculations))
         {
             $query .= 'insert into circulation_name_and_unit (id,name,unit,eto,discriminator) values ';
-            foreach($this->uniqueCirculations['R'] as $Rnu)$query .= "({$Rnu->getId()},{$Rnu->getName()},{$Rnu->getUnit()},{$Rnu->getEto()},'labor_n_u'),";
-            foreach($this->uniqueCirculations['M'] as $Mnu)$query .= "({$Mnu->getId()},{$Mnu->getName()},{$Mnu->getUnit()},{$Mnu->getEto()},'material_n_u'),";
-            foreach($this->uniqueCirculations['S'] as $Snu)$query .= "({$Snu->getId()},{$Snu->getName()},{$Snu->getUnit()},{$Snu->getEto()},'equipment_n_u'),";
+            $circulationsNUseparated = array();
+            foreach($this->uniqueCirculations as $cir)
+            {
+                $query .= $cir->GenerateQueryToInsert();
+                $cir->AddSelfToCorrectSubArray($circulationsNUseparated);
+            }
             $query = rtrim($query,",");
-            if (count($this->uniqueCirculations['R']))
+            if (count($circulationsNUseparated['R']))
             {
                 $query .= '; insert into labor_n_u values ';
-                foreach($this->uniqueCirculations['R'] as $Rnu)$query .= "({$Rnu->getId()}),";
+                foreach($circulationsNUseparated['R'] as $Rnu)$query .= "({$Rnu->getId()}),";
                 $query = rtrim($query,",");
             }
-            if (count($this->uniqueCirculations['M']))
+            if (count($circulationsNUseparated['M']))
             {
                 $query .= '; insert into material_n_u values ';
-                foreach($this->uniqueCirculations['M'] as $Mnu)$query .= "({$Mnu->getId()}),";
+                foreach($circulationsNUseparated['M'] as $Mnu)$query .= "({$Mnu->getId()}),";
                 $query = rtrim($query,",");
             }
-            if (count($this->uniqueCirculations['S']))
+            if (count($circulationsNUseparated['S']))
             {
                 $query .= '; insert into equipment_n_u values ';
-                foreach($this->uniqueCirculations['S'] as $Snu)$query .= "({$Snu->getId()}),";
+                foreach($circulationsNUseparated['S'] as $Snu)$query .= "({$Snu->getId()}),";
                 $query = rtrim($query,",");
             }
             $query .= '; ';
