@@ -3,13 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}WelcomeXX!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            {# <link href="{{ asset('css/styl.css') }}" rel="stylesheet"/> #}
+            <link href="../../css/styl.css" rel="stylesheet"/>
+        {% endblock %}
         {% block scripts %}{% endblock %}
     </head>
     <body>
+        <div id="header">
         <a href="{{ path('catalog_index') }}">katalogi</a>
         <a href="{{ path('cl_table_index') }}">tablice</a>
-        {% block body %}{% endblock %}
+        {% block body %}</div>{% endblock %}
         {# {% block javascripts %}{% endblock %} #}
     </body>
 </html>
