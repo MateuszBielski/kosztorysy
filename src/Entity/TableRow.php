@@ -67,6 +67,11 @@ class TableRow
      */
     private $myNumber;
 
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    private $unit;
+
     public function __construct()
     {
         $this->labors = new ArrayCollection();
@@ -188,25 +193,6 @@ class TableRow
         $this->labors,
         $this->materials,
         $this->equipments);
-        // $mainArray = explode('$',$mainIndices);
-        // $subArray = explode('$',$subIndices);
-        // $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
-        // $posReadCircIndex = 4;
-        // $readAndSetCirc = function($ind,$circClass,$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
-        // {$numCirc = $arrayToReadNameIndices[$ind];
-        //     for($i = 0 ; $i < $numCirc ; $i++){
-        //         $circClass = new $circClass;
-        //         $circClass->setTableRow($this);
-        //         $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
-        //         $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
-        //         //użycie zwykłej array znacznie przyspieszyłoby proces
-        //         $posReadCircIndex++;
-
-        //     }
-        // };
-        // $readAndSetCirc(1,Labor::class,$this->labors);
-        // $readAndSetCirc(2,Material::class,$this->materials);
-        // $readAndSetCirc(3,Equipment::class,$this->equipments);
     }
     public function createCompoundRMSindices_optimized($mainIndices,$subIndices)
     {
@@ -221,26 +207,6 @@ class TableRow
                                 $this->laborsArray,
                                 $this->materialsArray,
                                 $this->equipmentsArray);
-        // $mainArray = explode('$',$mainIndices);
-        // $subArray = explode('$',$subIndices);
-        // $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
-        // $posReadCircIndex = 4;
-        // //ważna jest referencja dla &$arrCirc - inaczej zwykła array nie chce działać
-        // $readAndSetCirc = function($ind,$circClass,&$arrCirc) use ($arrayToReadNameIndices,&$posReadCircIndex)
-        // {$numCirc = $arrayToReadNameIndices[$ind];
-        //     for($i = 0 ; $i < $numCirc ; $i++){
-        //         $circClass = new $circClass;
-        //         $circClass->setTableRow($this);
-        //         $circClass->setReadNameIndex($arrayToReadNameIndices[$posReadCircIndex]);
-        //         $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
-        //         //użycie zwykłej array znacznie przyspieszyłoby proces
-        //         $posReadCircIndex++;
-
-        //     }
-        // };
-        // $readAndSetCirc(1,Labor::class,$this->laborsArray);
-        // $readAndSetCirc(2,Material::class,$this->materialsArray);
-        // $readAndSetCirc(3,Equipment::class,$this->equipmentsArray);
     }
     private function CompoundIndices($mainIndices,$subIndices,&$labors,&$materials,&$equipments)
     {
@@ -248,6 +214,7 @@ class TableRow
         $subArray = explode('$',$subIndices);
         $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
         $posReadCircIndex = 4;
+        $this->unit = trim($arrayToReadNameIndices[0]);
         //ważna jest referencja dla &$arrCirc - inaczej zwykła array nie chce działać
         $readAndSetCirc = function($ind,$circClass,&$arrCirc) use (&$arrayToReadNameIndices,&$posReadCircIndex)
         {$numCirc = $arrayToReadNameIndices[$ind];
@@ -422,5 +389,17 @@ class TableRow
     public function getFullName()
     {
         return $this->myTable->getFullName().'-'.sprintf("%02d",$this->myNumber);
+    }
+
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?string $unit): self
+    {
+        $this->unit = $unit;
+
+        return $this;
     }
 }

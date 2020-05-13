@@ -202,10 +202,10 @@ class PersistanceOptimizer
 
         if (count($this->tableRows) > 0) 
         {
-            $query .= '; insert into table_row (id,my_table_id,sub_description,my_number) values ';
+            $query .= '; insert into table_row (id,my_table_id,sub_description,my_number,unit) values ';
             foreach( $this->tableRows as $id => $tr)
             {
-                $query .='('.$id.','.$this->tableRowsParentId[$id].',\''.$tr->getSubDescription().'\','.$tr->getMyNumber().'),';//."\n"
+                $query .='('.$id.','.$this->tableRowsParentId[$id].',\''.$tr->getSubDescription().'\','.$tr->getMyNumber().',\''.$tr->getUnit().'\'),';//."\n"
             }
             $query = rtrim($query,",");
         }

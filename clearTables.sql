@@ -1,0 +1,14 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE equipment_n_u             ;
+TRUNCATE TABLE labor_n_u                 ;
+TRUNCATE TABLE material_n_u              ;
+TRUNCATE TABLE circulation_name_and_unit ;
+TRUNCATE TABLE equipment                 ;
+TRUNCATE TABLE labor                     ;
+TRUNCATE TABLE material                  ;
+TRUNCATE TABLE circulation               ;
+TRUNCATE TABLE table_row;
+TRUNCATE TABLE cl_table                  ;
+TRUNCATE TABLE chapter                   ;
+TRUNCATE TABLE catalog                   ;
+SET FOREIGN_KEY_CHECKS=1;

@@ -237,4 +237,12 @@ class TableAndTableRowTest extends TestCase
         $this->assertEquals('Krycie dachów papą termozgrzewalną dkd na podłożu betonowym, drewnianym',$table->getDescription());
         //sprawdzić opis dla tablicy KNR 5-16 0204
     }
+    public function testTableRowGetUnit()
+    {
+        $tableRow = new TableRow;
+        $mainLine = 'm2$2$4$2$4$1$232$101$80$1$15$23$';
+        $subLine = 'm2$2$3$2$4$1$232$80$1$15$23$';
+        $tableRow->createCompoundRMSindices($mainLine,$subLine);
+        $this->assertEquals('m2',$tableRow->getUnit());
+    }
 }

@@ -50,7 +50,7 @@ class OneTimeLoadToDatabaseTest extends KernelTestCase
         $result = $fileSql != false;
         $this->assertTrue($result);
     }
-    public function _testOptimizerCreateSql()
+    public function testOptimizerCreateSql()
     {
         $commonDir = 'resources/Norma3/Kat/';
         $catalogs = Catalog::LoadFrom($commonDir,DESCRIPaRMS|BAZ_FILE_DIST);

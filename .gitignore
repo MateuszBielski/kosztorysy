@@ -10,6 +10,7 @@
 Mazovia*
 /src/Migrations/
 *.sql
+!clearTables.sql
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
