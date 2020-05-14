@@ -47,6 +47,16 @@ class TableRowController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    /**
+     * @Route("/calculateAjax", name="table_row_calculateAjax", methods={"GET","POST"})
+     */
+    public function calculateAjax(Request $request)
+    {
+        $id = $request->query->get("id");
+        return $this->render('table_row/showCosts.html.twig', [
+        // 'table_row' => $tableRow,
+        ]);
+    }
 
     /**
      * @Route("/{id}", name="table_row_show", methods={"GET"})
@@ -57,6 +67,7 @@ class TableRowController extends AbstractController
             'table_row' => $tableRow,
         ]);
     }
+    
 
     /**
      * @Route("/{id}/edit", name="table_row_edit", methods={"GET","POST"})

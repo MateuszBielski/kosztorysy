@@ -1,26 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}TableRow{% endblock %}
-
+{% block title %}Pozycja{% endblock %}
+{% block scripts %}
+        <script type="text/javascript" src="../../js/calculateTableRow.js"></script>
+{% endblock %}
 {% block body %}
-
+    <input type="hidden" id="table_row_id"  value="{{ table_row.id }}">
     <h3>{{table_row.getFullName()}}</h3>
     tablica {{ table_row.myNumber }}  {{ table_row.CompoundDescription() }}
     <table class="table">
         <tbody>
-            <tr>
+            {# <tr>
                 <th>Jednostka</th>
                 <td>{{ table_row.unit }}</td>
-            </tr>
+            </tr> #}
             <tr>
                 <th>Id</th>
                 <td>{{ table_row.id }}</td>
             </tr>
         </tbody>
     </table>
+    <div id="div_wyszukaj">
+        obmiar
+        <input id="input_survey" type="tekst" placeholder="1" size="30">{{ table_row.unit }}
+    </div>
 </div>
 <div id="leftcol">
-    <table>
+    <table >
+        <thead>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </thead>
         <tr>
             <td>--R--</td>
         </tr>
@@ -54,31 +67,13 @@
     </table>
 </div>
 <div id="rightcol">
-        druga kolumna
+    druga kolumna
+
 </div>
 <div id="footer">
     <a href="{{ path('table_row_edit', {'id': table_row.id}) }}">edit</a>
     {{ include('table_row/_delete_form.html.twig') }}
 </div>
-
-    {# <div class="divDwieKolumny"> #}
-
-        {# <div class="divKolumnaNaPolSzerokosci"> #}
-            {# <div> #}
-            {# </div> #}
-            {# <div> #}
-            {# </div> #}
-        {# </div> #}
-        {# <div class="divKolumnaNaPolSzerokosci"> #}
-            
-           
-        {# </div> #}
-    {# </div> #}
-    {# <div> #}
-        
-
-    {# </div> #}
-    {# <a href="{{ path('table_row_index') }}">back to list</a> #}
 
 
 {% endblock %}
