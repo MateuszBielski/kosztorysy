@@ -6,6 +6,7 @@ use App\Entity\Catalog;
 use App\Entity\Chapter;
 use App\Entity\Circulation\Equipment;
 use App\Entity\Circulation\Equipment_N_U;
+use App\Entity\Circulation\Labor;
 use App\Entity\Circulation\Material;
 use App\Entity\Circulation\Material_N_U;
 use App\Entity\ClTable;
@@ -245,4 +246,5 @@ class TableAndTableRowTest extends TestCase
         $tableRow->createCompoundRMSindices($mainLine,$subLine);
         $this->assertEquals('m2',$tableRow->getUnit());
     }
+    
 }
