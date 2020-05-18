@@ -57,6 +57,6 @@ class CostItem
     public function GenerateValuesForTwigCostTable()
     {
         $arrayForTwig = array();
-        for($i = 0; $i)
+        // for($i = 0; $i)
     }
 }
