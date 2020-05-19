@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CostItemRepository")
  */
-class CostItem
+class CostItem extends TableRow
 {
     /**
      * @ORM\Id()
@@ -16,11 +16,7 @@ class CostItem
      */
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\TableRow")
-     */
-    private $tableRow;
-
+    
     /**
      * @ORM\Column(type="float", nullable=true)
      */
@@ -31,17 +27,6 @@ class CostItem
         return $this->id;
     }
 
-    public function getTableRow(): ?TableRow
-    {
-        return $this->tableRow;
-    }
-
-    public function setTableRow(?TableRow $tableRow): self
-    {
-        $this->tableRow = $tableRow;
-
-        return $this;
-    }
 
     public function getSurvey(): ?float
     {
@@ -53,6 +38,15 @@ class CostItem
         $this->survey = $survey;
 
         return $this;
+    }
+
+    public function Initialize(TableRow $tr)
+    {
+        $this->myTable = $tr->getMyTable();
+        $this->myNumber = $tr->getMyNumber();
+        $this->labors = $tr->getLabors();
+        $this->materials = $tr->getMaterials();
+        $this->equipments = $tr->getEquipments();
     }
     public function GenerateValuesForTwigCostTable()
     {

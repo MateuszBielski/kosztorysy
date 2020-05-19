@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pozycja{% endblock %}
+{% block title %}{{table_row.getFullName()}}{% endblock %}
 {% block scripts %}
         <script type="text/javascript" src="../../js/calculateTableRow.js"></script>
 {% endblock %}

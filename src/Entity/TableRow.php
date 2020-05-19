@@ -26,7 +26,7 @@ class TableRow
      * @ORM\ManyToOne(targetEntity="App\Entity\ClTable", inversedBy="tableRows", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $myTable;
+    protected $myTable;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -43,17 +43,17 @@ class TableRow
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Labor", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
      */
-    private $labors;
+    protected $labors;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Material", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
      */
-    private $materials;
+    protected $materials;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Circulation\Equipment", mappedBy="tableRow", orphanRemoval=true, cascade={"persist"}, fetch="EAGER")
      */
-    private $equipments;
+    protected $equipments;
 
     private $subIndices;
 
@@ -65,7 +65,7 @@ class TableRow
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $myNumber;
+    protected $myNumber;
 
     /**
      * @ORM\Column(type="string", length=30, nullable=true)
@@ -401,5 +401,10 @@ class TableRow
         $this->unit = $unit;
 
         return $this;
+    }
+    
+    public function generateHTMLcodeForCostTable()
+    {
+        
     }
 }

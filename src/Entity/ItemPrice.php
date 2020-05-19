@@ -38,4 +38,21 @@ class ItemPrice extends Circulation
 
         return $this;
     }
+    public function Initialize(Circulation $c)
+    {
+        $this->value = $c->getValue();
+        $this->nameAndUnit = $c->getNameAndUnit();
+        $this->groupNumber = $c->getGroupNumber();
+    }
+    public static function FactoryFromCirculations($circulations)
+    {
+        $itemPrices = array();
+        foreach($circulations as $cir)
+        {
+            $ip = new ItemPrice;
+            $ip->Initialize($cir);
+            $itemPrices[] = $ip;
+        }
+        return $itemPrices;
+    }
 }

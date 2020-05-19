@@ -24,7 +24,7 @@ class Catalog
     /**
      * @ORM\Column(type="string", length=36)
      */
-    private $name;
+    private $name = '';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Chapter", mappedBy="myCatalog", orphanRemoval=true, cascade={"persist"}, fetch="LAZY")
