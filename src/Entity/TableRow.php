@@ -109,29 +109,25 @@ class TableRow
     }
     public function SelectNameAndUnitToCirculations($catalogCirculationN_U)
     {
-        $selectFor = function($circArray,$circLetter) use (&$catalogCirculationN_U)
-        {
-            foreach($circArray as $circ)
-            {
+        $selectFor = function ($circArray, $circLetter) use (&$catalogCirculationN_U) {
+            foreach ($circArray as $circ) {
                 $ind = $circ->getReadNameIndex();
-                if(array_key_exists($ind,$catalogCirculationN_U[$circLetter]))
-                $circ->setNameAndUnit($catalogCirculationN_U[$circLetter][$ind]);
-                else
-                {
+                if (array_key_exists($ind, $catalogCirculationN_U[$circLetter]))
+                    $circ->setNameAndUnit($catalogCirculationN_U[$circLetter][$ind]);
+                else {
                     //problem pojawiał się rzadko w robociźnie dlatego przyjmiemy pierwszą grupę robotników istniejącą:
                     $circ->setNameAndUnit(reset($catalogCirculationN_U[$circLetter]));
-                    
+
                     // $table = $this->myTable;
                     // $chapter = $table->getMyChapter();
                     // $catalog = $chapter->getMyCatalog();
                     // echo "\n"."Problem z indeksami {$circLetter} w {$catalog->getName()} {$chapter->getName()} {$table->getMyNumber()} {$this->myNumber}";
                 }
-     
             }
         };
-        $selectFor($this->getLabors(),'R');
-        $selectFor($this->getMaterials(),'M');
-        $selectFor($this->getEquipments(),'S');
+        $selectFor($this->getLabors(), 'R');
+        $selectFor($this->getMaterials(), 'M');
+        $selectFor($this->getEquipments(), 'S');
     }
     public function setValuesToCirculations(array $values)
     {
@@ -140,31 +136,30 @@ class TableRow
         $cS = count($this->getEquipments());
         $isToMuchRMS = $cR + $cM + $cS - count($values);
 
-        if ($isToMuchRMS > 0)
-        {
+        if ($isToMuchRMS > 0) {
             // echo "\nProblem w: ".$this->name." tabl ".$numTable." wiersz ".$numRow;
             // echo ' liczba wartości dla RMS '.count($tableRowValues);
             // echo ', R '.$cR.', M '.$cM.', S '.$cS;
-            for($i = 0; $i < $isToMuchRMS;$i++)$values[] = 0.0;
+            for ($i = 0; $i < $isToMuchRMS; $i++) $values[] = 0.0;
             // $numTableRow++;
             // continue;
         }
         $numTrV = 0;
-        foreach($this->getLabors() as $R) $R->setValue($values[$numTrV++]);
-        foreach($this->getMaterials() as $M) $M->setValue($values[$numTrV++]);
-        foreach($this->getEquipments() as $S) $S->setValue($values[$numTrV++]);
+        foreach ($this->getLabors() as $R) $R->setValue($values[$numTrV++]);
+        foreach ($this->getMaterials() as $M) $M->setValue($values[$numTrV++]);
+        foreach ($this->getEquipments() as $S) $S->setValue($values[$numTrV++]);
         $this->RemoveZeroValueCirculations();
     }
     public function RemoveZeroValueCirculations()
     {
-        $zeroArray = function($circ){
-            foreach($circ as $key => $c){
-                if($c->getValue() == 0)unset($c);
+        $zeroArray = function ($circ) {
+            foreach ($circ as $key => $c) {
+                if ($c->getValue() == 0) unset($c);
             }
         };
-        $zeroArrayCollection = function($circ){
-            foreach($circ as $c){
-                if($c->getValue() == 0)$circ->removeElement($c);
+        $zeroArrayCollection = function ($circ) {
+            foreach ($circ as $c) {
+                if ($c->getValue() == 0) $circ->removeElement($c);
             }
         };
         $zero = $this->optimized ? $zeroArray : $zeroArrayCollection;
@@ -174,27 +169,30 @@ class TableRow
     }
     public function SetAfterSplitLineIntoDescriptionAndIndices($subLine)
     {
-        $slicePos = Functions::FindSlicePosition($subLine,'$',7);
-        $this->subDescription = trim(substr($subLine,0,$slicePos - 1));
-        $this->subIndices = trim(substr($subLine,$slicePos,strlen($subLine)-1-$slicePos));
+        $slicePos = Functions::FindSlicePosition($subLine, '$', 7);
+        $this->subDescription = trim(substr($subLine, 0, $slicePos - 1));
+        $this->subIndices = trim(substr($subLine, $slicePos, strlen($subLine) - 1 - $slicePos));
     }
-    public function createCompoundDescription($mainLine,$subLine)
+    public function createCompoundDescription($mainLine, $subLine)
     {
-        $mainArray = explode('$',$mainLine);
-        $subArray = explode('$',$subLine);
+        $mainArray = explode('$', $mainLine);
+        $subArray = explode('$', $subLine);
         $res = "";
-        for($i = 2; $i < 6; $i++) $res .= str_replace('^',$mainArray[$i],$subArray[$i]);
+        for ($i = 2; $i < 6; $i++) $res .= str_replace('^', $mainArray[$i], $subArray[$i]);
         $this->compoundDescription = trim($res);
         $this->myNumber = $this->ExtractMyNumber(end($subArray));
     }
-    public function createCompoundRMSindices($mainIndices,$subIndices)
+    public function createCompoundRMSindices($mainIndices, $subIndices)
     {
-        $this->CompoundIndices($mainIndices,$subIndices,
-        $this->labors,
-        $this->materials,
-        $this->equipments);
+        $this->CompoundIndices(
+            $mainIndices,
+            $subIndices,
+            $this->labors,
+            $this->materials,
+            $this->equipments
+        );
     }
-    public function createCompoundRMSindices_optimized($mainIndices,$subIndices)
+    public function createCompoundRMSindices_optimized($mainIndices, $subIndices)
     {
         $this->optimized = true;
         $this->labors = null;
@@ -203,44 +201,46 @@ class TableRow
         $this->laborsArray = array();
         $this->materialsArray = array();
         $this->equipmentsArray = array();
-        $this->CompoundIndices($mainIndices,$subIndices,
-                                $this->laborsArray,
-                                $this->materialsArray,
-                                $this->equipmentsArray);
+        $this->CompoundIndices(
+            $mainIndices,
+            $subIndices,
+            $this->laborsArray,
+            $this->materialsArray,
+            $this->equipmentsArray
+        );
     }
-    private function CompoundIndices($mainIndices,$subIndices,&$labors,&$materials,&$equipments)
+    private function CompoundIndices($mainIndices, $subIndices, &$labors, &$materials, &$equipments)
     {
-        $mainArray = explode('$',$mainIndices);
-        $subArray = explode('$',$subIndices);
+        $mainArray = explode('$', $mainIndices);
+        $subArray = explode('$', $subIndices);
         $arrayToReadNameIndices = count($subArray) > 4 ? $subArray : $mainArray;
         $posReadCircIndex = 4;
         $this->unit = trim($arrayToReadNameIndices[0]);
         //ważna jest referencja dla &$arrCirc - inaczej zwykła array nie chce działać
-        $readAndSetCirc = function($ind,$circClass,&$arrCirc) use (&$arrayToReadNameIndices,&$posReadCircIndex)
-        {$numCirc = $arrayToReadNameIndices[$ind];
-            for($i = 0 ; $i < $numCirc ; $i++){
+        $readAndSetCirc = function ($ind, $circClass, &$arrCirc) use (&$arrayToReadNameIndices, &$posReadCircIndex) {
+            $numCirc = $arrayToReadNameIndices[$ind];
+            for ($i = 0; $i < $numCirc; $i++) {
                 $circClass = new $circClass;
                 $circClass->setTableRow($this);
                 $indexCircN_U = $arrayToReadNameIndices[$posReadCircIndex];
                 $circClass->setReadNameIndex($indexCircN_U);
-                $arrCirc[] = $circClass;// ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
+                $arrCirc[] = $circClass; // ta linijka powoduje gigantyczny nakład, ponieważ to jest ArrayCollection 
                 //użycie zwykłej array znacznie przyspieszyłoby proces - tak myślałem dopóki nie sprawdziłem
                 $posReadCircIndex++;
-
             }
         };
-        $readAndSetCirc(1,Labor::class,$labors);
-        $readAndSetCirc(2,Material::class,$materials);
-        $readAndSetCirc(3,Equipment::class,$equipments);
+        $readAndSetCirc(1, Labor::class, $labors);
+        $readAndSetCirc(2, Material::class, $materials);
+        $readAndSetCirc(3, Equipment::class, $equipments);
     }
     public function getCompoundDescription()
     {
-       return $this->compoundDescription;
+        return $this->compoundDescription;
     }
     public function CompoundDescription()
     {
-        
-        $this->createCompoundDescription($this->myTable->getMainDescription(),$this->subDescription);
+
+        $this->createCompoundDescription($this->myTable->getMainDescription(), $this->subDescription);
         return $this->compoundDescription;
     }
 
@@ -259,7 +259,7 @@ class TableRow
     /**
      * @return Collection|Labor[]
      */
-    public function getLabors()//: Collection
+    public function getLabors() //: Collection
     {
         return $this->optimized ? $this->laborsArray : $this->labors;
     }
@@ -290,7 +290,7 @@ class TableRow
     /**
      * @return Collection|Material[]
      */
-    public function getMaterials()//: Collection
+    public function getMaterials() //: Collection
     {
         return $this->optimized ? $this->materialsArray : $this->materials;
     }
@@ -321,7 +321,7 @@ class TableRow
     /**
      * @return Collection|Equipment[]
      */
-    public function getEquipments()//: Collection
+    public function getEquipments() //: Collection
     {
         return $this->optimized ? $this->equipmentsArray : $this->equipments;
     }
@@ -351,9 +351,9 @@ class TableRow
     public function getCirculations()
     {
         $res = array();
-        foreach($this->getLabors() as $r)$res[] = $r;
-        foreach($this->getMaterials() as $m)$res[] = $m;
-        foreach($this->getEquipments() as $s)$res[] = $s;
+        foreach ($this->getLabors() as $r) $res[] = $r;
+        foreach ($this->getMaterials() as $m) $res[] = $m;
+        foreach ($this->getEquipments() as $s) $res[] = $s;
         return $res;
     }
     public function getSubIndices()
@@ -363,7 +363,7 @@ class TableRow
     public function getTotalLaborValue()
     {
         $res = 0.0;
-        foreach($this->getLabors() as $lab) $res += $lab->getValue();
+        foreach ($this->getLabors() as $lab) $res += $lab->getValue();
         return $res;
     }
     public function setOptimized()
@@ -384,11 +384,11 @@ class TableRow
     }
     public function ExtractMyNumber(string $text)
     {
-        return intval(trim($text," -"));
+        return intval(trim($text, " -"));
     }
     public function getFullName()
     {
-        return $this->myTable->getFullName().'-'.sprintf("%02d",$this->myNumber);
+        return $this->myTable->getFullName() . '-' . sprintf("%02d", $this->myNumber);
     }
 
     public function getUnit(): ?string
@@ -402,9 +402,24 @@ class TableRow
 
         return $this;
     }
-    
-    public function generateHTMLcodeForCostTable()
+
+    public function GenerateValuesForTwigCostTable()
     {
-        
+        $valuesForTwig = array();
+        $fillArray = function ($groupName, $circulations) use (&$valuesForTwig) {
+            $arr = array();
+            $arr[] = $groupName;
+            $valuesForTwig[] = $arr;
+            foreach ($circulations as $c) {
+                $arr = array();
+                $arr[] = $c->getValue();
+                $valuesForTwig[] = $arr;
+            }
+        };
+        $fillArray('robocizna', $this->labors);
+        $fillArray('materiały', $this->materials);
+        $fillArray('sprzęt', $this->equipments);
+        echo "TableRow GenerateValuesForTwigCostTable";
+        return $valuesForTwig;
     }
 }

@@ -50,7 +50,6 @@ class CostItem extends TableRow
     }
     public function GenerateValuesForTwigCostTable()
     {
-        $arrayForTwig = array();
-        // for($i = 0; $i)
+        return parent::GenerateValuesForTwigCostTable();
     }
 }

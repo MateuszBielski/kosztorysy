@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\Entity\Chapter;
+use App\Entity\Catalog;
 use App\Entity\TableRow;
 use App\Entity\Circulation\Equipment;
 use App\Entity\Circulation\Labor;
@@ -15,17 +15,19 @@ class CostItemTest extends TestCase
 {
     public function testInitializeCostItem()
     {
-        $path = '/var/www/html/norma/resources/Norma3/Kat/KNW3/KNW3R2.OP';
-        $opFile = fopen($path,'r');
-        $chapter = new Chapter;
-        $chapter->LoadTablesWithDescriptionFromOP($opFile,DESCRIPaRMS);
-        fclose($opFile);
-        $ci = new CostItem;
+        $catFile = '/var/www/html/norma/resources/Norma3/Kat/KNW3';
+        $catalog = new Catalog;
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS|BAZ_FILE_DIST);
+        
         //KNNR-W 3 0201-03
-        $tr = $chapter->getTables()[0]->getTableRows()[2];
+        $tr = $catalog->getMyChapters()['Rozdział 02']->getTables()[0]->getTableRows()[2];
+        
+        $ci = new CostItem;
         $ci->Initialize($tr);
-        $this->assertEquals('01-03',$ci->getFullName());
+        $this->assertEquals('KNNR-W 3 0201-03',$ci->getFullName());
         $this->assertEquals(4,count($ci->getMaterials()));
+        $priceLabor = $ci->getLabors()[0];
+        $this->assertEquals(30.1,$priceLabor->getValue());
     }
     public function testGenerateValuesForTwigCostTable()
     {
@@ -33,9 +35,6 @@ class CostItemTest extends TestCase
         $av_M = array(2.25,0.03,1.03);
         $av_S = array(2.03,2.5);
         $tr = new TableRow;
-        // $a_R = array();
-        // $a_M = array();
-        // $a_S = array();
         foreach($av_R as $v){
             $c = new Labor();
             $c->setValue($v);
@@ -52,9 +51,17 @@ class CostItemTest extends TestCase
             $tr->addEquipment($c);
         }
         $ci = new CostItem;
-        // $ci->setTableRow($tr);
+        $ci->Initialize($tr);
         $ci->setSurvey(24.1);
-        //$this->assertEquals(145,count($ci->GenerateValuesForTwigCostTable()));
-
+        $stringExpected = 'robocizna1.234.2materiały2.250.031.03sprzęt2.032.5';
+        $stringResult = '';
+        foreach($ci->GenerateValuesForTwigCostTable() as $row)
+        {
+            foreach($row as $td)
+            {
+                $stringResult .= $td;
+            }
+        }
+        $this->assertEquals($stringExpected,$stringResult);
     }
 }
