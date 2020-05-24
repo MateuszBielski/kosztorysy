@@ -246,5 +246,33 @@ class TableAndTableRowTest extends TestCase
         $tableRow->createCompoundRMSindices($mainLine,$subLine);
         $this->assertEquals('m2',$tableRow->getUnit());
     }
+    public function testGenerateValuesForTwigCostTable()
+    {
+        $catFile = '/var/www/html/norma/resources/Norma3/Kat/KNW3';
+        $catalog = new Catalog;
+        $catalog->ReadFromDir($catFile,DESCRIPaRMS|BAZ_FILE_DIST);
+        
+        //KNNR-W 3 0201-03
+        $tr = $catalog->getMyChapters()['Rozdział 02']->getTables()[0]->getTableRows()[2];
+        $stringExpected = "--R--\n";
+        $stringExpected .= "robotnicy30.1r-g\n";
+        $stringExpected .= "--M--\n";
+        $stringExpected .= "beton zwykły z kruszywa naturalnego1.01m3\n";
+        $stringExpected .= "deski iglaste obrzynane 19-25 mm kl.III0.014m3\n";
+        $stringExpected .= "deski iglaste obrzynane 28-45 mm kl.III0.008m3\n";
+        $stringExpected .= "materiały pomocnicze2%\n";
+        $stringExpected .= "--S--\n";
+        $stringExpected .= "samochód samowyładowczy 5 t0.63m-g\n";
+        $stringResult = '';
+        foreach($tr->GenerateValuesForTwigCostTable() as $row)
+        {
+            foreach($row as $td)
+            {
+                $stringResult .= $td;
+            }
+            $stringResult .="\n";
+        }
+        $this->assertEquals($stringExpected,$stringResult);
+    }
     
 }

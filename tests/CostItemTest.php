@@ -53,7 +53,7 @@ class CostItemTest extends TestCase
         $ci = new CostItem;
         $ci->Initialize($tr);
         $ci->setSurvey(24.1);
-        $stringExpected = 'robocizna1.234.2materiały2.250.031.03sprzęt2.032.5';
+        $stringExpected = '--R--1.234.2--M--2.250.031.03--S--2.032.5';
         $stringResult = '';
         foreach($ci->GenerateValuesForTwigCostTable() as $row)
         {
@@ -64,4 +64,5 @@ class CostItemTest extends TestCase
         }
         $this->assertEquals($stringExpected,$stringResult);
     }
+
 }

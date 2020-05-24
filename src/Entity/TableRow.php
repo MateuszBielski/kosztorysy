@@ -407,19 +407,21 @@ class TableRow
     {
         $valuesForTwig = array();
         $fillArray = function ($groupName, $circulations) use (&$valuesForTwig) {
-            $arr = array();
-            $arr[] = $groupName;
-            $valuesForTwig[] = $arr;
+            $row = array();
+            $row[] = $groupName;
+            $valuesForTwig[] = $row;
             foreach ($circulations as $c) {
-                $arr = array();
-                $arr[] = $c->getValue();
-                $valuesForTwig[] = $arr;
+                $row = array();
+                $row[] = $c->getName();
+                $row[] = $c->getValue();
+                $row[] = $c->getUnit();
+                $valuesForTwig[] = $row;
             }
         };
-        $fillArray('robocizna', $this->labors);
-        $fillArray('materiały', $this->materials);
-        $fillArray('sprzęt', $this->equipments);
-        echo "TableRow GenerateValuesForTwigCostTable";
+        $fillArray('--R--', $this->labors);
+        $fillArray('--M--', $this->materials);
+        $fillArray('--S--', $this->equipments);
+        // echo "TableRow GenerateValuesForTwigCostTable";
         return $valuesForTwig;
     }
 }

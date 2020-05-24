@@ -6,7 +6,12 @@
         <th class="cost_col">M</th>
         <th class="cost_col">S</th>
     </thead>
-    {% for item in items %}
-        
+    {% for circ in cost_item.GenerateValuesForTwigCostTable() %}
+        <tr>
+            {% for col in circ %}
+                <td>{{ col }}</td>
+            {% endfor %}
+        </tr>
     {% endfor %}
 </table>
+{# {{ cost_item.myNumber }} #}

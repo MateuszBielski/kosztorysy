@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CostItem;
 use App\Entity\TableRow;
 use App\Form\TableRowType;
 use App\Repository\TableRowRepository;
@@ -50,11 +51,14 @@ class TableRowController extends AbstractController
     /**
      * @Route("/calculateAjax", name="table_row_calculateAjax", methods={"GET","POST"})
      */
-    public function calculateAjax(Request $request)
+    public function calculateAjax(Request $request,TableRowRepository $tableRowRepository)
     {
         $id = $request->query->get("id");
+        $tableRow = $tableRowRepository->find($id);
+        $costItem = new CostItem;
+        $costItem->Initialize($tableRow);
         return $this->render('table_row/showCosts.html.twig', [
-        // 'table_row' => $tableRow,
+        'cost_item' => $costItem,
         ]);
     }
 

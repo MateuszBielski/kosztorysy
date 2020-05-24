@@ -50,6 +50,21 @@ class CostItem extends TableRow
     }
     public function GenerateValuesForTwigCostTable()
     {
-        return parent::GenerateValuesForTwigCostTable();
+        $valuesForTwig = array();
+        $fillArray = function ($groupName, $circulations) use (&$valuesForTwig) {
+            $row = array();
+            $row[] = $groupName;
+            $valuesForTwig[] = $row;
+            foreach ($circulations as $c) {
+                $row = array();
+                $row[] = $c->getValue();
+                $valuesForTwig[] = $row;
+            }
+        };
+        $fillArray('--R--', $this->labors);
+        $fillArray('--M--', $this->materials);
+        $fillArray('--S--', $this->equipments);
+        // echo "TableRow GenerateValuesForTwigCostTable";
+        return $valuesForTwig;
     }
 }
