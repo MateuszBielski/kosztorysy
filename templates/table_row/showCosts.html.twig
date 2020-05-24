@@ -1,17 +1,24 @@
 <table id="tr_cost_table">
-    <thead>
-        <th class="cost_col">Nakłady</th>
-        <th class="cost_col">Koszt jedn.</th>
-        <th class="cost_col">R</th>
-        <th class="cost_col">M</th>
-        <th class="cost_col">S</th>
-    </thead>
-    {% for circ in cost_item.GenerateValuesForTwigCostTable() %}
-        <tr>
-            {% for col in circ %}
-                <td>{{ col }}</td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
+	<thead>
+		<th class="cost_col">Cena jednostkowa</th>
+		<th class="cost_col">Nakłady</th>
+		<th class="cost_col">Koszt jedn.</th>
+		<th class="cost_col">R</th>
+		<th class="cost_col">M</th>
+		<th class="cost_col">S</th>
+	</thead>
+	{% for circ in cost_item.GenerateValuesForTwigCostTable() %}
+		<tr >
+			{% for col in circ %}
+				<td>
+					{% if loop.first and col >= 0  %}
+						<input type="text" name="" id="inputPrice{{  }}" value="{{ col }}">
+					{% else %}
+						{{ col }}
+					{% endif %}
+				</td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
 </table>
 {# {{ cost_item.myNumber }} #}

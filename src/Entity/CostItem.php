@@ -44,21 +44,23 @@ class CostItem extends TableRow
     {
         $this->myTable = $tr->getMyTable();
         $this->myNumber = $tr->getMyNumber();
-        $this->labors = $tr->getLabors();
-        $this->materials = $tr->getMaterials();
-        $this->equipments = $tr->getEquipments();
+        $this->labors = ItemPrice::FactoryFromCirculations($tr->getLabors());
+        $this->materials = ItemPrice::FactoryFromCirculations($tr->getMaterials());
+        $this->equipments = ItemPrice::FactoryFromCirculations($tr->getEquipments());
     }
     public function GenerateValuesForTwigCostTable()
     {
         $valuesForTwig = array();
         $fillArray = function ($groupName, $circulations) use (&$valuesForTwig) {
             $row = array();
+            $row[] = '';
             $row[] = $groupName;
             $valuesForTwig[] = $row;
             foreach ($circulations as $c) {
                 $row = array();
+                $row[] = $c->getPriceValue();
                 $row[] = $c->getValue();
-                $valuesForTwig[] = $row;
+                $valuesForTwig[$c->getNameAndUnit()->getId()] = $row;
             }
         };
         $fillArray('--R--', $this->labors);

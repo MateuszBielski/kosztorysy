@@ -18,9 +18,9 @@ input{
 	padding: 0;
 	box-sizing: border-box;
 }
-/* table{
+table{
 	border-collapse: collapse;
-} */
+}
 table,  th, td {
 	border: 1px rgb(82, 212, 212);
 }
@@ -29,7 +29,7 @@ thead,tr
 	height: 12px;
 }
 .cost_col{
-	width: 20%;
+	width: 16.6%;
 }
 #header {   
     width: 100%;

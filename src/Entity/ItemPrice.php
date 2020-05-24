@@ -20,7 +20,7 @@ class ItemPrice extends Circulation
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $priceValue;
+    private $priceValue = 0;
 
     public function getId(): ?int
     {
