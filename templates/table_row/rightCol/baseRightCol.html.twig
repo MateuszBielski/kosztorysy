@@ -1,0 +1,15 @@
+<tr>
+	<td>
+		{% block letter %}{% endblock %}
+	</td>
+</tr>
+{% for row in circulations %}
+	<tr>
+        <td><input type="text" name="" id="" value="{{ row.priceValue }}"></td>
+        <td>{{ row.value }}</td>
+        <td>{{ row.value }}* cena</td>
+		{% block cols %}
+			
+		{% endblock %}
+	</tr>
+{% endfor %}

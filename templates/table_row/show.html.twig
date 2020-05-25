@@ -34,14 +34,16 @@
             <th></th>
             <th></th>
         </thead>
-        {% for row in table_row.GenerateValuesForTwigCostTable() %}
+        {# {% for row in table_row.GenerateValuesForTwigCostTable() %}
             <tr>
                 {% for col in row %}
                     <td>{{ col }}</td>
                 {% endfor %}
             </tr>
-        {% endfor %}
-        
+        {% endfor %} #}
+        {{ include ('table_row/leftCol/labor.html.twig',{circulations: table_row.labors})}}
+        {{ include ('table_row/leftCol/material.html.twig',{circulations: table_row.materials})}}
+        {{ include ('table_row/leftCol/equipment.html.twig',{circulations: table_row.equipments})}}
     </table>
 </div>
 <div id="rightcol">

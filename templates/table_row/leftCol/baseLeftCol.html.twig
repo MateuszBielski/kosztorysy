@@ -1,0 +1,14 @@
+<tr>
+	<td>
+		{% block letter %}{% endblock %}
+	</td>
+</tr>
+{% for row in circulations %}
+	<tr>
+		{% block cols %}
+			<td>{{ row.name }}</td>
+			<td>{{ row.value }}</td>
+			<td>{{ row.unit }}</td>
+		{% endblock %}
+	</tr>
+{% endfor %}

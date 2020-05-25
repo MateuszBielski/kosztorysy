@@ -7,18 +7,21 @@
 		<th class="cost_col">M</th>
 		<th class="cost_col">S</th>
 	</thead>
-	{% for circ in cost_item.GenerateValuesForTwigCostTable() %}
-		<tr >
-			{% for col in circ %}
-				<td>
-					{% if loop.first and col >= 0  %}
-						<input type="text" name="" id="inputPrice{{  }}" value="{{ col }}">
-					{% else %}
-						{{ col }}
-					{% endif %}
-				</td>
-			{% endfor %}
-		</tr>
-	{% endfor %}
+	{# {% for circ in cost_item.GenerateValuesForTwigCostTable() %}
+			<tr >
+				{% for col in circ %}
+					<td>
+						{% if loop.first and col >= 0  %}
+							<input type="text" name="" id="inputPrice{{  }}" value="{{ col }}">
+						{% else %}
+							{{ col }}
+						{% endif %}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %} #}
+	{{ include ('table_row/rightCol/labor.html.twig',{circulations: cost_item.labors})}}
+	{{ include ('table_row/rightCol/material.html.twig',{circulations: cost_item.materials})}}
+	{{ include ('table_row/rightCol/equipment.html.twig',{circulations: cost_item.equipments})}}
 </table>
 {# {{ cost_item.myNumber }} #}
