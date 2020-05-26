@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ItemPrice{% endblock %}
+
+{% block body %}
+    <h1>ItemPrice</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ item_price.id }}</td>
+            </tr>
+            <tr>
+                <th>Value</th>
+                <td>{{ item_price.value }}</td>
+            </tr>
+            <tr>
+                <th>GroupNumber</th>
+                <td>{{ item_price.groupNumber }}</td>
+            </tr>
+            <tr>
+                <th>PriceValue</th>
+                <td>{{ item_price.priceValue }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('item_price_index') }}">back to list</a>
+
+    <a href="{{ path('item_price_edit', {'id': item_price.id}) }}">edit</a>
+
+    {{ include('item_price/_delete_form.html.twig') }}
+{% endblock %}

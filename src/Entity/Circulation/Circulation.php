@@ -16,7 +16,7 @@ class Circulation
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="float")
@@ -25,7 +25,7 @@ class Circulation
     protected $readNameIndex;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Circulation\CirculationNameAndUnit",cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Circulation\CirculationNameAndUnit",cascade={"persist"},fetch="LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     protected $nameAndUnit;

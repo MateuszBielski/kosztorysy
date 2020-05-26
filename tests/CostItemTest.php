@@ -33,6 +33,7 @@ class CostItemTest extends TestCase
         $priceLabor = $ci->getLabors()[0];
         $this->assertEquals(30.1,$priceLabor->getValue());
     }
+    //po uzyciu bloków twiga nie jest to potrzebna funkcjonalność
     public function testGenerateValuesForTwigCostTable()
     {
         $av_R = array(1.23,4.2);
@@ -68,7 +69,6 @@ class CostItemTest extends TestCase
         $ci->setSurvey(24.1);
         $stringExpected = '--R--01.2304.2--M--02.2500.0301.03--S--02.0302.5';
         $stringResult = '';
-        $stringKeys = '9876543';
         $expectedKeys = '';
         foreach($ci->GenerateValuesForTwigCostTable() as $k=>$row)
         {
@@ -80,7 +80,6 @@ class CostItemTest extends TestCase
             }
         }
         $this->assertEquals($stringExpected,$stringResult);
-        $this->assertEquals('33',$expectedKeys);
 
     }
     // public function test(Type $var = null)

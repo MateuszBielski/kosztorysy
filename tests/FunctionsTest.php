@@ -31,20 +31,21 @@ class FunctionsTest extends TestCase
         $expected  = 'Roboty remontowe i modern...';
         $this->assertEquals($expected,Functions::ShortenText($text,25));
     }
+    //rozdzielenie sposobu czytania w polu wyszukiwania katalogów - nie jest potrzebne poniższe rozdzielenie
     public function testIsCatalogName()
     {
         $requestsTrue = array('KN 0-15','Nr 35','02','KNR AL-01','knr 2-0');
         foreach($requestsTrue as $req)
         {
             $res= Functions::IsCatalogName($req) ? 'tak':'nie';
-            echo "\n$req ".$res;
+            // echo "\n$req ".$res;
         }
         foreach($requestsTrue as $req)$this->assertTrue(Functions::IsCatalogName($req));
         $requestsFalse = array('naw','bud','rem');
         foreach($requestsFalse as $req)
         {
             $res= Functions::IsCatalogName($req) ? 'tak':'nie';
-            echo "\n$req ".$res;
+            // echo "\n$req ".$res;
         }
         foreach($requestsFalse as $req)$this->assertFalse(Functions::IsCatalogName($req));
     }

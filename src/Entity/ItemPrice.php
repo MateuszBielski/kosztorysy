@@ -10,17 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ItemPrice extends Circulation
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $priceValue = 0;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList", inversedBy="prices")
+     */
+    private $priceList;
 
     public function getId(): ?int
     {
@@ -54,5 +53,17 @@ class ItemPrice extends Circulation
             $itemPrices[] = $ip;
         }
         return $itemPrices;
+    }
+
+    public function getPriceList(): ?PriceList
+    {
+        return $this->priceList;
+    }
+
+    public function setPriceList(?PriceList $priceList): self
+    {
+        $this->priceList = $priceList;
+
+        return $this;
     }
 }
