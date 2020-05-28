@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CostItem index{% endblock %}
+
+{% block body %}
+    <h1>CostItem index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Description</th>
+                <th>SubDescription</th>
+                <th>MyNumber</th>
+                <th>Unit</th>
+                <th>Survey</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cost_item in cost_items %}
+            <tr>
+                <td>{{ cost_item.id }}</td>
+                <td>{{ cost_item.description }}</td>
+                <td>{{ cost_item.subDescription }}</td>
+                <td>{{ cost_item.myNumber }}</td>
+                <td>{{ cost_item.unit }}</td>
+                <td>{{ cost_item.survey }}</td>
+                <td>
+                    <a href="{{ path('cost_item_show', {'id': cost_item.id}) }}">show</a>
+                    <a href="{{ path('cost_item_edit', {'id': cost_item.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('cost_item_new') }}">Create new</a>
+{% endblock %}

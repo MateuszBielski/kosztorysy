@@ -90,4 +90,8 @@ class PriceList
             $itemPrice->setPriceList($this);
         }
     }
+    public function getAmonutOfPrices()
+    {
+        return count($this->prices);
+    }
 }

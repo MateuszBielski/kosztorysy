@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit CostItem{% endblock %}
+
+{% block body %}
+    <h1>Edit CostItem</h1>
+
+    {{ include('cost_item/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('cost_item_index') }}">back to list</a>
+
+    {{ include('cost_item/_delete_form.html.twig') }}
+{% endblock %}

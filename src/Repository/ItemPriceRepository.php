@@ -47,4 +47,8 @@ class ItemPriceRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findByPriceListAndCircNU($priceListName, array $cirNU)
+    {
+        # code...
+    }
 }

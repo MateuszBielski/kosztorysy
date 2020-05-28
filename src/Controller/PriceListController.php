@@ -56,8 +56,8 @@ class PriceListController extends AbstractController
     {
         $priceList = new PriceList();
         $priceList->setName('ceny losowe');
-        // $circulations = array_slice($cnur->findAll(),-100);
-        $circulations = $cnur->findAll();
+        $circulations = array_slice($cnur->findAll(),0,16007);//16007ok, 17000nieok, 18000nieok, 20007 nieok, 19999 nieok
+        // $circulations = $cnur->findAll();
         $priceList->CreateRandomPrices($circulations,0.95,301.34);
         $form = $this->createForm(PriceListType::class, $priceList);
         $form->handleRequest($request);

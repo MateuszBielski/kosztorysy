@@ -12,11 +12,19 @@ use App\Entity\Circulation\CirculationNameAndUnit;
 use App\Entity\Circulation\Equipment_N_U;
 use App\Entity\Circulation\Labor_N_U;
 use App\Entity\Circulation\Material_N_U;
+use App\Entity\ItemPrice;
+use App\Repository\ItemPriceRepository;
 use PHPUnit\Framework\TestCase;
 require_once('src/Service/Constants.php');
 
 class CostItemTest extends TestCase
 {
+    protected $itemPriceRepository;
+    
+    protected function setUp()
+    {
+        $this->itemPriceRepository = $this->createMock(ItemPriceRepository::class); 
+    }
     public function testInitializeCostItem()
     {
         $catFile = '/var/www/html/norma/resources/Norma3/Kat/KNW3';
@@ -82,8 +90,20 @@ class CostItemTest extends TestCase
         $this->assertEquals($stringExpected,$stringResult);
 
     }
-    // public function test(Type $var = null)
-    // {
-    //     # code...
-    // }
+    public function testUpdatePricesFromRepository()
+    {
+        $returns = array();
+        $this->itemPriceRepository->expects($this->any())
+        ->method('findByPriceListAndCircNU')->willReturn($returns);
+
+        $tableRow = new TableRow;
+        $tableRow->addLabor(new Labor);
+        $tableRow->addMaterial(new Material);
+        // $costItem->Initialize($tableRow);
+        
+        $costItem = new CostItem;
+        $costItem->Initialize($tableRow);
+        $costItem->UpdatePricesFrom($this->itemPriceRepository);
+        $this->assertEquals(23.5,$costItem->getLabors()[0]->getPriceValue());
+    }
 }

@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
     input_survey.on('input',function(){
         var survey = input_survey.val();
         $.ajax({
-                url: "/table/row/calculateAjax",
+                url: "/cost/item/calculateAjax",
                 type: "GET",
                 data: {
                     id: tr_id,

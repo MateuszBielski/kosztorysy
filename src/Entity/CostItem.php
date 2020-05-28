@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\ItemPriceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -68,5 +69,10 @@ class CostItem extends TableRow
         $fillArray('--S--', $this->equipments);
         // echo "TableRow GenerateValuesForTwigCostTable";
         return $valuesForTwig;
+    }
+    public function UpdatePricesFrom(ItemPriceRepository $itemPriceRepository)
+    {
+        $itemPrices = $itemPriceRepository->findByPriceListNameAndCircNU('$itemPriceRepository',$this->getCirculations());
+        # code...
     }
 }

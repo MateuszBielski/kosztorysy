@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New CostItem{% endblock %}
+
+{% block body %}
+    <h1>Create new CostItem</h1>
+
+    {{ include('cost_item/_form.html.twig') }}
+
+    <a href="{{ path('cost_item_index') }}">back to list</a>
+{% endblock %}
