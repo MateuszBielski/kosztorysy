@@ -72,7 +72,9 @@ class CostItem extends TableRow
     }
     public function UpdatePricesFrom(ItemPriceRepository $itemPriceRepository)
     {
-        $itemPrices = $itemPriceRepository->findByPriceListNameAndCircNU('$itemPriceRepository',$this->getCirculations());
+        $cirIds = array();
+        foreach($this->getCirculations() as $cir)$cirIds[] = $cir->getId();
+        $itemPrices = $itemPriceRepository->findByPriceListNameAndCircNU('$itemPriceRepository',$cirIds);
         # code...
     }
 }

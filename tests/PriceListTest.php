@@ -18,7 +18,7 @@ class PriceListTest extends KernelTestCase
     protected function setUp()
     {
         $kernel = self::bootKernel();
-        $doctrine = $this->entityManager = $kernel->getContainer()
+        $doctrine = $kernel->getContainer()
         ->get('doctrine');
 
         $this->entityManager = $doctrine->getManager();

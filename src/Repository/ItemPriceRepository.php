@@ -47,8 +47,21 @@ class ItemPriceRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findByPriceListAndCircNU($priceListName, array $cirNU)
+    public function findByPriceListAndCircNU($priceListName, array $cirNUids)
     {
-        # code...
+        return $this->createQueryBuilder('i')//,'nau.id'
+        ->select( 'i.priceValue' )
+        // ->leftJoin()
+        ->setParameter('plName',$priceListName)
+        ->innerJoin('i.priceList','priceList')
+        ->where('priceList.name = :plName')
+        ->setParameter('cirIds',array_values($cirNUids))
+        ->innerJoin('i.nameAndUnit','nau')
+        ->andWhere("nau.id IN(:cirIds)")
+        ->getQuery()
+        ->getResult();
+        // ->where("user.id IN(:usersIds)")
+        // ->setParameter('usersIds',array_values($usersId))
+        // SELECT i.priceValue FROM App\Entity\ItemPrice i INDEX BY nau.id INNER JOIN i.priceList priceList INNER JOIN i.nameAndUnit nau WHERE priceList.name = :plName AND nau.id IN(:cirIds)
     }
 }
