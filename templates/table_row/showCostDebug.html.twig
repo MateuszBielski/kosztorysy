@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{# {cost_item.getFullName()}#}{% endblock %}
+{% block scripts %}
+        <script type="text/javascript" src="../../js/calculateTableRow.js"></script>
+{% endblock %}
+{% block body %}
+    <input type="hidden" id="table_row_id"  value="{{ cost_item.id }}">
+     <h3>{#{{cost_item.getFullName()}} #}</h3>
+    {# tablica {{ cost_item.myNumber }}  {{ cost_item.CompoundDescription() }} #}
+    <table class="table">
+        <tbody>
+            {# <tr>
+                <th>Jednostka</th>
+                <td>{{ cost_item.unit }}</td>
+            </tr> #}
+            <tr>
+                <th>Id</th>
+            </tr>
+        </tbody>
+    </table>
+    <div id="div_wyszukaj">
+        obmiar
+    </div>
+</div>
+<div id="leftcol">
+    <table >
+        <thead>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </thead>
+    </table>
+</div>
+<div id="rightcol">
+    {{ include('table_row/showCosts.html.twig')}}
+
+</div>
+<div id="footer">
+</div>
+
+
+{% endblock %}

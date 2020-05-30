@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ItemPrice|null findOneBy(array $criteria, array $orderBy = null)
  * @method ItemPrice[]    findAll()
  * @method ItemPrice[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * 
  */
 class ItemPriceRepository extends ServiceEntityRepository
 {
@@ -47,21 +48,55 @@ class ItemPriceRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findByPriceListAndCircNU($priceListName, array $cirNUids)
+    public function findAll()
     {
-        return $this->createQueryBuilder('i')//,'nau.id'
-        ->select( 'i.priceValue' )
-        // ->leftJoin()
-        ->setParameter('plName',$priceListName)
-        ->innerJoin('i.priceList','priceList')
-        ->where('priceList.name = :plName')
-        ->setParameter('cirIds',array_values($cirNUids))
-        ->innerJoin('i.nameAndUnit','nau')
-        ->andWhere("nau.id IN(:cirIds)")
-        ->getQuery()
-        ->getResult();
-        // ->where("user.id IN(:usersIds)")
-        // ->setParameter('usersIds',array_values($usersId))
-        // SELECT i.priceValue FROM App\Entity\ItemPrice i INDEX BY nau.id INNER JOIN i.priceList priceList INNER JOIN i.nameAndUnit nau WHERE priceList.name = :plName AND nau.id IN(:cirIds)
+        # code...
+    }
+    public function findByPriceList($priceListName, array $cirNUids)
+    {
+        $ids = '';
+        foreach ($cirNUids as $id) $ids .= "$id,";
+        $ids = trim($ids, ',');
+
+        $OR_ids = '';
+        foreach ($cirNUids as $id) $OR_ids .= "cnu.id = $id OR ";
+        $OR_ids = trim($OR_ids, 'OR ');
+        $em = $this->getEntityManager();
+        /*
+        $query = $em->createQuery(
+            "SELECT i.priceValue, nau.id FROM App\Entity\ItemPrice i
+            INNER JOIN i.priceList pl 
+            INNER JOIN i.nameAndUnit nau
+            WHERE pl.name = '$priceListName'
+            AND nau.id IN ($ids)"
+        );
+        
+        $query = $em->createQuery(
+            "SELECT i.priceValue, nau.id FROM App\Entity\ItemPrice i
+            LEFT JOIN i.nameAndUnit nau
+            LEFT JOIN i.priceList pl 
+            WHERE pl.name = '$priceListName'
+            AND $OR_ids"
+        );
+        $query = $em->createQuery(
+            "SELECT i.priceValue, cnu.id FROM App\Entity\Circulation\CirculationNameAndUnit cnu
+            INNER JOIN App\Entity\ItemPrice i WITH i.nameAndUnit = cnu
+            LEFT JOIN i.priceList pl 
+            WHERE pl.name = '$priceListName'
+            AND $OR_ids"
+        );
+        */
+        $query = $em->createQuery(
+            "SELECT i.priceValue, cnu.id FROM App\Entity\Circulation\CirculationNameAndUnit cnu
+            INNER JOIN App\Entity\ItemPrice i WITH i.nameAndUnit = cnu
+            WHERE $OR_ids"
+        );
+        $rawResults = $query->getResult();
+        $resArray = array();
+        foreach($rawResults as $rr)
+        {
+            $resArray[$rr['id']] = $rr['priceValue'];
+        }
+        return $resArray;
     }
 }

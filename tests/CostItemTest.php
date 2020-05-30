@@ -26,7 +26,7 @@ class PriceListTest extends KernelTestCase
 
     protected $entityManager;
     protected $repItPr;
-    protected $repItPrMock;
+    // protected $repItPrMock;
 
     protected function setUp()
     {
@@ -36,7 +36,6 @@ class PriceListTest extends KernelTestCase
 
         $this->entityManager = $doctrine->getManager();
         $this->repItPr = $doctrine->getRepository(ItemPrice::class);
-        $this->repItPrMock = $this->createMock(ItemPriceRepository::class);
     }
     public function testInitializeCostItem()
     {
@@ -102,17 +101,28 @@ class PriceListTest extends KernelTestCase
     public function testUpdatePricesFromRepository()
     {
         $returns = array();
-        $this->repItPrMock->expects($this->any())
+        $returns[19] = 23.5;
+        $returns[21] = 24.6;
+        $repItPrMock = $this->createMock(ItemPriceRepository::class);
+        $repItPrMock->expects($this->any())
             ->method('findByPriceListAndCircNU')->willReturn($returns);
 
         $tableRow = new TableRow;
-        $tableRow->addLabor(new Labor);
-        $tableRow->addMaterial(new Material);
+        $lab = new Labor;
+        $labNU = new Labor_N_U;
+        $labNU->setId(19);
+        $lab->setNameAndUnit($labNU);
+        $tableRow->addLabor($lab);
+        $mat = new Material;
+        $matNU = new Material_N_U;
+        $matNU->setId(21);
+        $mat->setNameAndUnit($matNU);
+        $tableRow->addMaterial($mat);
         // $costItem->Initialize($tableRow);
 
         $costItem = new CostItem;
         $costItem->Initialize($tableRow);
-        $costItem->UpdatePricesFrom($this->repItPrMock);
+        $costItem->UpdatePricesFrom($repItPrMock);
         $this->assertEquals(23.5, $costItem->getLabors()[0]->getPriceValue());
     }
     public function testReadRepository(Type $var = null)
@@ -120,6 +130,9 @@ class PriceListTest extends KernelTestCase
         $cirIDS = array(8,30,21,85);
         $results = $this->repItPr->findByPriceListAndCircNU('ceny losowe1259',$cirIDS);
         // foreach($results as $res)echo "\n".$res;
-        var_dump($results);
+        print_r($results);
+        // foreach($results as $k => $res){
+        //     echo "\nk: ".$k.", val: ".$res;
+        // }
     }
 }

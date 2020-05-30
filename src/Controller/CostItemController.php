@@ -41,6 +41,20 @@ class CostItemController extends AbstractController
         ]);
     }
     /**
+     * @Route("/calculateAjaxDebug", name="table_row_calculateAjax_debug", methods={"GET","POST"})
+     */
+    public function calculateAjaxDebug(Request $request,TableRowRepository $tableRowRepository, ItemPriceRepository $itemPriceRepository)
+    {
+        $id = $request->query->get("id");
+        $tableRow = $tableRowRepository->find($id);
+        $costItem = new CostItem;
+        $costItem->Initialize($tableRow);
+        $costItem->UpdatePricesFrom($itemPriceRepository);
+        return $this->render('table_row/showCostDebug.html.twig', [
+        'cost_item' => $costItem,
+        ]);
+    }
+    /**
      * @Route("/new", name="cost_item_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
