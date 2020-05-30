@@ -52,7 +52,7 @@ class ItemPriceRepository extends ServiceEntityRepository
     {
         # code...
     }
-    public function findByPriceList($priceListName, array $cirNUids)
+    public function findByPriceListOld($priceListName, array $cirNUids)
     {
         $ids = '';
         foreach ($cirNUids as $id) $ids .= "$id,";
@@ -78,6 +78,7 @@ class ItemPriceRepository extends ServiceEntityRepository
             WHERE pl.name = '$priceListName'
             AND $OR_ids"
         );
+        */
         $query = $em->createQuery(
             "SELECT i.priceValue, cnu.id FROM App\Entity\Circulation\CirculationNameAndUnit cnu
             INNER JOIN App\Entity\ItemPrice i WITH i.nameAndUnit = cnu
@@ -85,12 +86,32 @@ class ItemPriceRepository extends ServiceEntityRepository
             WHERE pl.name = '$priceListName'
             AND $OR_ids"
         );
-        */
+        
+        $rawResults = $query->getResult();
+        $resArray = array();
+        foreach($rawResults as $rr)
+        {
+            $resArray[$rr['id']] = $rr['priceValue'];
+        }
+        return $resArray;
+    }
+    public function findByPriceList($priceListName, array $cirNUids)
+    {
+        $ids = '';
+        foreach ($cirNUids as $id) $ids .= "$id,";
+        $ids = trim($ids, ',');
+
+        $OR_ids = '';
+        foreach ($cirNUids as $id) $OR_ids .= "cnu.id = $id OR ";
+        $OR_ids = trim($OR_ids, 'OR ');
+        $em = $this->getEntityManager();
+        
         $query = $em->createQuery(
-            "SELECT i.priceValue, cnu.id FROM App\Entity\Circulation\CirculationNameAndUnit cnu
-            INNER JOIN App\Entity\ItemPrice i WITH i.nameAndUnit = cnu
-            WHERE $OR_ids"
+            "SELECT i.priceValue FROM App\Entity\ItemPrice i
+            WHERE i.nameAndUnit IN $ids"
         );
+        //czyste zapytanie powinno wyglądać następująco (wtedy działa szybko):
+        //SELECT ip.price_value,ci.name_and_unit_id FROM item_price ip INNER JOIN circulation ci ON ci.id = ip.id  WHERE ci.name_and_unit_id IN (2117,2118,3805,272,2);
         $rawResults = $query->getResult();
         $resArray = array();
         foreach($rawResults as $rr)
