@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\ItemPrice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * @method ItemPrice|null find($id, $lockMode = null, $lockVersion = null)
@@ -95,28 +96,22 @@ class ItemPriceRepository extends ServiceEntityRepository
         }
         return $resArray;
     }
-    public function findByPriceList($priceListName, array $cirNUids)
+   
+    public function findByPriceListAndNameUnitIds($priceListName, array $cirNUids)
     {
         $ids = '';
         foreach ($cirNUids as $id) $ids .= "$id,";
         $ids = trim($ids, ',');
-
-        $OR_ids = '';
-        foreach ($cirNUids as $id) $OR_ids .= "cnu.id = $id OR ";
-        $OR_ids = trim($OR_ids, 'OR ');
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('price_value', 'pv');
+        $rsm->addScalarResult('name_and_unit_id', 'nau_id');
         $em = $this->getEntityManager();
-        
-        $query = $em->createQuery(
-            "SELECT i.priceValue FROM App\Entity\ItemPrice i
-            WHERE i.nameAndUnit IN $ids"
-        );
-        //czyste zapytanie powinno wyglądać następująco (wtedy działa szybko):
-        //SELECT ip.price_value,ci.name_and_unit_id FROM item_price ip INNER JOIN circulation ci ON ci.id = ip.id  WHERE ci.name_and_unit_id IN (2117,2118,3805,272,2);
+        $query = $em->createNativeQuery("SELECT ip.price_value,ci.name_and_unit_id FROM item_price ip INNER JOIN circulation ci ON ci.id = ip.id  WHERE ci.name_and_unit_id IN ($ids)",$rsm);
         $rawResults = $query->getResult();
         $resArray = array();
         foreach($rawResults as $rr)
         {
-            $resArray[$rr['id']] = $rr['priceValue'];
+            $resArray[$rr['nau_id']] = $rr['pv'];
         }
         return $resArray;
     }

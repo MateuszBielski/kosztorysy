@@ -5,9 +5,9 @@
 </tr>
 {% for row in circulations %}
 	<tr>
-        <td><input type="text" name="" id="" value="{{ row.priceValue }}"></td>
-        <td>{{ row.value }}</td>
-        <td>{{ row.value }}* cena</td>
+        <td><input type="text" name="" id="" value="{{ row.priceValue/100 }} " size="12">zł/{{ row.unit }}</td>
+        <td>{{ row.value }} {{ row.unit }}/{{ cost_item.unit }}</td>
+        <td>{{ row.value*row.priceValue/100 }} zł/{{ cost_item.unit }}</td>
 		{% block cols %}
 			
 		{% endblock %}

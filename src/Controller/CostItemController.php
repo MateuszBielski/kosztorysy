@@ -35,6 +35,7 @@ class CostItemController extends AbstractController
         $tableRow = $tableRowRepository->find($id);
         $costItem = new CostItem;
         $costItem->Initialize($tableRow);
+        $costItem->setSurvey($request->query->get("survey"));
         $costItem->UpdatePricesFrom($itemPriceRepository);
         return $this->render('table_row/showCosts.html.twig', [
         'cost_item' => $costItem,
@@ -49,6 +50,7 @@ class CostItemController extends AbstractController
         $tableRow = $tableRowRepository->find($id);
         $costItem = new CostItem;
         $costItem->Initialize($tableRow);
+        $costItem->setSurvey($request->query->get("survey"));
         $costItem->UpdatePricesFrom($itemPriceRepository);
         return $this->render('table_row/showCostDebug.html.twig', [
         'cost_item' => $costItem,

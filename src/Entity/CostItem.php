@@ -45,6 +45,7 @@ class CostItem extends TableRow
     {
         $this->myTable = $tr->getMyTable();
         $this->myNumber = $tr->getMyNumber();
+        $this->unit = $tr->getUnit();
         $this->labors = ItemPrice::FactoryFromCirculations($tr->getLabors());
         $this->materials = ItemPrice::FactoryFromCirculations($tr->getMaterials());
         $this->equipments = ItemPrice::FactoryFromCirculations($tr->getEquipments());
@@ -70,7 +71,7 @@ class CostItem extends TableRow
         // echo "TableRow GenerateValuesForTwigCostTable";
         return $valuesForTwig;
     }
-    public function UpdatePricesFrom(ItemPriceRepository $itemPriceRepository)
+    public function UpdatePricesFromOld(ItemPriceRepository $itemPriceRepository)
     {
         $cirIds = array();
         foreach($this->getCirculations() as $cir)
@@ -87,6 +88,22 @@ class CostItem extends TableRow
             $id = $emptyPrice->getNameAndUnit()->getId();
             $price = $itemPrices[$id];
             // echo "\nid $id, price $price";
+            $emptyPrice->setPriceValue($price);
+        }
+    }
+    public function UpdatePricesFrom(ItemPriceRepository $itemPriceRepository)
+    {
+        $cirIds = array();
+        foreach($this->getCirculations() as $cir)
+        {
+            $id = $cir->getNameAndUnit()->getId();
+            $cirIds[] = $id;
+        }
+        $itemPrices = $itemPriceRepository->findByPriceListAndNameUnitIds('ceny losowe1259',$cirIds);
+        foreach($this->getCirculations() as $emptyPrice)
+        {
+            $id = $emptyPrice->getNameAndUnit()->getId();
+            $price = $itemPrices[$id];
             $emptyPrice->setPriceValue($price);
         }
     }
