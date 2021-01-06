@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CirculationNameAndUnitRepository")
- * @ORM\InheritanceType("JOINED")
+ * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discriminator")
  */
 abstract class CirculationNameAndUnit

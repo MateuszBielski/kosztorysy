@@ -17,8 +17,9 @@ class ItemPrice extends Circulation
     private $priceValue = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList", inversedBy="prices")
+     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList")
      */
+    //, inversedBy="prices"
     private $priceList;
 
     public function getId(): ?int

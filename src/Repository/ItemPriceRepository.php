@@ -106,7 +106,13 @@ class ItemPriceRepository extends ServiceEntityRepository
         $rsm->addScalarResult('price_value', 'pv');
         $rsm->addScalarResult('name_and_unit_id', 'nau_id');
         $em = $this->getEntityManager();
-        $query = $em->createNativeQuery("SELECT ip.price_value,ci.name_and_unit_id FROM item_price ip INNER JOIN circulation ci ON ci.id = ip.id  WHERE ci.name_and_unit_id IN ($ids)",$rsm);
+        $query = $em->createNativeQuery(
+            "SELECT ip.price_value,ci.name_and_unit_id 
+            FROM item_price ip INNER JOIN circulation ci ON ci.id = ip.id  
+            INNER JOIN price_list pl on pl.id = ip.price_list_id
+            WHERE ci.name_and_unit_id IN ($ids)
+            AND pl.name = '$priceListName'
+            ",$rsm);
         $rawResults = $query->getResult();
         $resArray = array();
         foreach($rawResults as $rr)

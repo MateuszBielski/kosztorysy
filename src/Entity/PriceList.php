@@ -19,8 +19,9 @@ class PriceList
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ItemPrice", mappedBy="priceList", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ItemPrice", mappedBy="priceList")
      */
+    //, casscade={"persist"}
     private $prices;
 
     /**
@@ -82,13 +83,16 @@ class PriceList
     }
     public function CreateRandomPrices(array $circulations_nu, $min, $max)
     {
+        $prices = [];
         foreach ($circulations_nu as $cnu) {
             $itemPrice = new ItemPrice;
             $itemPrice->setPriceValue(rand($min * 100, $max * 100));
             $itemPrice->setNameAndUnit($cnu);
-            $this->prices[] =  $itemPrice;
+            // $this->prices[] =  $itemPrice;
+            $prices[] = $itemPrice;
             $itemPrice->setPriceList($this);
         }
+        return $prices;
     }
     public function getAmonutOfPrices()
     {
