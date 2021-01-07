@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ItemPrice;
-use App\Form\ItemPriceType;
+use App\Form\ItemPrice1Type;
 use App\Repository\ItemPriceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class ItemPriceController extends AbstractController
     public function new(Request $request): Response
     {
         $itemPrice = new ItemPrice();
-        $form = $this->createForm(ItemPriceType::class, $itemPrice);
+        $form = $this->createForm(ItemPrice1Type::class, $itemPrice);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -63,7 +63,7 @@ class ItemPriceController extends AbstractController
      */
     public function edit(Request $request, ItemPrice $itemPrice): Response
     {
-        $form = $this->createForm(ItemPriceType::class, $itemPrice);
+        $form = $this->createForm(ItemPrice1Type::class, $itemPrice);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

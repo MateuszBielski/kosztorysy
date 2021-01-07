@@ -67,6 +67,9 @@ class PriceListController extends AbstractController
             $prices = $priceList->CreateRandomPrices($circulations,0.95,301.34);
             $entityManager = $this->getDoctrine()->getManager();
             // $prices = $priceList->getPrices();
+
+            $entityManager->persist($priceList);
+            $entityManager->flush();
             $num = count($prices);
             $batchSize = 30;
             for($i = 0 ; $i < $num ; $i++)
@@ -79,9 +82,7 @@ class PriceListController extends AbstractController
             }
             $entityManager->flush();
             $entityManager->clear();
-            $entityManager->persist($priceList);
-            $entityManager->flush();
-            $entityManager->clear();
+            // $entityManager->clear();
 
             return $this->redirectToRoute('price_list_index');
         }
