@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\PriceList;
 use App\Form\PriceListType;
 use App\Repository\CirculationNameAndUnitRepository;
+use App\Repository\EquipmentNURepository;
 use App\Repository\ItemPriceRepository;
 use App\Repository\PriceListRepository;
 use DateTime;
@@ -53,7 +54,26 @@ class PriceListController extends AbstractController
     /**
      * @Route("/newRandom", name="price_list_new_random", methods={"GET","POST"})
      */
-    public function newRandom(Request $request, CirculationNameAndUnitRepository $cnur): Response
+    public function newRandom(Request $request, MaterialNURepository $mnur, EquipmentNURepository $enur): Response
+    {
+        $priceList = new PriceList();
+        
+        $priceList->setName('ceny losowe'.(new \DateTime('now'))->format('Y-m-d'));
+        $form = $this->createForm(PriceListType::class, $priceList);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+        }
+        return $this->render('price_list/new.html.twig', [
+            'price_list' => $priceList,
+            'form' => $form->createView(),
+        ]);
+    }
+    /**
+     * @Route("/newRandomOld", name="price_list_new_random", methods={"GET","POST"})
+     */
+    public function newRandomOld(Request $request, CirculationNameAndUnitRepository $cnur): Response
     {
         $priceList = new PriceList();
         
