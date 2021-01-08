@@ -5,21 +5,13 @@ namespace App\Entity;
 use App\Entity\Circulation\Circulation;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ItemPriceRepository")
- */
 class ItemPriceOld extends Circulation
 {
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    
     private $priceValue = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList", inversedBy="prices", cascade={"persist"})
-     */
-    //
+    
     private $priceList;
 
     public function getPriceValue(): ?int

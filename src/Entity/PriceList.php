@@ -31,7 +31,7 @@ class PriceList
 
     public function __construct()
     {
-        $this->prices = new ArrayCollection();
+        // $this->prices = new ArrayCollection();
         $this->itemPrices = new ArrayCollection();
     }
 
@@ -40,36 +40,7 @@ class PriceList
         return $this->id;
     }
 
-    /**
-     * @return Collection|ItemPrice[]
-     */
-    public function getPrices(): Collection
-    {
-        return $this->prices;
-    }
-
-    public function addPrice(ItemPrice $price): self
-    {
-        if (!$this->prices->contains($price)) {
-            $this->prices[] = $price;
-            $price->setPriceList($this);
-        }
-
-        return $this;
-    }
-
-    public function removePrice(ItemPrice $price): self
-    {
-        if ($this->prices->contains($price)) {
-            $this->prices->removeElement($price);
-            // set the owning side to null (unless already changed)
-            if ($price->getPriceList() === $this) {
-                $price->setPriceList(null);
-            }
-        }
-
-        return $this;
-    }
+   
 
     public function getName(): ?string
     {
@@ -82,24 +53,7 @@ class PriceList
 
         return $this;
     }
-    public function CreateRandomPrices(array $circulations_nu, $min, $max)
-    {
-        $prices = [];
-        foreach ($circulations_nu as $cnu) {
-            $itemPrice = new ItemPrice;
-            $itemPrice->setPriceValue(rand($min * 100, $max * 100));
-            $itemPrice->setNameAndUnit($cnu);
-            // $this->prices[] =  $itemPrice;
-            $prices[] = $itemPrice;
-            $itemPrice->setPriceList($this);
-        }
-        return $prices;
-    }
-    public function getAmonutOfPrices()
-    {
-        return -1;
-    }
-
+    
     /**
      * @return Collection|ItemPrice[]
      */
@@ -129,5 +83,28 @@ class PriceList
         }
 
         return $this;
+    }
+    public function CreateRandomPrices(array $circulations_nu, $min, $max)
+    {
+        $prices = [];
+        foreach ($circulations_nu as $cnu) {
+            $itemPrice = new ItemPrice;
+            $itemPrice->setPriceValue(rand($min * 100, $max * 100));
+            $itemPrice->setNameAndUnit($cnu);
+            // $this->prices[] =  $itemPrice;
+            $prices[] = $itemPrice;
+            $itemPrice->setPriceList($this);
+        }
+        return $prices;
+    }
+    public function getAmonutOfPrices()
+    {
+        return -1;
+    }
+
+    public function AssignRandomPrices(array $prices,$min,$max)
+    {
+        foreach($prices as $pr)
+        $pr->setPriceValue(rand($min * 100, $max * 100));
     }
 }

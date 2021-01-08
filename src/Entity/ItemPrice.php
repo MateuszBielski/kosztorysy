@@ -18,7 +18,7 @@ class ItemPrice
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList", inversedBy="itemPrices")
+     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList", inversedBy="itemPrices",cascade={"persist"})
      */
     private $priceList;
 
@@ -31,6 +31,7 @@ class ItemPrice
      * @ORM\ManyToOne(targetEntity="App\Entity\Circulation\CirculationNameAndUnit")
      * @ORM\JoinColumn(nullable=false)
      */
+    //,cascade={"detach"}
     private $name_and_unit;
 
     public function getId(): ?int

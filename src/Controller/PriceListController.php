@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\PriceList;
+use App\Entity\ItemPrice;
 use App\Form\PriceListType;
 use App\Repository\CirculationNameAndUnitRepository;
 use App\Repository\EquipmentNURepository;
+use App\Repository\MaterialNURepository;
 use App\Repository\ItemPriceRepository;
 use App\Repository\PriceListRepository;
 use DateTime;
@@ -54,24 +56,64 @@ class PriceListController extends AbstractController
     /**
      * @Route("/newRandom", name="price_list_new_random", methods={"GET","POST"})
      */
-    public function newRandom(Request $request, MaterialNURepository $mnur, EquipmentNURepository $enur): Response
+    public function newRandom(Request $request, MaterialNURepository $mnur, EquipmentNURepository $enur): Response //
     {
         $priceList = new PriceList();
-        
-        $priceList->setName('ceny losowe'.(new \DateTime('now'))->format('Y-m-d'));
+        $id_z_Controllera = 'brak';
+        $priceList->setName('cenyLos'.(new \DateTime('now'))->format('Y-m-d H:i'));
         $form = $this->createForm(PriceListType::class, $priceList);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+            $materials =  $mnur->findAll();
             
+            $entityManager = $this->getDoctrine()->getManager();
+            // $prices = $priceList->getPrices();
+            
+            $entityManager->persist($priceList);
+            $entityManager->flush();
+            // w tym miejscu zapisany obiekt ma już swoje id.
+            $id_z_Controllera = $priceList->getId();
+            foreach($materials as $mat)$entityManager->persist($mat);
+            $entityManager->flush();
+
+            $randomPrices = [];
+            foreach($materials as $mat)
+            {
+                $it = new ItemPrice;
+                $it->setPriceList($priceList);
+                $it->setNameAndUnit($mat);
+                $randomPrices[] = $it;
+            }
+
+            $priceList->AssignRandomPrices($randomPrices,0.95,301.34);
+            $num = count($randomPrices);
+            $batchSize = 15;
+            for($i = 0 ; $i < $num ; $i++)
+            {
+                $entityManager->persist($randomPrices[$i]);
+                if (($i % $batchSize) === 0) {
+                    $entityManager->flush();
+                    // $entityManager->clear(); // Detaches all objects from Doctrine!
+                }
+            }
+            $entityManager->flush();
+            $entityManager->clear();
+
+            //*******przekierowanie tymczasowe */
+            return $this->render('price_list/show.html.twig', [
+                'price_list' => $priceList,
+                'id_z_controllera' => $id_z_Controllera,
+            ]);
         }
+        
         return $this->render('price_list/new.html.twig', [
             'price_list' => $priceList,
             'form' => $form->createView(),
         ]);
     }
     /**
-     * @Route("/newRandomOld", name="price_list_new_random", methods={"GET","POST"})
+     * @Route("/newRandomOld", name="price_list_new_randomOld", methods={"GET","POST"})
      */
     public function newRandomOld(Request $request, CirculationNameAndUnitRepository $cnur): Response
     {
