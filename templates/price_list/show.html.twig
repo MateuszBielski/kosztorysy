@@ -14,7 +14,11 @@
 			</tr>
 			<tr>
 				<th>id z controllera</th>
-				<td>{{ id_z_controllera }}</td>
+				<td>
+					{% if id_z_controllera is defined %}
+					{{ id_z_controllera }}
+					{% endif %}
+				</td>
 			</tr>
             <tr>
                 <td>

@@ -18,8 +18,9 @@ class ItemPrice
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList", inversedBy="itemPrices",cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\PriceList", inversedBy="itemPrices")
      */
+    //,cascade={"persist"}
     private $priceList;
 
     /**

@@ -10,6 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>PriceValue</th>
+                <th>PriceList id  name</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
             <tr>
                 <td>{{ item_price.id }}</td>
                 <td>{{ item_price.priceValue }}</td>
+                <td>{{ item_price.priceList.id}} {{ item_price.priceList.name }}</td>
                 <td>
                     <a href="{{ path('item_price_show', {'id': item_price.id}) }}">show</a>
                     <a href="{{ path('item_price_edit', {'id': item_price.id}) }}">edit</a>

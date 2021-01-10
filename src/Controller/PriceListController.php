@@ -66,17 +66,17 @@ class PriceListController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
             $materials =  $mnur->findAll();
-            
+            // $materials = array_slice($mnur->findAll(),0,500);
             $entityManager = $this->getDoctrine()->getManager();
             // $prices = $priceList->getPrices();
             
             $entityManager->persist($priceList);
-            $entityManager->flush();
+            // $entityManager->flush();
             // w tym miejscu zapisany obiekt ma już swoje id.
             $id_z_Controllera = $priceList->getId();
-            foreach($materials as $mat)$entityManager->persist($mat);
-            $entityManager->flush();
-
+            $num = count($materials);
+            
+            
             $randomPrices = [];
             foreach($materials as $mat)
             {
@@ -85,17 +85,38 @@ class PriceListController extends AbstractController
                 $it->setNameAndUnit($mat);
                 $randomPrices[] = $it;
             }
-
             $priceList->AssignRandomPrices($randomPrices,0.95,301.34);
-            $num = count($randomPrices);
-            $batchSize = 15;
-            for($i = 0 ; $i < $num ; $i++)
+            
+            $batchSize = 100;
+            
+            $indeksyDoPrzetworzenia = array();
+            for($i = 1 ; $i <= $num ; $i++)
             {
-                $entityManager->persist($randomPrices[$i]);
+                $indeksyDoPrzetworzenia[] = $i-1;
                 if (($i % $batchSize) === 0) {
+                    foreach($indeksyDoPrzetworzenia as $ind)
+                    {
+                        $entityManager->persist($randomPrices[$ind]);
+
+                    }
                     $entityManager->flush();
+                    foreach($indeksyDoPrzetworzenia as $ind)
+                    {
+                        $entityManager->detach($randomPrices[$ind]);
+                        $entityManager->detach($materials[$ind]);
+                    }
+                    $indeksyDoPrzetworzenia = array();
                     // $entityManager->clear(); // Detaches all objects from Doctrine!
+                    // $entityManager->persist($priceList);
+                    // $entityManager->persist($materials[$i-1]);
                 }
+            }
+            /*
+            */
+            foreach($indeksyDoPrzetworzenia as $ind)
+            {
+                $entityManager->persist($randomPrices[$ind]);
+
             }
             $entityManager->flush();
             $entityManager->clear();

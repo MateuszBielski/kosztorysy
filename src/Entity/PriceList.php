@@ -25,7 +25,7 @@ class PriceList
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ItemPrice", mappedBy="priceList")
+     * @ORM\OneToMany(targetEntity="App\Entity\ItemPrice", mappedBy="priceList",orphanRemoval=true)
      */
     private $itemPrices;
 
