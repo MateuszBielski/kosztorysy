@@ -25,7 +25,7 @@ class PriceList
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ItemPrice", mappedBy="priceList",orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ItemPrice", mappedBy="priceList",orphanRemoval=true,fetch="EXTRA_LAZY")
      */
     private $itemPrices;
 
@@ -38,6 +38,11 @@ class PriceList
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
     }
 
    
@@ -99,12 +104,26 @@ class PriceList
     }
     public function getAmonutOfPrices()
     {
-        return -1;
+        
+        return count($this->itemPrices);
     }
 
     public function AssignRandomPrices(array $prices,$min,$max)
     {
         foreach($prices as $pr)
         $pr->setPriceValue(rand($min * 100, $max * 100));
+    }
+    public function GenerateInsertQueryForItemPrices($prices)
+    {
+        $query = 'INSERT INTO item_price (price_list_id,name_and_unit_id,price_value) VALUES ';
+        foreach($prices as $p)
+        {
+            $query .= '('.$this->id;
+            $query .= ','.$p->getNameAndUnit()->getId();
+            $query .= ','.$p->getPriceValue().'),';
+            
+        }
+        $query = rtrim($query,',');
+        return $query;
     }
 }

@@ -92,4 +92,24 @@ class PriceListTest extends KernelTestCase
         $priceList->CreateRandomPrices($circulationNUs,100,1000);
         $this->assertEquals(22008,$priceList->getAmonutOfPrices());
     }
+    public function testGenerateInsertQueryForItemPrices()
+    {
+        $prices = [];
+        $priceList = new PriceList;
+        $ip1 = new ItemPrice;
+        $ip2 = new ItemPrice;
+        $mat = new Material_N_U;
+        $equ = new Equipment_N_U;
+        $ip1->setNameAndUnit($mat);
+        $ip2->setNameAndUnit($equ);
+        $priceList->setId(2);
+        $mat->setId(3);
+        $ip1->setPriceValue(234);
+        $equ->setId(4);
+        $ip2->setPriceValue(573);
+        $prices[] = $ip1;
+        $prices[] = $ip2;
+        $result = 'INSERT INTO item_price (price_list_id,name_and_unit_id,price_value) VALUES (2,3,234),(2,4,573)';
+        $this->assertEquals($result,$priceList->GenerateInsertQueryForItemPrices($prices));
+    }
 }

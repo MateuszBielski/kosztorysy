@@ -15,7 +15,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for item_price in item_prices %}
+        {% for item_price in item_prices|slice(0,100)  %}
             <tr>
                 <td>{{ item_price.id }}</td>
                 <td>{{ item_price.priceValue }}</td>

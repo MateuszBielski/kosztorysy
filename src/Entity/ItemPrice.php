@@ -29,7 +29,7 @@ class ItemPrice
     private $priceValue;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Circulation\CirculationNameAndUnit")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Circulation\CirculationNameAndUnit",fetch="LAZY")
      * @ORM\JoinColumn(nullable=false)
      */
     //,cascade={"detach"}
