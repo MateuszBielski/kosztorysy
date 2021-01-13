@@ -78,6 +78,17 @@ class ClTableController extends AbstractController
     }
 
     /**
+     * @Route("/{id}/{kosztorys_id}", name="cl_table_show_przez_koszotrys", methods={"GET"})
+     */
+    public function showPrzezKosztorys(ClTable $clTable,$kosztorys_id): Response
+    {
+        return $this->render('cl_table/show.html.twig', [
+            'cl_table' => $clTable,
+            'kosztorys_id' => $kosztorys_id,
+        ]);
+    }
+
+    /**
      * @Route("/{id}/edit", name="cl_table_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, ClTable $clTable): Response

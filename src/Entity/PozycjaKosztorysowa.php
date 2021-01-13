@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\PozycjaKosztorysowaRepository")
+ */
+class PozycjaKosztorysowa
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Kosztorys", inversedBy="pozycjeKosztorysowe")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $kosztorys;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\TableRow")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $podstawaNormowa;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $obmiar;
+
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getKosztorys(): ?Kosztorys
+    {
+        return $this->kosztorys;
+    }
+
+    public function setKosztorys(?Kosztorys $kosztorys): self
+    {
+        $this->kosztorys = $kosztorys;
+
+        return $this;
+    }
+
+    public function getPodstawaNormowa(): ?TableRow
+    {
+        return $this->podstawaNormowa;
+    }
+
+    public function setPodstawaNormowa(?TableRow $podstawaNormowa): self
+    {
+        $this->podstawaNormowa = $podstawaNormowa;
+
+        return $this;
+    }
+
+    public function getObmiar(): ?float
+    {
+        return $this->obmiar;
+    }
+
+    public function setObmiar(?float $obmiar): self
+    {
+        $this->obmiar = $obmiar;
+
+        return $this;
+    }
+
+    public function Jednostka()
+    {
+        return $this->podstawaNormowa->getUnit();
+    }
+}

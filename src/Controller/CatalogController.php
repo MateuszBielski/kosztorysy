@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Catalog;
+use App\Entity\Kosztorys;
 use App\Form\CatalogType;
 use App\Repository\CatalogRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,10 +23,23 @@ class CatalogController extends AbstractController
      */
     public function index(CatalogRepository $catalogRepository): Response
     {
+        
         return $this->render('catalog/index.html.twig', [
             'catalogs' => $catalogRepository->findAllByName(),
         ]);
     }
+    /**
+     * @Route("/kosztorys/{kosztorys}", name="catalog_index_przez_kosztorys", methods={"GET"})
+     */
+    public function indexPrzezKosztorys(CatalogRepository $catalogRepository, Kosztorys $kosztorys): Response
+    {
+        
+        return $this->render('catalog/index.html.twig', [
+            'catalogs' => $catalogRepository->findAllByName(),
+            'kosztorys_id' => 1,
+        ]);
+    }
+    
     /**
      * @Route("/indexAjax", name="catalog_indexAjax", methods={"GET", "POST"})
      */
@@ -100,6 +114,17 @@ class CatalogController extends AbstractController
     {
         return $this->render('catalog/show.html.twig', [
             'catalog' => $catalog,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/{kosztorys_id}", name="catalog_show_przez_kosztorys", methods={"GET"})
+     */
+    public function showPrzezKosztorys(Catalog $catalog,$kosztorys_id): Response
+    {
+        return $this->render('catalog/show.html.twig', [
+            'catalog' => $catalog,
+            'kosztorys_id' => $kosztorys_id,
         ]);
     }
 

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PozycjaKosztorysowa index{% endblock %}
+
+{% block body %}
+    <h1>PozycjaKosztorysowa index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Obmiar</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pozycja_kosztorysowa in pozycja_kosztorysowas %}
+            <tr>
+                <td>{{ pozycja_kosztorysowa.id }}</td>
+                <td>{{ pozycja_kosztorysowa.obmiar }}</td>
+                <td>
+                    <a href="{{ path('pozycja_kosztorysowa_show', {'id': pozycja_kosztorysowa.id}) }}">show</a>
+                    <a href="{{ path('pozycja_kosztorysowa_edit', {'id': pozycja_kosztorysowa.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('pozycja_kosztorysowa_new') }}">Create new</a>
+{% endblock %}

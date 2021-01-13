@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Kosztorys{% endblock %}
+
+{% block body %}
+    <h1>Edit Kosztorys</h1>
+
+    {{ include('kosztorys/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('kosztorys_index') }}">back to list</a>
+
+    {{ include('kosztorys/_delete_form.html.twig') }}
+{% endblock %}

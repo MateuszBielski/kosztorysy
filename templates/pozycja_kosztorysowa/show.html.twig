@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PozycjaKosztorysowa{% endblock %}
+
+{% block body %}
+    <h1>PozycjaKosztorysowa</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ pozycja_kosztorysowa.id }}</td>
+            </tr>
+            <tr>
+                <th>Obmiar</th>
+                <td>{{ pozycja_kosztorysowa.obmiar }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('pozycja_kosztorysowa_index') }}">back to list</a>
+
+    <a href="{{ path('pozycja_kosztorysowa_edit', {'id': pozycja_kosztorysowa.id}) }}">edit</a>
+
+    {{ include('pozycja_kosztorysowa/_delete_form.html.twig') }}
+{% endblock %}

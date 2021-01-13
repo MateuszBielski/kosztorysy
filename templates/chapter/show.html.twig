@@ -26,7 +26,13 @@
         {% for cl_tab in chapter.tables %}
             <tr>
                 <td>
-                    <a href="{{ path('cl_table_show', {'id': cl_tab.id}) }}">tablica {{cl_tab.myNumber }}</a>
+                    {% if kosztorys_id is defined %}
+                        <a href="{{ path('cl_table_show_przez_koszotrys', {'id': cl_tab.id, 'kosztorys_id': kosztorys_id}) }}">
+                    {% else %}
+                        <a href="{{ path('cl_table_show', {'id': cl_tab.id}) }}">
+                    {% endif %}
+                            tablica {{cl_tab.myNumber }}
+                    </a>
                     {{ cl_tab.getDescription() }}
                 </td>
             </tr>

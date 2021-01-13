@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kosztorys{% endblock %}
+
+{% block body %}
+    <h1>Kosztorys</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ kosztory.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <tr>
+            <th>opis</th>
+            <th>obmiar</th>
+            <th>jednostka</th>
+        </tr>
+        {% for pozycja in kosztory.pozycjeKosztorysowe %}
+            <tr>
+                <td>
+                    {{ pozycja.podstawaNormowa.CompoundDescription() }}
+                </td>
+                <td>
+                    {{ pozycja.obmiar }}
+                </td>
+                <td>
+                    {{ pozycja.jednostka }}
+                </td>
+
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    dodaj pozycję<br>
+    {# <a href="{{ path('kosztorys_catalog_index', {'id': kosztory.id}) }}">katalogiPrzezKosztorys</a> #}
+    <a href="{{ path('catalog_index_przez_kosztorys', {'kosztorys': kosztory.id}) }}">katalogi</a> 
+    {# <a href="{{ path('kosztorys_cl_table_index', {'id': kosztory.id}) }}">tablice</a> #}
+    <br>
+    <a href="{{ path('kosztorys_index') }}">back to list</a>
+
+    <a href="{{ path('kosztorys_edit', {'id': kosztory.id}) }}">edit</a>
+
+    {{ include('kosztorys/_delete_form.html.twig') }}
+{% endblock %}

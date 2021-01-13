@@ -1,3 +1,5 @@
+
+
 <table id="catalog_list" class="tableCatalogAjax">
     <thead>
         <tr>
@@ -11,7 +13,15 @@
         <tr>
             <td>{{ catalog.id }}</td>
             <td>{{ catalog.name }}</td>
-            <td><a href="{{ path('catalog_show', {'id': catalog.id}) }}">{{ catalog.ShortenDescription(75) }}</a></td>
+            <td>
+                {% if kosztorys_id is defined %}
+                    <a href="{{ path('catalog_show_przez_kosztorys', {'id': catalog.id, 'kosztorys_id': kosztorys_id}) }}">
+                {% else %}
+                    <a href="{{ path('catalog_show', {'id': catalog.id}) }}">
+                {% endif %}
+                    {{ catalog.ShortenDescription(75) }}
+                </a>
+            </td>
         </tr>
     {% else %}
         <tr>

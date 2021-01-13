@@ -24,7 +24,15 @@
         <tbody>
             {% for chap in catalog.myChapters %}
                 <tr>
-                    <td><a href="{{ path('chapter_show', {'id': chap.id}) }}">{{ chap.name}} {{ chap.description }}</a></td>
+                    <td>
+                        {% if kosztorys_id is defined %}
+                            <a href="{{ path('chapter_show_przez_koszotrys', {'id': chap.id, 'kosztorys_id': kosztorys_id}) }}">
+                        {% else %}
+                            <a href="{{ path('chapter_show', {'id': chap.id}) }}">
+                        {% endif %}
+                            {{ chap.name}} {{ chap.description }}
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

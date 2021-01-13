@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kosztorys index{% endblock %}
+
+{% block body %}
+    <h1>Kosztorys index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for kosztory in kosztorys %}
+            <tr>
+                <td>{{ kosztory.id }}</td>
+                <td>
+                    <a href="{{ path('kosztorys_show', {'id': kosztory.id}) }}">show</a>
+                    <a href="{{ path('kosztorys_edit', {'id': kosztory.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('kosztorys_new') }}">Create new</a>
+{% endblock %}

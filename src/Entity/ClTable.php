@@ -26,7 +26,7 @@ class ClTable
     private $myChapter;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true, cascade={"persist"},fetch="LAZY")
+     * @ORM\OneToMany(targetEntity="App\Entity\TableRow", mappedBy="myTable", orphanRemoval=true, cascade={"persist"},fetch="EXTRA_LAZY")
      */
     private $tableRows;
 

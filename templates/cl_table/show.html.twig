@@ -17,7 +17,12 @@
         {% for tr in cl_table.tableRows %}
             <tr>
                 <td>
-                    <a href="{{ path('table_row_show', {'id': tr.id}) }}">{{ tr.myNumber }} {{ tr.CompoundDescription }}</a>
+                    {% if kosztorys_id is defined %}
+                        <a href="{{ path('pozycja_kosztorysowa_new_przez_kosztorys', {'table_row': tr.id, 'kosztorys': kosztorys_id}) }}">
+                    {% else %}
+                        <a href="{{ path('table_row_show', {'id': tr.id}) }}">
+                    {% endif %}
+                    {{ tr.myNumber }} {{ tr.CompoundDescription }}</a>
                 </td>
             </tr>
         {% endfor %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Kosztorys{% endblock %}
+
+{% block body %}
+    <h1>Create new Kosztorys</h1>
+
+    {{ include('kosztorys/_form.html.twig') }}
+
+    <a href="{{ path('kosztorys_index') }}">back to list</a>
+{% endblock %}

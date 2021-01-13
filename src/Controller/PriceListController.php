@@ -83,7 +83,6 @@ class PriceListController extends AbstractController
             // $this->persistUsingDetach($priceList,$randomPrices);
             $this->persistUsingGeneratedQuery($priceList,$randomPrices);
 
-            //*******przekierowanie tymczasowe */
             return $this->redirectToRoute('price_list_index');
         }
         

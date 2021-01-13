@@ -58,8 +58,16 @@ class TableRowController extends AbstractController
             'table_row' => $tableRow,
         ]);
     }
-    
-
+   
+    /**
+     * @Route("/{id}/{kosztorys}", name="table_row_show_przez_kosztorys", methods={"GET"})
+     */
+    public function showPrzezKosztorys(TableRow $tableRow): Response
+    {
+        return $this->render('table_row/show.html.twig', [
+            'table_row' => $tableRow,
+        ]);
+    }
     /**
      * @Route("/{id}/edit", name="table_row_edit", methods={"GET","POST"})
      */

@@ -57,7 +57,17 @@ class ChapterController extends AbstractController
             'chapter' => $chapter,
         ]);
     }
-
+    
+    /**
+     * @Route("/{id}/{kosztorys_id}", name="chapter_show_przez_koszotrys", methods={"GET"})
+     */
+    public function showPrzezKosztorys(Chapter $chapter,$kosztorys_id): Response
+    {
+        return $this->render('chapter/show.html.twig', [
+            'chapter' => $chapter,
+            'kosztorys_id' => $kosztorys_id,
+        ]);
+    }
     /**
      * @Route("/{id}/edit", name="chapter_edit", methods={"GET","POST"})
      */
