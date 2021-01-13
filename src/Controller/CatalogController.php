@@ -36,7 +36,7 @@ class CatalogController extends AbstractController
         
         return $this->render('catalog/index.html.twig', [
             'catalogs' => $catalogRepository->findAllByName(),
-            'kosztorys_id' => 1,
+            'kosztorys_id' => $kosztorys->getId(),
         ]);
     }
     
@@ -45,8 +45,10 @@ class CatalogController extends AbstractController
      */
     public function indexAjax(Request $request,CatalogRepository $catalogRepository): Response
     {
+        
         return $this->render('catalog/indexAjax.html.twig', [
             'catalogs' => $catalogRepository->findByNameDescription($request->query->get("str")),
+            'kosztorys_id' => $request->query->get('kosztorys_id')
             ]);
     }
 

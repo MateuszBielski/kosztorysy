@@ -3,7 +3,8 @@
 {% block title %}New PozycjaKosztorysowa{% endblock %}
 
 {% block body %}
-    <h3>Utwórz nową Pozycję Kosztorysową</h3>
+    <h3>Dodaj pozycję kosztorysową</h3>
+    <b>{{ pozycja_kosztorysowa.getPodstawaNormowa().getFullName() }}</b><br>
     {{ pozycja_kosztorysowa.getPodstawaNormowa().CompoundDescription() }}
     <br>jednostka: <b>{{ pozycja_kosztorysowa.Jednostka() }}</b>
     {{ include('pozycja_kosztorysowa/_form.html.twig') }}

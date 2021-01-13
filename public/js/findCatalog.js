@@ -4,15 +4,20 @@ jQuery(document).ready(function() {
     
     input_find_catalog.on('input',function(){
         var tekst = input_find_catalog.val();
+        var kosztorys_id = $('#input_find_catalog').attr('kosztorys_id');
+        var adres = "/catalog/indexAjax";
+        if(typeof kosztorys_id !== 'undefined')
+        adres += '?kosztorys_id='+kosztorys_id;
+        console.log(adres);
         $.ajax({
                 // url: "/muo/ajax",
-                url: "/catalog/indexAjax",
+                url: adres,
                 type: "GET",
                 data: {
                     str: tekst
                 },
                 success: function (msg) {
-                    console.log('sukces'); 
+                     
                     $("#kontener").text(tekst);
                     $('#catalog_list').html(msg);
                      //var users_list = $("#users_list");
