@@ -3,11 +3,13 @@
 {% block title %}Edit PozycjaKosztorysowa{% endblock %}
 
 {% block body %}
-    <h1>Edit PozycjaKosztorysowa</h1>
+    <h3>Edit PozycjaKosztorysowa</h3>
+    <b>{{ pozycja_kosztorysowa.getPodstawaNormowa().getFullName() }}</b><br>
+    {{ pozycja_kosztorysowa.getPodstawaNormowa().CompoundDescription() }}
+    <br>jednostka: <b>{{ pozycja_kosztorysowa.Jednostka() }}</b>
+    {{ include('pozycja_kosztorysowa/_form.html.twig', {'button_label': 'Zapisz zmiany'}) }}
 
-    {{ include('pozycja_kosztorysowa/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('pozycja_kosztorysowa_index') }}">back to list</a>
+    <a href="{{ path('kosztorys_show',{'id': pozycja_kosztorysowa.kosztorys.id }) }}">powrót do kosztorysu</a>
 
     {{ include('pozycja_kosztorysowa/_delete_form.html.twig') }}
 {% endblock %}

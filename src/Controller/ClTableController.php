@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ClTable;
+use App\Entity\Kosztorys;
 use App\Form\ClTableType;
 use App\Repository\TableRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,19 @@ class ClTableController extends AbstractController
         return $this->render('cl_table/index.html.twig', [
             // 'cl_tables' => $tableRepository->findAll(),
             'cl_tables' => array(),
+            
+        ]);
+    }
+
+    /**
+     * @Route("/kosztorys/{kosztorys}", name="cl_table_index_przez_kosztorys", methods={"GET"})
+     */
+    public function indexPrzezKosztorys(TableRepository $tableRepository, Kosztorys $kosztorys): Response
+    {
+        return $this->render('cl_table/index.html.twig', [
+            // 'cl_tables' => $tableRepository->findAll(),
+            'cl_tables' => array(),
+            'kosztorys_id' => $kosztorys->getId(),
         ]);
     }
 
