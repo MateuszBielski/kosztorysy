@@ -45,9 +45,12 @@ class ClTableController extends AbstractController
      */
     public function indexAjax(Request $request,TableRepository $tableRepository): Response
     {
-        return $this->render('cl_table/indexAjax.html.twig', [
-            'cl_tables' => $tableRepository->findByDescription($request->query->get("str")),
-        ]);
+        $params = [];
+        $params['cl_tables'] = $tableRepository->findByDescription($request->query->get("str"));
+        $kId = $request->query->get("kosztorys_id");
+        if($kId)$params['kosztorys_id'] = $kId;
+        return $this->render('cl_table/indexAjax.html.twig', $params);
+        
     }
     /**
      * @Route("/indexAjaxDebug/", name="cl_table_indexAjax_debug", methods={"GET", "POST"})
@@ -92,7 +95,7 @@ class ClTableController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/{kosztorys_id}", name="cl_table_show_przez_koszotrys", methods={"GET"})
+     * @Route("/{id}/{kosztorys_id}", name="cl_table_show_przez_kosztorys", methods={"GET"})
      */
     public function showPrzezKosztorys(ClTable $clTable,$kosztorys_id): Response
     {

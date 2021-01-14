@@ -10,7 +10,11 @@
 
     <div id="div_wyszukaj">
         wyszukaj
-        <input id="input_find_table" type="tekst" placeholder="nazwa lub opis" size="30">
+        <input id="input_find_table" type="tekst" placeholder="nazwa lub opis" size="30"
+        {% if kosztorys_id is defined %}
+            kosztorys_id = "{{ kosztorys_id }}"
+        {% endif %}
+        >
     </div>
     <div id="kontener">kontener</div>
     {{ include('cl_table/indexAjax.html.twig') }}

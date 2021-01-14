@@ -4,7 +4,6 @@
 
 {% block body %}
     <h1>Kosztorys</h1>
-
     <table class="table">
         <tbody>
             <tr>
@@ -14,39 +13,40 @@
         </tbody>
     </table>
     <table>
-        <tr>    
-            <th>podstawa</th>
-            <th>opis</th>
-            <th>obmiar</th>
-            <th>jednostka</th>
-        </tr>
-        {% for pozycja in kosztory.pozycjeKosztorysowe %}
-            <tr>
-                <td>
-                    <a href="{{ path('pozycja_kosztorysowa_edit',{'id': pozycja.id}) }}">
-                        {{ pozycja.getPodstawaNormowa().getFullName() }}
-                    </a>
-                </td>
-                <td>
-                    {{ pozycja.podstawaNormowa.CompoundDescription() }}
-                </td>
-                <td>
-                    {{ pozycja.obmiar }}
-                </td>
-                <td>
-                    {{ pozycja.jednostka }}
-                </td>
-
+            <tr>    
+                <th>podstawa</th>
+                <th>opis</th>
+                <th>obmiar</th>
+                <th>jednostka</th>
             </tr>
-        {% endfor %}
-    </table>
-    <br>
+            {% for pozycja in kosztory.pozycjeKosztorysowe %}
+                <tr>
+                    <td>
+                        <a href="
+                        {{ path('pozycja_kosztorysowa_edit',{'id': pozycja.id}) }}
+                        ">
+                            {{ pozycja.getPodstawaNormowa().getFullName() }}
+                            </a>
+                        </td>
+                    <td>
+                            {{ pozycja.podstawaNormowa.CompoundDescription() }}
+                        </td>
+                    <td>
+                        {{ pozycja.obmiar }}
+                    </td>
+                    <td>
+                        {{ pozycja.jednostka }}
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </table>
+        <br>
     dodaj pozycję wyszukując w:<br>
     {# <a href="{{ path('kosztorys_catalog_index', {'id': kosztory.id}) }}">katalogiPrzezKosztorys</a> #}
     <a href="{{ path('catalog_index_przez_kosztorys', {'kosztorys': kosztory.id}) }}">katalogach</a>    
     <a href="{{ path('cl_table_index_przez_kosztorys', {'kosztorys': kosztory.id}) }}">bezpośrednio w tablicach</a><br>  
     {# <a href="{{ path('kosztorys_cl_table_index', {'id': kosztory.id}) }}">tablice</a> #}
-    
     <a href="{{ path('kosztorys_index') }}">back to list</a>
 
     <a href="{{ path('kosztorys_edit', {'id': kosztory.id}) }}">edit</a>

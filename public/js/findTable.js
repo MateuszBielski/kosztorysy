@@ -4,8 +4,12 @@ jQuery(document).ready(function() {
     // console.log('początek');
     input_find_table.on('input',function(){
         var tekst = input_find_table.val();
+        var kosztorys_id = $('#input_find_table').attr('kosztorys_id');
+        var adres = "/cl/table/indexAjax";
+        if(typeof kosztorys_id !== 'undefined')
+        adres += '?kosztorys_id='+kosztorys_id;
         $.ajax({
-                url: "/cl/table/indexAjax",
+                url: adres,
                 type: "GET",
                 data: {
                     str: tekst

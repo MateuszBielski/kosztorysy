@@ -59,7 +59,7 @@ class ChapterController extends AbstractController
     }
     
     /**
-     * @Route("/{id}/{kosztorys_id}", name="chapter_show_przez_koszotrys", methods={"GET"})
+     * @Route("/{id}/{kosztorys_id}", name="chapter_show_przez_kosztorys", methods={"GET"})
      */
     public function showPrzezKosztorys(Chapter $chapter,$kosztorys_id): Response
     {

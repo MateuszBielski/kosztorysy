@@ -4,15 +4,8 @@
         <meta charset="UTF-8">
         <title>{% block title %}WelcomeXX!{% endblock %}</title>
         {% block stylesheets %}
-            {# <link href="{{ asset('css/styl.css') }}" rel="stylesheet"/> #}
-            {# <link rel="stylesheet" href="{{ preload('/css/styl.css', { as: 'style' }) }}"> #}
-            {# <link rel="stylesheet" href="{{ preload(asset('/css/styl.css')) }}"> #}
-            {# <link rel="stylesheet" href="{{ preload(asset('build/app.css')) }}"> #}
-            {# <link href="../../css/styl.css" rel="stylesheet"/> #}
             <link href="/css/styl.css" rel="stylesheet"/>
         {% endblock %}
-        {# <script type="text/javascript" src="../../js/jquery-2.1.3.min.js"></script> #}
-        {# <script type="text/javascript" src="../../js/jquery-ui.js"></script> #}
         <script type="text/javascript" src="/js/jquery-2.1.3.min.js"></script>
         <script type="text/javascript" src="/js/jquery-ui.js"></script>
         {% block scripts %}{% endblock %}
@@ -23,6 +16,10 @@
         <a href="{{ path('cl_table_index') }}">tablice</a>
         <a href="{{ path('price_list_index') }}">ceny</a>
         <a href="{{ path('kosztorys_index') }}">kosztorysy</a>
+        {% if kosztorys_id is defined %}
+        <br>
+        <a href="{{ path('kosztorys_show', {'id':kosztorys_id }) }}">powrót do aktualnego kosztorysu</a>
+        {% endif %}
         
         {% block body %}</div>{% endblock %}
         {# {% block javascripts %}{% endblock %} #}

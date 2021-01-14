@@ -26,7 +26,7 @@
                 <tr>
                     <td>
                         {% if kosztorys_id is defined %}
-                            <a href="{{ path('chapter_show_przez_koszotrys', {'id': chap.id, 'kosztorys_id': kosztorys_id}) }}">
+                            <a href="{{ path('chapter_show_przez_kosztorys', {'id': chap.id, 'kosztorys_id': kosztorys_id}) }}">
                         {% else %}
                             <a href="{{ path('chapter_show', {'id': chap.id}) }}">
                         {% endif %}
