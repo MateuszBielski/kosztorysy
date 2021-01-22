@@ -388,6 +388,7 @@ class TableRow
     }
     public function getFullName()
     {
+        // return sprintf("%02d", $this->myNumber);
         return $this->myTable->getFullName() . '-' . sprintf("%02d", $this->myNumber);
     }
 

@@ -20,7 +20,7 @@ class ClTable
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Chapter", inversedBy="tables")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Chapter", inversedBy="tables",fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $myChapter;
@@ -141,6 +141,7 @@ class ClTable
     }
     public function getFullName()
     {
+        // return sprintf("%02d",$this->myNumber);
         return $this->myChapter->getFullName().sprintf("%02d",$this->myNumber);
     }
     public function getDescription()

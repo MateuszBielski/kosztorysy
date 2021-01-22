@@ -302,6 +302,7 @@ class Chapter
     public function getFullName()
     {
         $num = preg_grep('/[0-9]+/',explode(' ',$this->name));
+        // return '$num';
         $catalogName = $this->myCatalog ? $this->myCatalog->getName().' ' : '';
         return $catalogName.end($num);
     }

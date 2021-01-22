@@ -80,4 +80,8 @@ class PozycjaKosztorysowa
     {
         return $this->podstawaNormowa->getUnit();
     }
+    public function OznaczeniePelne()
+    {
+        return $this->podstawaNormowa->getFullName();
+    }
 }

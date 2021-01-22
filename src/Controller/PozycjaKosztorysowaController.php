@@ -55,6 +55,7 @@ class PozycjaKosztorysowaController extends AbstractController
      */
     public function newPrzezKosztorys(Request $request,TableRow $table_row, Kosztorys $kosztorys): Response
     {
+        echo $table_row->getId();
         $pozycjaKosztorysowa = new PozycjaKosztorysowa();
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
