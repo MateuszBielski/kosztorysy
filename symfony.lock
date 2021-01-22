@@ -289,7 +289,7 @@
         "version": "v1.22.0"
     },
     "symfony/profiler-pack": {
-        "version": "v1.0.4"
+        "version": "v1.0.5"
     },
     "symfony/property-access": {
         "version": "v5.0.8"
@@ -330,7 +330,7 @@
         "version": "v2.0.1"
     },
     "symfony/twig-bridge": {
-        "version": "v5.0.5"
+        "version": "v5.2.1"
     },
     "symfony/twig-bundle": {
         "version": "5.0",
@@ -386,7 +386,7 @@
         "version": "v5.0.5"
     },
     "twig/twig": {
-        "version": "v3.0.3"
+        "version": "v3.2.1"
     },
     "zendframework/zend-code": {
         "version": "3.4.1"
