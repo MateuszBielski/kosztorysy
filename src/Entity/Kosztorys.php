@@ -38,6 +38,11 @@ class Kosztorys
         return $this->id;
     }
 
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getPoczatkowaListaCen(): ?PriceList
     {
         return $this->poczatkowaListaCen;

@@ -52,18 +52,20 @@ class TableRowController extends AbstractController
     /**
      * @Route("/{id}", name="table_row_show", methods={"GET"})
      */
-    public function show(TableRow $tableRow): Response
+    public function show(TableRowRepository $tableRowRepository,int $id): Response
     {
+        $tableRow = $tableRowRepository->findLoadingFieldsSeparately($id);
         return $this->render('table_row/show.html.twig', [
             'table_row' => $tableRow,
         ]);
     }
-   
+       
     /**
      * @Route("/{id}/{kosztorys}", name="table_row_show_przez_kosztorys", methods={"GET"})
      */
-    public function showPrzezKosztorys(TableRow $tableRow): Response
+    public function showPrzezKosztorys(TableRowRepository $tableRowRepository,int $id): Response
     {
+        $tableRow = $tableRowRepository->findLoadingFieldsSeparately($id);
         return $this->render('table_row/show.html.twig', [
             'table_row' => $tableRow,
         ]);

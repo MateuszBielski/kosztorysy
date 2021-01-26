@@ -7,6 +7,7 @@
 /var/
 /vendor/
 /resources/Norma3/
+/resources/-I
 Mazovia*
 /src/Migrations/
 *.sql

@@ -7,7 +7,8 @@
 {% block body %}
     <input type="hidden" id="table_row_id"  value="{{ table_row.id }}">
     <h3>{{table_row.getFullName()}}</h3>
-    tablica {{ table_row.myNumber }}  {{ table_row.CompoundDescription() }}
+    <a href="{{ path('cl_table_show', {'id': table_row.myTable.id}) }}">powrót do listy tablic</a>
+    <br><br>tablica {{ table_row.myNumber }}  {{ table_row.CompoundDescription() }}
     <table class="table">
         <tbody>
             {# <tr>

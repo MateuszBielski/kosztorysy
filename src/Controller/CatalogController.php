@@ -46,14 +46,11 @@ class CatalogController extends AbstractController
     public function indexAjax(Request $request,CatalogRepository $catalogRepository): Response
     {
         $params = [];
-        $params['cl_tables'] = $catalogRepository->findByDescription($request->query->get("str"));
+        $params['catalogs'] = $catalogRepository->findByNameDescription($request->query->get("str"));
         $kId = $request->query->get("kosztorys_id");
         if($kId)$params['kosztorys_id'] = $kId;
         return $this->render('catalog/indexAjax.html.twig', $params);
-        return $this->render('catalog/indexAjax.html.twig', [
-            'catalogs' => $catalogRepository->findByNameDescription($request->query->get("str")),
-            'kosztorys_id' => $request->query->get('kosztorys_id')
-            ]);
+        
     }
 
     /**

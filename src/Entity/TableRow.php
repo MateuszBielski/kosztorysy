@@ -84,6 +84,11 @@ class TableRow
         return $this->id;
     }
 
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getMyTable(): ?ClTable
     {
         return $this->myTable;
@@ -424,5 +429,36 @@ class TableRow
         $fillArray('--S--', $this->equipments);
         // echo "TableRow GenerateValuesForTwigCostTable";
         return $valuesForTwig;
+    }
+
+    public function CreateDependecyForRender($parameters)
+    {
+        $getIfexists = function($parmName) use($parameters)
+        {
+            return array_key_exists($parmName,$parameters) ? $parameters[$parmName] : null;
+        };
+        $this->unit = $getIfexists('unit');
+        $this->myNumber = $getIfexists('myNumber');
+        $this->subDescription = $getIfexists('subDescription');
+
+        $clTable = new ClTable;
+        $clTable->setId($getIfexists('ct_id'));
+        $clTable->setMyNumber($getIfexists('ct_myNumber'));
+        $desc = $getIfexists('mainDescription');
+
+        $clTable->setMainDescription(($desc != null)?$desc:'');
+        $this->myTable = $clTable;
+
+        $chapter = new Chapter;
+        $cp_name = $getIfexists('cp_name');
+        if ($cp_name != null)
+        $chapter->setName($cp_name);
+        $clTable->setMyChapter($chapter);
+
+        $catalog = new Catalog;
+        $cat_name = $getIfexists('cat_name');
+        if ($cat_name != null)
+        $catalog->setName($cat_name);
+        $chapter->setMyCatalog($catalog);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Kosztorys;
+use App\Entity\PozycjaKosztorysowa;
+use App\Entity\TableRow;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,4 +49,37 @@ class KosztorysRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findLoadingFieldsSeparately(int $id)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery(
+            "SELECT 
+            pk.id as pk_id,
+            tr.myNumber, 
+            tr.subDescription, 
+            ct.mainDescription, 
+            ct.myNumber as ct_myNumber ,
+            cp.name as cp_name,
+            cat.name as cat_name,
+            pk.obmiar
+            FROM 
+            App\Entity\PozycjaKosztorysowa pk
+            INNER JOIN App\Entity\TableRow tr WITH pk.podstawaNormowa = tr
+            INNER JOIN App\Entity\ClTable ct WITH tr.myTable = ct 
+            INNER JOIN App\Entity\Chapter cp WITH ct.myChapter = cp
+            INNER JOIN App\Entity\Catalog cat WITH cp.myCatalog = cat
+            WHERE pk.kosztorys = $id"
+            );
+        $results = $query->getResult();
+
+        $kosztorys = new Kosztorys;
+        $kosztorys->setId($id);
+        foreach($results as $result)
+        {
+            $pozycja = new PozycjaKosztorysowa;
+            $pozycja->CreateDependecyForRender($result);
+            $kosztorys->addPozycjeKosztorysowe($pozycja);
+        }
+        return $kosztorys;
+    }
 }
