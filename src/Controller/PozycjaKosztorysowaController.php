@@ -7,6 +7,7 @@ use App\Entity\TableRow;
 use App\Entity\Kosztorys;
 use App\Form\PozycjaKosztorysowaType;
 use App\Repository\PozycjaKosztorysowaRepository;
+use App\Repository\TableRowRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,22 +52,26 @@ class PozycjaKosztorysowaController extends AbstractController
     }
 
     /**
-     * @Route("/new/{table_row}/{kosztorys}", name="pozycja_kosztorysowa_new_przez_kosztorys", methods={"GET","POST"})
+     * @Route("/new/{table_row_id}/{kosztorys}", name="pozycja_kosztorysowa_new_przez_kosztorys", methods={"GET","POST"})
      */
-    public function newPrzezKosztorys(Request $request,TableRow $table_row, Kosztorys $kosztorys): Response
+    public function newPrzezKosztorys(Request $request,int $table_row_id, Kosztorys $kosztorys, TableRowRepository $trRep): Response
     {
-        echo $table_row->getId();
         $pozycjaKosztorysowa = new PozycjaKosztorysowa();
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
+        $table_row = $trRep->findLoadingFieldsSeparately($table_row_id);
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
         $form = $this->createForm(PozycjaKosztorysowaType::class, $pozycjaKosztorysowa);
         $form->handleRequest($request);
-
+        $koszId = $kosztorys->getId();
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($pozycjaKosztorysowa);
-            $entityManager->flush();
-
+            // $entityManager->persist($pozycjaKosztorysowa);
+            // $entityManager->flush();
+            $obmiar = $pozycjaKosztorysowa->getObmiar();
+            $conn = $entityManager->getConnection();
+            $sql = "INSERT INTO pozycja_kosztorysowa (kosztorys_id,podstawa_normowa_id,obmiar) VALUES ($koszId,$table_row_id,$obmiar)";
+            $conn->executeQuery($sql);
+            // return $sql;
             return $this->redirectToRoute('kosztorys_show',['id'=>$kosztorys->getId()]);
         }
 
