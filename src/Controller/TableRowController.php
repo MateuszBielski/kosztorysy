@@ -59,22 +59,13 @@ class TableRowController extends AbstractController
             'table_row' => $tableRow,
         ]);
     }
-    
-    
-    
-    
-     public function showOld(TableRow $tableRow): Response
-    {
-        return $this->render('table_row/show.html.twig', [
-            'table_row' => $tableRow,
-        ]);
-    }
-   
+       
     /**
      * @Route("/{id}/{kosztorys}", name="table_row_show_przez_kosztorys", methods={"GET"})
      */
-    public function showPrzezKosztorys(TableRow $tableRow): Response
+    public function showPrzezKosztorys(TableRowRepository $tableRowRepository,int $id): Response
     {
+        $tableRow = $tableRowRepository->findLoadingFieldsSeparately($id);
         return $this->render('table_row/show.html.twig', [
             'table_row' => $tableRow,
         ]);

@@ -52,5 +52,15 @@ class TableRowRepositoryTest extends KernelTestCase
         $tableRow = $this->repTableRow->findLoadingFieldsSeparately(76381);
         $this->assertEquals('KNR   2-02 0612-06',$tableRow->getFullName());
     }
+    public function testFindLoading_Equipments()
+    {
+        $tableRow = $this->repTableRow->findLoadingFieldsSeparately(76381);
+        $this->assertEquals('m-g',$tableRow->getEquipments()[1]->getUnit());
+    }
+    public function testFindLoading_Labors()
+    {
+        $tableRow = $this->repTableRow->findLoadingFieldsSeparately(76321);
+        $this->assertEquals(0.3341,$tableRow->getLabors()[1]->getValue());
+    }
     
 }

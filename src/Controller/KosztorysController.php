@@ -52,7 +52,18 @@ class KosztorysController extends AbstractController
     /**
      * @Route("/{id}", name="kosztorys_show", methods={"GET"})
      */
-    public function show(Kosztorys $kosztory): Response
+    public function show(KosztorysRepository $kosztorysRepository, int $id): Response
+    {
+        
+        $kosztorys = $kosztorysRepository->findLoadingFieldsSeparately($id);
+        
+        return $this->render('kosztorys/show.html.twig', [
+            'kosztory' => $kosztorys,
+        ]);
+    }
+
+    
+    public function showOld(Kosztorys $kosztory): Response
     {
         return $this->render('kosztorys/show.html.twig', [
             'kosztory' => $kosztory,

@@ -52,6 +52,11 @@ class ClTable
         return $this->id;
     }
 
+    public function setId(?int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getMyChapter(): ?Chapter
     {
         return $this->myChapter;

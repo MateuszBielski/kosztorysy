@@ -274,5 +274,46 @@ class TableAndTableRowTest extends TestCase
         }
         $this->assertEquals($stringExpected,$stringResult);
     }
-    
+    public function testCreateDependecyForRender()
+    {
+        $tableRow = new TableRow;
+        $paramForName = [
+            'myNumber'=>6,
+            'ct_myNumber'=>12,
+            'cp_name'=>'Rozdział 06',
+            'cat_name'=>'KNR 2-02'
+        ];
+        $tableRow->CreateDependecyForRender($paramForName);
+        $this->assertEquals('KNR 2-02 0612-06',$tableRow->getFullName());
+
+    }
+
+    public function testCreateDependecyForCompoundDescription()
+    {
+        $tableRow = new TableRow;
+        $paramForCompoundDescription = [
+            'subDescription'=>'166$1$^$1/4x1/2$^$$ - 02',
+            'mainDescription'=>'245$0.7$zamurowanie bruzd pionowych lub pochyłych o przekroju $[..]$ ceg.w ścianach z cegieł$$25'
+        ];
+        $tableRow->CreateDependecyForRender($paramForCompoundDescription);
+        $this->assertEquals('zamurowanie bruzd pionowych lub pochyłych o przekroju 1/4x1/2 ceg.w ścianach z cegieł',$tableRow->CompoundDescription());
+    }
+    public function testCreateDependency_Unit()
+    {
+        $tableRow = new TableRow;
+        $param = [
+            'unit'=> 'm2'
+        ];
+        $tableRow->CreateDependecyForRender($param);
+        $this->assertEquals('m2',$tableRow->getUnit());
+    }
+    public function testCreateDependency_TableId()
+    {
+        $tableRow = new TableRow;
+        $param = [
+            'ct_id'=> 35
+        ];
+        $tableRow->CreateDependecyForRender($param);
+        $this->assertEquals(35,$tableRow->getMyTable()->getId());
+    }
 }

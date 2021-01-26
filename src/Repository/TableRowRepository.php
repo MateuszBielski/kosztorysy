@@ -8,6 +8,10 @@ use App\Entity\Circulation\Material;
 use App\Entity\Circulation\Material_N_U;
 use App\Entity\ClTable;
 use App\Entity\Chapter;
+use App\Entity\Circulation\Equipment;
+use App\Entity\Circulation\Equipment_N_U;
+use App\Entity\Circulation\Labor;
+use App\Entity\Circulation\Labor_N_U;
 use App\Entity\TableRow;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -51,7 +55,8 @@ class TableRowRepository extends ServiceEntityRepository
         tr.id,
         tr.myNumber, 
         tr.subDescription, 
-        ct.mainDescription, 
+        ct.mainDescription,
+        ct.id as ct_id, 
         ct.myNumber as ct_myNumber ,
         cp.name as cp_name,
         cat.name as cat_name
@@ -64,22 +69,8 @@ class TableRowRepository extends ServiceEntityRepository
         $result = $query->getResult()[0];
         $tableRow = new TableRow;
         $tableRow->setId($result['id']);
-        $tableRow->setMyNumber($result['myNumber']);
-        $tableRow->setSubDescription($result['subDescription']);
-
-        $clTable = new ClTable;
-        $clTable->setMyNumber($result['ct_myNumber']);
-        $clTable->setMainDescription($result['mainDescription']);
-        $tableRow->setMyTable($clTable);
-
-        $chapter = new Chapter;
-        $chapter->setName($result['cp_name']);
-        $clTable->setMyChapter($chapter);
-
-        $catalog = new Catalog;
-        $catalog->setName($result['cat_name']);
-        $chapter->setMyCatalog($catalog);
-
+        
+        $tableRow->CreateDependecyForRender($result);
         $wypelnijNaklady = function ($rawResults,$klasa,$klasaNu,$dodajNaklad) use($tableRow)
         {
             foreach($rawResults as $row)
@@ -99,11 +90,14 @@ class TableRowRepository extends ServiceEntityRepository
         $rsm->addScalarResult('name','name');
         $rsm->addScalarResult('unit','unit');
         $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from material m join circulation c on m.id = c.id join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id where table_row_id = $id",$rsm);
-        ;
-        
         $wypelnijNaklady($query->getResult(),Material::class,Material_N_U::class,'addMaterial');
         
-        
+        $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from equipment e join circulation c on e.id = c.id join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id where table_row_id = $id",$rsm);
+        $wypelnijNaklady($query->getResult(),Equipment::class,Equipment_N_U::class,'addEquipment');
+
+        $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from labor l join circulation c on l.id = c.id join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id where table_row_id = $id",$rsm);
+        $wypelnijNaklady($query->getResult(),Labor::class,Labor_N_U::class,'addLabor');
+
         return $tableRow;
     }
     
