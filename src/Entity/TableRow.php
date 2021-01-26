@@ -84,6 +84,11 @@ class TableRow
         return $this->id;
     }
 
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getMyTable(): ?ClTable
     {
         return $this->myTable;
