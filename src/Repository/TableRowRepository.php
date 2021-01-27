@@ -25,6 +25,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
  */
 class TableRowRepository extends ServiceEntityRepository
 {
+    
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TableRow::class);
@@ -44,15 +45,11 @@ class TableRowRepository extends ServiceEntityRepository
             ;
     }
 
-    public function findLoadingFieldsSeparately($id)
+    private function findOneTableRowWithParentDepen($id): ?TableRow
     {
-        // $rsmTr = new ResultSetMapping();
-        // $rsmTr->addEntityResult(TableRow::class, 'tr');
-        // $rsmTr->addFieldResult('tr','sub_descripion','sub_descripion');
-        // $rsm->addScalarResult('name_and_unit_id', 'nau_id');
         $em = $this->getEntityManager();
         $query = $em->createQuery("SELECT 
-        tr.id,
+        tr.id as tr_id,
         tr.myNumber, 
         tr.subDescription, 
         ct.mainDescription,
@@ -68,12 +65,27 @@ class TableRowRepository extends ServiceEntityRepository
         // $query->setParameter(1, $id);
         $result = $query->getResult()[0];
         $tableRow = new TableRow;
-        $tableRow->setId($result['id']);
-        
+        // $tableRow->setId($result['id']);
         $tableRow->CreateDependecyForRender($result);
-        $wypelnijNaklady = function ($rawResults,$klasa,$klasaNu,$dodajNaklad) use($tableRow)
+        return $tableRow;
+    }
+    public function findLoadingFieldsSeparately($id)
+    {
+        $tableRow = $this->findOneTableRowWithParentDepen($id);
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('value', 'value');
+        $rsm->addScalarResult('name','name');
+        $rsm->addScalarResult('unit','unit');
+        
+        $em  = $this->getEntityManager();
+        $wypelnijNaklady = function ($klasa,$klasaNu,$dodajNaklad,$nakl) use($tableRow,$em,$id,$rsm)
         {
-            foreach($rawResults as $row)
+            $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from $nakl n 
+            join circulation c on n.id = c.id 
+            join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id 
+            where table_row_id = $id",$rsm);
+            foreach($query->getResult() as $row)
             {
                 $naklady = new $klasa;
                 $naklady->setValue($row['value']);
@@ -84,23 +96,64 @@ class TableRowRepository extends ServiceEntityRepository
                 $tableRow->$dodajNaklad($naklady);
             }
         };
+        $wypelnijNaklady(Material::class,Material_N_U::class,'addMaterial','material');
+        $wypelnijNaklady(Equipment::class,Equipment_N_U::class,'addEquipment','equipment');
+        $wypelnijNaklady(Labor::class,Labor_N_U::class,'addLabor','labor');
         
+        return $tableRow;
+    }
+    public function findLoadingSeparatelyWithPrices($tr_id,$price_list_id)
+    {
+        $tableRow = $this->findOneTableRowWithParentDepen($tr_id);
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('value', 'value');
         $rsm->addScalarResult('name','name');
         $rsm->addScalarResult('unit','unit');
-        $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from material m join circulation c on m.id = c.id join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id where table_row_id = $id",$rsm);
-        $wypelnijNaklady($query->getResult(),Material::class,Material_N_U::class,'addMaterial');
+        $rsm->addScalarResult('price_value','price_value');
+        $em  = $this->getEntityManager();
+
+        $wypelnijNakladyZcena = function ($klasa,$klasaNu,$dodajNaklad,$nakl) use($tableRow,$em,$tr_id,$price_list_id,$rsm)
+        {
+            $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit,ip.price_value  from $nakl n 
+            join circulation c on n.id = c.id 
+            join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id 
+            join item_price ip on ip.name_and_unit_id = cnu.id
+            where table_row_id = $tr_id and ip.price_list_id = $price_list_id",$rsm);
+            foreach($query->getResult() as $row)
+            {
+                $naklady = new $klasa;
+                $naklady->setValue($row['value']);
+                $cnu = new $klasaNu;
+                $cnu->setName($row['name']);
+                $cnu->setUnit($row['unit']);
+                $naklady->setPrice($row['price_value']);
+                $naklady->setNameAndUnit($cnu);
+                $tableRow->$dodajNaklad($naklady);
+            }
+        };
+        $wypelnijNakladyBezCeny = function ($klasa,$klasaNu,$dodajNaklad,$nakl) use($tableRow,$em,$tr_id,$rsm)
+        {
+            $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from $nakl n 
+            join circulation c on n.id = c.id 
+            join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id 
+            where table_row_id = $tr_id",$rsm);
+            foreach($query->getResult() as $row)
+            {
+                $naklady = new $klasa;
+                $naklady->setValue($row['value']);
+                $cnu = new $klasaNu;
+                $cnu->setName($row['name']);
+                $cnu->setUnit($row['unit']);
+                $naklady->setNameAndUnit($cnu);
+                $tableRow->$dodajNaklad($naklady);
+            }
+        };
+        $wypelnijNakladyZcena(Material::class,Material_N_U::class,'addMaterial','material');
+        $wypelnijNakladyZcena(Equipment::class,Equipment_N_U::class,'addEquipment','equipment');
+        $wypelnijNakladyBezCeny(Labor::class,Labor_N_U::class,'addLabor','labor');
         
-        $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from equipment e join circulation c on e.id = c.id join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id where table_row_id = $id",$rsm);
-        $wypelnijNaklady($query->getResult(),Equipment::class,Equipment_N_U::class,'addEquipment');
-
-        $query = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from labor l join circulation c on l.id = c.id join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id where table_row_id = $id",$rsm);
-        $wypelnijNaklady($query->getResult(),Labor::class,Labor_N_U::class,'addLabor');
-
         return $tableRow;
     }
-    
 
     // /**
     //  * @return TableRow[] Returns an array of TableRow objects

@@ -35,6 +35,7 @@ class Circulation
      */
     protected $groupNumber = 0;
 
+    private $price = 0;
     
     public function getId(): ?int
     {
@@ -102,5 +103,15 @@ class Circulation
         $this->groupNumber = $groupNumber;
 
         return $this;
+    }
+
+    public function setPrice(int $val)
+    {
+        $this->price = $val;
+    }
+
+    public function getPriceDivBy100(): float
+    {
+        return $this->price/100;
     }
 }

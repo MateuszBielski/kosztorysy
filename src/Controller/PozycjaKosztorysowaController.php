@@ -58,7 +58,9 @@ class PozycjaKosztorysowaController extends AbstractController
     {
         $pozycjaKosztorysowa = new PozycjaKosztorysowa();
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
-        $table_row = $trRep->findLoadingFieldsSeparately($table_row_id);
+        // $table_row = $trRep->findLoadingFieldsSeparately($table_row_id);
+        $priceListId = $kosztorys->getPoczatkowaListaCen()->getId();
+        $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
         $form = $this->createForm(PozycjaKosztorysowaType::class, $pozycjaKosztorysowa);
         $form->handleRequest($request);
