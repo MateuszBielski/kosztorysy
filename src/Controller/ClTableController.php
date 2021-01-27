@@ -87,18 +87,22 @@ class ClTableController extends AbstractController
     /**
      * @Route("/{id}", name="cl_table_show", methods={"GET"})
      */
-    public function show(ClTable $clTable): Response
+    public function show(int $id, TableRepository $tRep): Response
     {
+        $clTable = $tRep->findLoadingSeparately($id);
         return $this->render('cl_table/show.html.twig', [
             'cl_table' => $clTable,
         ]);
     }
 
+    
+
     /**
      * @Route("/{id}/{kosztorys_id}", name="cl_table_show_przez_kosztorys", methods={"GET"})
      */
-    public function showPrzezKosztorys(ClTable $clTable,$kosztorys_id): Response
+    public function showPrzezKosztorys(int $id,$kosztorys_id, TableRepository $tRep): Response
     {
+        $clTable = $tRep->findLoadingSeparately($id);
         return $this->render('cl_table/show.html.twig', [
             'cl_table' => $clTable,
             'kosztorys_id' => $kosztorys_id,

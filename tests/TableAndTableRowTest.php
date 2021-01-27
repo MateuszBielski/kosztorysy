@@ -316,4 +316,34 @@ class TableAndTableRowTest extends TestCase
         $tableRow->CreateDependecyForRender($param);
         $this->assertEquals(35,$tableRow->getMyTable()->getId());
     }
+    public function testCreateDependecyTable_ChapterNumber()
+    {
+        $ct = new ClTable;
+        $paramForName = [
+            'myNumber'=>6,
+            'ct_myNumber'=>12,
+            'cp_name'=>'Rozdział 06',
+            'cat_name'=>'KNR 2-02'
+        ];
+        $ct->CreateDependecyForRender($paramForName);
+        $this->assertEquals('KNR 2-02 0612',$ct->getFullName());
+    }
+    public function testCreateDependencyTableRow_Id()
+    {
+        $tr = new TableRow;
+        $param = [
+            'tr_id' => 2340,
+        ];
+        $tr->CreateDependecyForRender($param);
+        $this->assertEquals(2340,$tr->getId());
+    }
+    public function testCreateDependecyTable_mainDescription()
+    {
+        $ct = new ClTable;
+        $param = [
+            'mainDescription'=>'główny opis'
+        ];
+        $ct->CreateDependecyForRender($param);
+        $this->assertEquals('główny opis',$ct->getMainDescription());
+    }
 }

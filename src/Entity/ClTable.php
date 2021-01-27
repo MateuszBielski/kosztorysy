@@ -157,4 +157,29 @@ class ClTable
         array_pop($arr);
         return implode('',$arr);
     }
+
+    public function CreateDependecyForRender($param)
+    {
+        $getIfexists = function($parmName) use($param)
+        {
+            return array_key_exists($parmName,$param) ? $param[$parmName] : null;
+        };
+
+
+        $this->myNumber = $getIfexists('ct_myNumber');
+        $this->mainDescription = $getIfexists('mainDescription');
+
+        $chapter = new Chapter;
+        $cp_name = $getIfexists('cp_name');
+        if ($cp_name != null)
+        $chapter->setName($cp_name);
+        $this->myChapter = $chapter;
+
+        $catalog = new Catalog;
+        $cat_name = $getIfexists('cat_name');
+        if ($cat_name != null)
+        $catalog->setName($cat_name);
+        $chapter->setMyCatalog($catalog);
+
+    }
 }

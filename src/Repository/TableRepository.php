@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ClTable;
+use App\Entity\TableRow;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -78,5 +79,36 @@ class TableRepository extends ServiceEntityRepository
             ->getResult();
 
         return $query;
+    }
+    public function findLoadingSeparately($id)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery("SELECT 
+        tr.id as tr_id,
+        tr.myNumber, 
+        tr.subDescription, 
+        ct.mainDescription,
+        ct.myNumber as ct_myNumber ,
+        cp.name as cp_name,
+        cat.name as cat_name
+        FROM App\Entity\TableRow tr 
+        INNER JOIN App\Entity\ClTable ct WITH tr.myTable = ct 
+        INNER JOIN App\Entity\Chapter cp WITH ct.myChapter = cp
+        INNER JOIN App\Entity\Catalog cat WITH cp.myCatalog = cat
+        WHERE ct.id = $id");
+
+        $results = $query->getResult();
+
+        $clTable = new ClTable;
+        $clTable->setId($id);
+        $clTable->CreateDependecyForRender($results[0]);
+        foreach($results as $result)
+        {
+            $tr = new TableRow;
+            $tr->CreateDependecyForRender($result);
+            $tr->setMyTable($clTable);
+            $clTable->addTableRow($tr);
+        }
+        return $clTable;
     }
 }

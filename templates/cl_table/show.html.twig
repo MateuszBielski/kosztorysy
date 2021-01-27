@@ -22,7 +22,9 @@
                     {% else %}
                         <a href="{{ path('table_row_show', {'id': tr.id}) }}">
                     {% endif %}
-                    {{ tr.myNumber }} {{ tr.CompoundDescription }}</a>
+                    {{ tr.myNumber }} 
+                    {{ tr.CompoundDescription }}
+                </a>
                 </td>
             </tr>
         {% endfor %}

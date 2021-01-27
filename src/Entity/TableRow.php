@@ -437,6 +437,7 @@ class TableRow
         {
             return array_key_exists($parmName,$parameters) ? $parameters[$parmName] : null;
         };
+        $this->id = $getIfexists('tr_id');
         $this->unit = $getIfexists('unit');
         $this->myNumber = $getIfexists('myNumber');
         $this->subDescription = $getIfexists('subDescription');
