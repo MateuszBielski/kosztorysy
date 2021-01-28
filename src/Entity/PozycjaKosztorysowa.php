@@ -31,7 +31,7 @@ class PozycjaKosztorysowa
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $obmiar;
+    private $obmiar = 1;
 
 
 

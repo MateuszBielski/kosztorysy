@@ -12,9 +12,10 @@
     <br>jednostka: <b>{{ pozycja_kosztorysowa.Jednostka() }}</b>
     {{ include('pozycja_kosztorysowa/_form.html.twig') }}
     <table>
-        {{ include ('table_row/leftCol/labor.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.labors}) }}
-        {{ include ('table_row/leftCol/material.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.materials}) }}
-        {{ include ('table_row/leftCol/equipment.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.equipments}) }}
+        {{ include ('pozycja_kosztorysowa/kol_koszty/labor.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.labors}) }}
+        {{ include ('pozycja_kosztorysowa/kol_koszty/material.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.materials}) }}
+        {{ include ('pozycja_kosztorysowa/kol_koszty/equipment.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.equipments}) }}
+        {# {{ include ('table_row/leftCol/equipment.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.equipments}) }} #}
         <a href="{{ path('pozycja_kosztorysowa_index') }}">back to list</a>
     </table>
         {% endblock %}

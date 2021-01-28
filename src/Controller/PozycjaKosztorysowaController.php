@@ -58,7 +58,6 @@ class PozycjaKosztorysowaController extends AbstractController
     {
         $pozycjaKosztorysowa = new PozycjaKosztorysowa();
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
-        // $table_row = $trRep->findLoadingFieldsSeparately($table_row_id);
         $priceListId = $kosztorys->getPoczatkowaListaCen()->getId();
         $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
@@ -67,16 +66,12 @@ class PozycjaKosztorysowaController extends AbstractController
         $koszId = $kosztorys->getId();
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            // $entityManager->persist($pozycjaKosztorysowa);
-            // $entityManager->flush();
             $obmiar = $pozycjaKosztorysowa->getObmiar();
             $conn = $entityManager->getConnection();
             $sql = "INSERT INTO pozycja_kosztorysowa (kosztorys_id,podstawa_normowa_id,obmiar) VALUES ($koszId,$table_row_id,$obmiar)";
             $conn->executeQuery($sql);
-            // return $sql;
             return $this->redirectToRoute('kosztorys_show',['id'=>$kosztorys->getId()]);
         }
-
         return $this->render('pozycja_kosztorysowa/new.html.twig', [
             'pozycja_kosztorysowa' => $pozycjaKosztorysowa,
             'form' => $form->createView(),

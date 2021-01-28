@@ -1,0 +1,7 @@
+{% extends "table_row/leftCol/equipment.html.twig" %}
+{% block koszty %}
+{% set price = row.getPriceDivBy100() %}
+{% if price >= 0.0 %}
+<td>{{ price }}</td>
+{% endif %}
+{% endblock %}

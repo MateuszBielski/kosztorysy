@@ -146,6 +146,7 @@ class TableRowRepository extends ServiceEntityRepository
                 $cnu->setUnit($row['unit']);
                 $naklady->setNameAndUnit($cnu);
                 $tableRow->$dodajNaklad($naklady);
+                
             }
         };
         $wypelnijNakladyZcena(Material::class,Material_N_U::class,'addMaterial','material');

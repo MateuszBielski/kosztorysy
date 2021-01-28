@@ -2,9 +2,10 @@
 {% block letter %}
 	--M--
 {% endblock %}
-{# {% block cols %}
+{% block cols %}
 	<td>{{ row.name }}</td>
 	<td>{{ row.value }}</td>
     <td>{{ row.unit }}</td>
-    <td>{{ row.groupNumber }}</td>
-{% endblock %} #}
+	<td>{{ row.groupNumber }}</td>
+	{% block koszty %}{% endblock %}
+{% endblock %} 
