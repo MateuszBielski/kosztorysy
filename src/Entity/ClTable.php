@@ -158,7 +158,7 @@ class ClTable
         return implode('',$arr);
     }
 
-    public function CreateDependecyForRender($param)
+    public function CreateDependecyForRenderAndTest($param)
     {
         $getIfexists = function($parmName) use($param)
         {

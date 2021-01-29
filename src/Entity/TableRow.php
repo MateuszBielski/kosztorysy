@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Entity\Circulation\Equipment;
 use App\Entity\Circulation\Labor;
+use App\Entity\Circulation\Labor_N_U;
 use App\Entity\Circulation\Material;
+use App\Entity\Circulation\Material_N_U;
 use App\Service\Functions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -431,7 +433,7 @@ class TableRow
         return $valuesForTwig;
     }
 
-    public function CreateDependecyForRender($parameters)
+    public function CreateDependecyForRenderAndTest($parameters)
     {
         $getIfexists = function($parmName) use($parameters)
         {
@@ -461,5 +463,50 @@ class TableRow
         if ($cat_name != null)
         $catalog->setName($cat_name);
         $chapter->setMyCatalog($catalog);
+        
+        $wypelnijNaklady = function ($klasa,$klasaNu,$dodajNaklad,$naklady)
+        {
+            if ($naklady === null) return;
+            foreach($naklady as $row)
+            {
+                $naklady = new $klasa;
+                $naklady->setValue($row['value']);
+                $cnu = new $klasaNu;
+                $cnu->setName($row['name']);
+                $cnu->setUnit($row['unit']);
+                if (array_key_exists('price_value',$row))$naklady->setPrice($row['price_value']);
+                $naklady->setNameAndUnit($cnu);
+                $this->$dodajNaklad($naklady);
+            }
+        };
+        $wypelnijNaklady(Material::class,Material_N_U::class,'addMaterial',$getIfexists('materials'));
+        $wypelnijNaklady(Labor::class,Labor_N_U::class,'addLabor',$getIfexists('labors'));
+    }
+    public static function KonwertujTabliceParametrowWzgodzieZrepo($tabl)
+    {
+        $tablResult = [];
+        $i = 0;
+        foreach($tabl['value'] as $val)
+        {
+            $tablResult[$i++]['value'] = $val;
+        }
+        $i = 0;
+        foreach($tabl['name'] as $nam)
+        {
+            $tablResult[$i++]['name'] = $nam;
+        }
+        $i = 0;
+        foreach($tabl['unit'] as $un)
+        {
+            $tablResult[$i++]['unit'] = $un;
+        }
+        $i = 0;
+        if (array_key_exists('price_value',$tabl)) 
+        {
+            foreach($tabl['price_value'] as $pv)$tablResult[$i++]['price_value'] = $pv;
+        }
+        
+        
+        return $tablResult;
     }
 }

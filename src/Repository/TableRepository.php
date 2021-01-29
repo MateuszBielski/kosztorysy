@@ -101,11 +101,11 @@ class TableRepository extends ServiceEntityRepository
 
         $clTable = new ClTable;
         $clTable->setId($id);
-        $clTable->CreateDependecyForRender($results[0]);
+        $clTable->CreateDependecyForRenderAndTest($results[0]);
         foreach($results as $result)
         {
             $tr = new TableRow;
-            $tr->CreateDependecyForRender($result);
+            $tr->CreateDependecyForRenderAndTest($result);
             $tr->setMyTable($clTable);
             $clTable->addTableRow($tr);
         }

@@ -70,11 +70,16 @@ class TableRowRepositoryTest extends KernelTestCase
     public function testFindLoadingSeparatelyWithPrices_Materials()
     {
         $tableRow = $this->repTableRow->findLoadingSeparatelyWithPrices(75626,47);
-        $this->assertGreaterThan(0,count($tableRow->getMaterials()));
+        $this->assertEquals(7,count($tableRow->getMaterials()));
     }
     public function testFindLoadingSeparatelyWithPrices_Equipment()
     {
         $tableRow = $this->repTableRow->findLoadingSeparatelyWithPrices(75626,47);
-        $this->assertGreaterThan(0,count($tableRow->getEquipments()));
+        $this->assertEquals(3,count($tableRow->getEquipments()));
+    }
+    public function testFindLoadingSeparatelyWithPrices_Labor()
+    {
+        $tableRow = $this->repTableRow->findLoadingSeparatelyWithPrices(75626,47);
+        $this->assertEquals(3,count($tableRow->getLabors()));
     }
 }

@@ -4,6 +4,7 @@ namespace App\Tests;
 
 // use PHPUnit\Framework\TestCase;
 
+use App\Entity\Circulation\Material;
 use App\Entity\PozycjaKosztorysowa;
 use App\Entity\TableRow;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -27,32 +28,62 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         */
     }
     
-    public function testCreateDependecyForRender_obmiar()
+    public function testCreateDependecyForRenderAndTest_obmiar()
     {
         $pozycja = new PozycjaKosztorysowa;
         $params = [
             'obmiar'=>142,
         ];
-        $pozycja->CreateDependecyForRender($params);
+        $pozycja->CreateDependecyForRenderAndTest($params);
         $this->assertEquals(142,$pozycja->getObmiar());
     }
-    public function testCreateDependecyForRender_Jednostka()
+    public function testCreateDependecyForRenderAndTest_Jednostka()
     {
         $pozycja = new PozycjaKosztorysowa;
         $params = [
             'unit'=>'szt',
         ];
-        $pozycja->CreateDependecyForRender($params);
+        $pozycja->CreateDependecyForRenderAndTest($params);
         $this->assertEquals('szt',$pozycja->Jednostka());
     }
-    public function testCreateDependecyForRender_getId()
+    public function testCreateDependecyForRenderAndTest_getId()
     {
         $pozycja = new PozycjaKosztorysowa;
         $params = [
             'pk_id'=>11,
         ];
-        $pozycja->CreateDependecyForRender($params);
+        $pozycja->CreateDependecyForRenderAndTest($params);
         $this->assertEquals(11,$pozycja->getId());
+    }
+    public function testZmienObmiarIprzelicz_pojedynczyMaterial()
+    {
+        $pozycja = new PozycjaKosztorysowa;
+        $material = new Material;
+        $material->setValue(0.45);
+        $material->setPrice(124);
+        $tableRow = new TableRow;
+        $tableRow->addMaterial($material);
+        $pozycja->setPodstawaNormowa($tableRow);
+        $pozycja->ZmienObmiarIprzelicz(132);
+        $this->assertEquals(73.6560,$material->getKoszt());
+    }
+    public function testPrzeliczDlaAktualnegoObmiaru()
+    {
+        $tabl = [
+            'value'=>[0.5,0.35,21,4],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['a','b','c','m'],
+            'price_value'=>[10,42,53,34]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $pozycja->setObmiar(12);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        $this->assertEquals(0.6,$tr->getMaterials()[0]->getKoszt());
     }
     
 }

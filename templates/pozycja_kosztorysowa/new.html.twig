@@ -1,22 +1,32 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}New PozycjaKosztorysowa{% endblock %}
-
+{% block scripts %}
+       <script type="text/javascript" src="/js/przeliczZobmiarem.js"></script>
+{% endblock %}
 {% block body %}
     <h3>Dodaj pozycję kosztorysową</h3>
-    <b>
-        {{ pozycja_kosztorysowa.OznaczeniePelne() }}
-    </b><br>
-    {{ pozycja_kosztorysowa.podstawaNormowa.CompoundDescription() }}
-    <br>jednostka: <b>{{ pozycja_kosztorysowa.Jednostka() }}</b>
-    {{ include('pozycja_kosztorysowa/_form.html.twig') }}
-    <table>
-        {{ include ('pozycja_kosztorysowa/kol_koszty/labor.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.labors}) }}
-        {{ include ('pozycja_kosztorysowa/kol_koszty/material.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.materials}) }}
-        {{ include ('pozycja_kosztorysowa/kol_koszty/equipment.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.equipments}) }}
-        {# {{ include ('table_row/leftCol/equipment.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.equipments}) }} #}
-        <a href="{{ path('pozycja_kosztorysowa_index') }}">back to list</a>
-    </table>
-        {% endblock %}
+    <div id="div_poz_oznaczenie" 
+        {% if kosztorys_id is defined %}
+            kosztorys_id = "{{ kosztorys_id }}"
+        {% endif %}
+        {% if price_list_id is defined %}
+            price_list_id = "{{ price_list_id }}"
+        {% endif %}
+        {% if table_row_id is defined %}
+            table_row_id = "{{ table_row_id }}"
+        {% endif %}
+    >
 
+        <b>
+            {{ pozycja_kosztorysowa.OznaczeniePelne() }}
+        </b><br>
+        {{ pozycja_kosztorysowa.podstawaNormowa.CompoundDescription() }}
+        <br>jednostka: <b>{{ pozycja_kosztorysowa.Jednostka() }}</b>
+    </div>
+    {{ include('pozycja_kosztorysowa/_form.html.twig') }}
+    <table id="table_naklady">
+        {{ include('pozycja_kosztorysowa/table_naklady.html.twig') }}
+    </table>
+    <a href="{{ path('pozycja_kosztorysowa_index') }}">back to list</a>
+{% endblock %}

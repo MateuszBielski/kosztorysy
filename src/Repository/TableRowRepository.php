@@ -66,7 +66,7 @@ class TableRowRepository extends ServiceEntityRepository
         $result = $query->getResult()[0];
         $tableRow = new TableRow;
         // $tableRow->setId($result['id']);
-        $tableRow->CreateDependecyForRender($result);
+        $tableRow->CreateDependecyForRenderAndTest($result);
         return $tableRow;
     }
     public function findLoadingFieldsSeparately($id)
@@ -111,6 +111,16 @@ class TableRowRepository extends ServiceEntityRepository
         $rsm->addScalarResult('unit','unit');
         $rsm->addScalarResult('price_value','price_value');
         $em  = $this->getEntityManager();
+        /*
+        $select = "select c.value,cnu.name,cnu.unit";
+        // from $nakl
+        $from = " n 
+        join circulation c on n.id = c.id 
+        join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id";
+        $where = "where table_row_id = $tr_id";
+
+        $query = $em->createNativeQuery(
+        */
 
         $wypelnijNakladyZcena = function ($klasa,$klasaNu,$dodajNaklad,$nakl) use($tableRow,$em,$tr_id,$price_list_id,$rsm)
         {

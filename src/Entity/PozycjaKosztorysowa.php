@@ -84,13 +84,28 @@ class PozycjaKosztorysowa
     {
         return $this->podstawaNormowa->getFullName();
     }
-    public function CreateDependecyForRender($params)
+    public function CreateDependecyForRenderAndTest($params)
     {
         $obmiar = array_key_exists('obmiar',$params) ? $params['obmiar']:null;
         if($obmiar != null)$this->obmiar = $obmiar;
         $id = array_key_exists('pk_id',$params) ? $params['pk_id']:0;
         $this->id = $id;
         $this->podstawaNormowa = new TableRow;
-        $this->podstawaNormowa->CreateDependecyForRender($params);
+        $this->podstawaNormowa->CreateDependecyForRenderAndTest($params);
+    }
+    public function ZmienObmiarIprzelicz(float $nowyObmiar)
+    {
+        $this->obmiar = $nowyObmiar;
+        foreach($this->podstawaNormowa->getCirculations() as $cir)
+        {
+            $cir->obliczKosztDlaObmiaru($nowyObmiar);
+        }
+    }
+    public function PrzeliczDlaAktualnegoObmiaru()
+    {
+        foreach($this->podstawaNormowa->getCirculations() as $cir)
+        {
+            $cir->obliczKosztDlaObmiaru($this->obmiar);
+        }
     }
 }

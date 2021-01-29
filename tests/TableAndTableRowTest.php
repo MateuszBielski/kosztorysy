@@ -10,6 +10,7 @@ use App\Entity\Circulation\Labor;
 use App\Entity\Circulation\Material;
 use App\Entity\Circulation\Material_N_U;
 use App\Entity\ClTable;
+use App\Entity\PozycjaKosztorysowa;
 use App\Entity\TableRow;
 use PHPUnit\Framework\TestCase;
 require_once('src/Service/Constants.php');
@@ -274,7 +275,7 @@ class TableAndTableRowTest extends TestCase
         }
         $this->assertEquals($stringExpected,$stringResult);
     }
-    public function testCreateDependecyForRender()
+    public function testCreateDependecyForRenderAndTest()
     {
         $tableRow = new TableRow;
         $paramForName = [
@@ -283,7 +284,7 @@ class TableAndTableRowTest extends TestCase
             'cp_name'=>'Rozdział 06',
             'cat_name'=>'KNR 2-02'
         ];
-        $tableRow->CreateDependecyForRender($paramForName);
+        $tableRow->CreateDependecyForRenderAndTest($paramForName);
         $this->assertEquals('KNR 2-02 0612-06',$tableRow->getFullName());
 
     }
@@ -295,7 +296,7 @@ class TableAndTableRowTest extends TestCase
             'subDescription'=>'166$1$^$1/4x1/2$^$$ - 02',
             'mainDescription'=>'245$0.7$zamurowanie bruzd pionowych lub pochyłych o przekroju $[..]$ ceg.w ścianach z cegieł$$25'
         ];
-        $tableRow->CreateDependecyForRender($paramForCompoundDescription);
+        $tableRow->CreateDependecyForRenderAndTest($paramForCompoundDescription);
         $this->assertEquals('zamurowanie bruzd pionowych lub pochyłych o przekroju 1/4x1/2 ceg.w ścianach z cegieł',$tableRow->CompoundDescription());
     }
     public function testCreateDependency_Unit()
@@ -304,7 +305,7 @@ class TableAndTableRowTest extends TestCase
         $param = [
             'unit'=> 'm2'
         ];
-        $tableRow->CreateDependecyForRender($param);
+        $tableRow->CreateDependecyForRenderAndTest($param);
         $this->assertEquals('m2',$tableRow->getUnit());
     }
     public function testCreateDependency_TableId()
@@ -313,7 +314,7 @@ class TableAndTableRowTest extends TestCase
         $param = [
             'ct_id'=> 35
         ];
-        $tableRow->CreateDependecyForRender($param);
+        $tableRow->CreateDependecyForRenderAndTest($param);
         $this->assertEquals(35,$tableRow->getMyTable()->getId());
     }
     public function testCreateDependecyTable_ChapterNumber()
@@ -325,7 +326,7 @@ class TableAndTableRowTest extends TestCase
             'cp_name'=>'Rozdział 06',
             'cat_name'=>'KNR 2-02'
         ];
-        $ct->CreateDependecyForRender($paramForName);
+        $ct->CreateDependecyForRenderAndTest($paramForName);
         $this->assertEquals('KNR 2-02 0612',$ct->getFullName());
     }
     public function testCreateDependencyTableRow_Id()
@@ -334,7 +335,7 @@ class TableAndTableRowTest extends TestCase
         $param = [
             'tr_id' => 2340,
         ];
-        $tr->CreateDependecyForRender($param);
+        $tr->CreateDependecyForRenderAndTest($param);
         $this->assertEquals(2340,$tr->getId());
     }
     public function testCreateDependecyTable_mainDescription()
@@ -343,7 +344,55 @@ class TableAndTableRowTest extends TestCase
         $param = [
             'mainDescription'=>'główny opis'
         ];
-        $ct->CreateDependecyForRender($param);
+        $ct->CreateDependecyForRenderAndTest($param);
         $this->assertEquals('główny opis',$ct->getMainDescription());
+    }
+    public function testKonwertujTabliceParametrowWzgodzieZrepo(Type $var = null)
+    {
+        $tabl = [
+            'value'=>[0.23,0.35,21,4],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['a','b','c','m'],
+            'price_value'=>[13,42,53,34]
+        ];
+        $res = TableRow::KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $expect = [['value'=>0.23,'name'=>'name1','unit'=>'a','price_value'=>13],
+            ['value'=>0.35,'name'=>'name3','unit'=>'b','price_value'=>42],
+            ['value'=>21,'name'=>'name5','unit'=>'c','price_value'=>53],
+            ['value'=>4,'name'=>'name4','unit'=>'m','price_value'=>34]
+        ];
+        // print_r($res);
+        // $this->assertEquals($expect,$tabl);
+        $this->assertEquals($expect,$res);
+    }
+    
+    public function testCreateDependencyTableRow_materials()
+    {
+        $tabl = [
+            'value'=>[0.23,0.35,21,4],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['a','b','c','m'],
+            'price_value'=>[13,42,53,34]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $this->assertEquals(0.35,$tr->getMaterials()[1]->getValue());
+        $this->assertEquals(0.53,$tr->getMaterials()[2]->getPriceDivBy100());
+    } 
+    public function testCreateDependencyTableRow_labors()
+    {
+        $tabl = [
+            'value'=>[0.5,0.35,21,4],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['a','b','c','m'],
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['labors'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        
+        $this->assertEquals(21,$tr->getLabors()[2]->getValue());
     }
 }

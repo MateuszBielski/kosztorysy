@@ -77,7 +77,7 @@ class KosztorysRepository extends ServiceEntityRepository
         foreach($results as $result)
         {
             $pozycja = new PozycjaKosztorysowa;
-            $pozycja->CreateDependecyForRender($result);
+            $pozycja->CreateDependecyForRenderAndTest($result);
             $kosztorys->addPozycjeKosztorysowe($pozycja);
         }
         return $kosztorys;

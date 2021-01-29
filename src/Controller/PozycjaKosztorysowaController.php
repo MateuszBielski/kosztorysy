@@ -6,6 +6,7 @@ use App\Entity\PozycjaKosztorysowa;
 use App\Entity\TableRow;
 use App\Entity\Kosztorys;
 use App\Form\PozycjaKosztorysowaType;
+use App\Repository\KosztorysRepository;
 use App\Repository\PozycjaKosztorysowaRepository;
 use App\Repository\TableRowRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -61,6 +62,7 @@ class PozycjaKosztorysowaController extends AbstractController
         $priceListId = $kosztorys->getPoczatkowaListaCen()->getId();
         $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
+        $pozycjaKosztorysowa->PrzeliczDlaAktualnegoObmiaru();
         $form = $this->createForm(PozycjaKosztorysowaType::class, $pozycjaKosztorysowa);
         $form->handleRequest($request);
         $koszId = $kosztorys->getId();
@@ -74,8 +76,33 @@ class PozycjaKosztorysowaController extends AbstractController
         }
         return $this->render('pozycja_kosztorysowa/new.html.twig', [
             'pozycja_kosztorysowa' => $pozycjaKosztorysowa,
+            'kosztorys_id' => $kosztorys->getId(),
+            'price_list_id' => $priceListId,
+            'table_row_id' => $table_row_id,
             'form' => $form->createView(),
         ]);
+    }
+    /**
+     * @Route("/przeliczAjax", name="przeliczAjax", methods={"GET","POST"})
+     */
+    public function przeliczAjax(TableRowRepository $trRep,Request $request, KosztorysRepository $kRep): Response
+    {
+        $pozycjaKosztorysowa = new PozycjaKosztorysowa();
+
+        $koszt_id = $request->query->get("kosztorys_id");
+        $table_row_id = $request->query->get("table_row_id");
+        $obmiar = $request->query->get("obmiar");
+        $priceListId = $request->query->get("price_list_id");
+        $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
+        echo $koszt_id." ".$table_row_id." ".$obmiar." ".$priceListId;
+        $kosztorys  = $kRep->find($koszt_id);
+        $pozycjaKosztorysowa->setKosztorys($kosztorys);
+        $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
+        $pozycjaKosztorysowa->ZmienObmiarIprzelicz($obmiar);
+        return $this->render('pozycja_kosztorysowa/table_naklady.html.twig',[
+            'pozycja_kosztorysowa' => $pozycjaKosztorysowa,
+            ]);    
+
     }
     /**
      * @Route("/{id}", name="pozycja_kosztorysowa_show", methods={"GET"})

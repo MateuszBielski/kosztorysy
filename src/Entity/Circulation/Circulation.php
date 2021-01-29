@@ -36,6 +36,7 @@ class Circulation
     protected $groupNumber = 0;
 
     private $price = 0;
+    private $koszt = 0.0;
     
     public function getId(): ?int
     {
@@ -113,5 +114,14 @@ class Circulation
     public function getPriceDivBy100(): float
     {
         return $this->price/100;
+    }
+    public function getKoszt()
+    {
+        return $this->koszt;
+    }
+
+    public function obliczKosztDlaObmiaru(float $obmiar)
+    {
+        $this->koszt = $obmiar * $this->value * $this->price / 100;
     }
 }
