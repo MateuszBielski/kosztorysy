@@ -1,5 +1,14 @@
 {% extends "table_row/leftCol/labor.html.twig" %}
 {% block koszty %}
-
-<td>roboczogodzina</td>
+{% set price = row.getPriceDivBy100() %}
+<td>
+    {% if price >= 0.0 %}
+    {{ price }} zł/r-g
+    {% endif %}
+</td>
+<td></td>
+<td></td>
+<td>{{ row.koszt }}</td>
+<td></td>
+<td></td>
 {% endblock %}

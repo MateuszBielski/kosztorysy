@@ -48,7 +48,6 @@ class PozycjaKosztorysowa
     public function setKosztorys(?Kosztorys $kosztorys): self
     {
         $this->kosztorys = $kosztorys;
-
         return $this;
     }
 
@@ -60,7 +59,10 @@ class PozycjaKosztorysowa
     public function setPodstawaNormowa(?TableRow $podstawaNormowa): self
     {
         $this->podstawaNormowa = $podstawaNormowa;
-
+        if($this->kosztorys != null){
+            $roboczogodzina = $this->kosztorys->getRoboczogodzina();
+            foreach($podstawaNormowa->getLabors() as $lab)$lab->setPrice($roboczogodzina);
+        }
         return $this;
     }
 

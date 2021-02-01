@@ -24,9 +24,9 @@
         {{ pozycja_kosztorysowa.podstawaNormowa.CompoundDescription() }}
         <br>jednostka: <b>{{ pozycja_kosztorysowa.Jednostka() }}</b>
     </div>
-    {{ include('pozycja_kosztorysowa/_form.html.twig') }}
-    <table id="table_naklady">
+    <table id="table_naklady" width="60%">
         {{ include('pozycja_kosztorysowa/table_naklady.html.twig') }}
     </table>
+    {{ include('pozycja_kosztorysowa/_form.html.twig') }}
     <a href="{{ path('pozycja_kosztorysowa_index') }}">back to list</a>
 {% endblock %}

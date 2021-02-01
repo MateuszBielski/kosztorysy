@@ -4,7 +4,9 @@ namespace App\Tests;
 
 // use PHPUnit\Framework\TestCase;
 
+use App\Entity\Circulation\Labor;
 use App\Entity\Circulation\Material;
+use App\Entity\Kosztorys;
 use App\Entity\PozycjaKosztorysowa;
 use App\Entity\TableRow;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -85,5 +87,18 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
         $this->assertEquals(0.6,$tr->getMaterials()[0]->getKoszt());
     }
-    
+    public function testZaladowaniePodstawyNormowejUstawiaCeneDlaRobociznyZkosztorysu()
+    {
+        $kosztorys  = new Kosztorys;
+        $kosztorys->setRoboczogodzina(2341);
+        $pozycjaKosztorysowa = new PozycjaKosztorysowa;
+        $pozycjaKosztorysowa->setKosztorys($kosztorys);
+        
+        $robotnicy = new Labor;
+        $tr = new TableRow;
+        $tr->addLabor($robotnicy);
+        $pozycjaKosztorysowa->setPodstawaNormowa($tr);
+        $this->assertEquals(23.41,$robotnicy->getPriceDivBy100());
+
+    }
 }
