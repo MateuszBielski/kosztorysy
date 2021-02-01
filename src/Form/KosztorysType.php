@@ -6,6 +6,7 @@ use App\Entity\Kosztorys;
 use App\Entity\PriceList;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,6 +20,11 @@ class KosztorysType extends AbstractType
             'class' => PriceList::class,
             'choice_label' => function(PriceList $pl){return $pl->getName();},
             ])
+            ->add('roboczogodzina', MoneyType::class, [
+                'divisor' => 100,
+                'currency' => 'PLN'
+            ])
+            
         ;
     }
 

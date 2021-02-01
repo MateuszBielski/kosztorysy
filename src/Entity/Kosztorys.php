@@ -28,6 +28,11 @@ class Kosztorys
      */
     private $pozycjeKosztorysowe;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $roboczogodzina;
+
     public function __construct()
     {
         $this->pozycjeKosztorysowe = new ArrayCollection();
@@ -82,6 +87,18 @@ class Kosztorys
                 $pozycjeKosztorysowe->setKosztorys(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRoboczogodzina(): ?int
+    {
+        return $this->roboczogodzina;
+    }
+
+    public function setRoboczogodzina(int $roboczogodzina): self
+    {
+        $this->roboczogodzina = $roboczogodzina;
 
         return $this;
     }
