@@ -101,4 +101,66 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $this->assertEquals(23.41,$robotnicy->getPriceDivBy100());
 
     }
+    public function testDlaProcentowychWartosciWyliczaNakladZeSwojejKategorii_materialy()
+    {
+        $tabl = [
+            'value'=>[1.5,1,1,1],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['%','b','c','m'],
+            'price_value'=>[10,100,100,100]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $pozycja->setObmiar(5);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        $this->assertEquals(0.225,$tr->getMaterials()[0]->getKoszt());
+    }
+    public function testProcentyWyliczaDlaPozostalychKosztowJesliNieMaWswojejKategorii()
+    {
+        $tabl1 = [
+            'value'=>[1.6],
+            'name'=>['name1'],
+            'unit'=>['%'],
+            'price_value'=>[10]
+        ];
+        $tabl2 = [
+            'value'=>[1,1,1,1],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['m','b','c','m'],
+            'price_value'=>[100,100,100,100]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl1);
+        $param['labors'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl2);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $pozycja->setObmiar(5);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        $this->assertEquals(0.32,$tr->getMaterials()[0]->getKoszt());
+    }
+    public function testDlaProcentowychWartosciWyliczaNakladZeSwojejKategorii_sprzet()
+    {
+        $tabl = [
+            'value'=>[1,1,1.5,1],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['r','b','%','m'],
+            'price_value'=>[10,100,100,100]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['equipments'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $pozycja->setObmiar(10);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        print('xx'.count($tr->getEquipments()));
+        $this->assertEquals(0.315,$tr->getEquipments()[2]->getKoszt());
+    }
 }

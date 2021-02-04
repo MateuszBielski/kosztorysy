@@ -9,6 +9,7 @@ use App\Service\CirFunctions;
 use PHPUnit\Framework\TestCase;
 use App\Entity\Catalog;
 use App\Entity\Circulation\Equipment_N_U;
+use App\Entity\Circulation\Labor;
 
 require_once('src/Service/Constants.php');
 
@@ -174,5 +175,15 @@ class CirculationTest extends TestCase
         foreach($circulations as $cir)$cir->AddSelfToCorrectSubArray($circulationsNUseparated);
         $this->assertEquals('232',count($circulationsNUseparated['R']).count($circulationsNUseparated['M']).count($circulationsNUseparated['S']));
     }
+    public function testObliczKosztDlaObmiaru()
+    {
+        $rob = new Labor;
+        $rob->setValue(23.4);
+        $rob->setPrice(252);
+        $rob->obliczKosztDlaObmiaru(12.1);
+        $this->assertEquals(713.5128,$rob->getKoszt());
+        
+    }
+    
 
 }

@@ -98,10 +98,7 @@ class PozycjaKosztorysowa
     public function ZmienObmiarIprzelicz(float $nowyObmiar)
     {
         $this->obmiar = $nowyObmiar;
-        foreach($this->podstawaNormowa->getCirculations() as $cir)
-        {
-            $cir->obliczKosztDlaObmiaru($nowyObmiar);
-        }
+        $this->PrzeliczDlaAktualnegoObmiaru();
     }
     public function PrzeliczDlaAktualnegoObmiaru()
     {
@@ -109,5 +106,36 @@ class PozycjaKosztorysowa
         {
             $cir->obliczKosztDlaObmiaru($this->obmiar);
         }
+        $labors = $this->podstawaNormowa->getLabors();
+        $materials = $this->podstawaNormowa->getMaterials();
+        $sprzet = $this->podstawaNormowa->getEquipments();
+        $matKoszt = 0;
+        $robKoszt = 0;
+        $sprzKoszt = 0;
+        $matProcentowe = [];
+        $robProcentowe = [];
+        $sprzProcentowe = [];
+        foreach($materials as $mat)
+        {
+            if($mat->getUnit() != '%')$matKoszt += $mat->getKoszt();
+            else $matProcentowe[] = $mat;
+        }
+        foreach($labors as $lab)
+        {
+            if($lab->getUnit() != '%')$robKoszt += $lab->getKoszt();
+            else $robProcentowe[] = $lab;
+        }
+        foreach($sprzet as $e)
+        {
+            if($e->getUnit() != '%')$sprzKoszt += $e->getKoszt();
+            else $sprzProcentowe[] = $e;
+        }
+        if (!$matKoszt) $matKoszt = $robKoszt + $sprzKoszt;
+        if (!$robKoszt)$robKoszt = $matKoszt + $sprzKoszt;
+        if (!$sprzKoszt)$sprzKoszt = $robKoszt + $matKoszt;
+        foreach($matProcentowe as $mProc)$mProc->setKoszt($mProc->getValue() * $matKoszt / 100);
+        foreach($sprzProcentowe as $eProc)$eProc->setKoszt($eProc->getValue() * $sprzKoszt / 100);
+        foreach($robProcentowe as $rProc)$rProc->setKoszt($rProc->getValue() * $robKoszt / 100);
+
     }
 }

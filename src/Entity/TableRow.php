@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Circulation\Equipment;
+use App\Entity\Circulation\Equipment_N_U;
 use App\Entity\Circulation\Labor;
 use App\Entity\Circulation\Labor_N_U;
 use App\Entity\Circulation\Material;
@@ -481,6 +482,7 @@ class TableRow
         };
         $wypelnijNaklady(Material::class,Material_N_U::class,'addMaterial',$getIfexists('materials'));
         $wypelnijNaklady(Labor::class,Labor_N_U::class,'addLabor',$getIfexists('labors'));
+        $wypelnijNaklady(Equipment::class,Equipment_N_U::class,'addEquipment',$getIfexists('equipments'));
     }
     public static function KonwertujTabliceParametrowWzgodzieZrepo($tabl)
     {

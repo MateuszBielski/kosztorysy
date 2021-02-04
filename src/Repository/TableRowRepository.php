@@ -49,6 +49,7 @@ class TableRowRepository extends ServiceEntityRepository
     {
         $em = $this->getEntityManager();
         $query = $em->createQuery("SELECT 
+        tr.unit,
         tr.id as tr_id,
         tr.myNumber, 
         tr.subDescription, 

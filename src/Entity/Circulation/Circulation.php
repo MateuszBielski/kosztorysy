@@ -79,6 +79,7 @@ class Circulation
     }
     public function getUnit()
     {
+        if($this->nameAndUnit == null) return '';
         return $this->nameAndUnit->getUnit();
     }
 
@@ -118,6 +119,10 @@ class Circulation
     public function getKoszt()
     {
         return $this->koszt;
+    }
+    public function setKoszt(float $koszt)      
+    {
+        $this->koszt = $koszt;
     }
 
     public function obliczKosztDlaObmiaru(float $obmiar)
