@@ -37,6 +37,8 @@ class Circulation
 
     private $price = 0;
     private $koszt = 0.0;
+    private $jednostkaDlaNakladuJednostkowego = '';
+    
     
     public function getId(): ?int
     {
@@ -129,4 +131,24 @@ class Circulation
     {
         $this->koszt = $obmiar * $this->value * $this->price / 100;
     }
+
+    public function getJednostkaDlaCenyJEdnostkowej()
+    {
+        $u = $this->nameAndUnit->getUnit();
+        $res = 'zł';
+        if($u != '%') $res .="/$u";
+        return $res;
+    }
+    public function UstalJednostkiDlaJednostkiObmiaru(?string $jednObm)
+    {
+        $u = $this->nameAndUnit->getUnit();
+        
+        if($u != '%') $u .= '/'.$jednObm;
+        $this->jednostkaDlaNakladuJednostkowego = $u;
+    }
+    public function getJednostkaDlaNakladuJednostkowego()
+    {
+        return $this->jednostkaDlaNakladuJednostkowego;
+    }
+    
 }

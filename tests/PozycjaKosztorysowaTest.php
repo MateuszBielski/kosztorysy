@@ -160,7 +160,27 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->setObmiar(10);
         $pozycja->setPodstawaNormowa($tr);
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
-        print('xx'.count($tr->getEquipments()));
         $this->assertEquals(0.315,$tr->getEquipments()[2]->getKoszt());
     }
+
+    public function testJednostkaDlaCenyJednostkowej()
+    {
+        $tabl = [
+            'value'=>[0.5,0.35,21,4],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['m2','szt','%','m'],
+            'price_value'=>[10,42,53,34]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $tr->setUnit('m3');
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $this->assertEquals('zł/m2',$tr->getMaterials()[0]->getJednostkaDlaCenyJednostkowej());
+        $this->assertEquals('zł',$tr->getMaterials()[2]->getJednostkaDlaCenyJednostkowej());
+        $this->assertEquals('szt/m3',$tr->getMaterials()[1]->getJednostkaDlaNakladuJednostkowego());
+        //%
+    }
+
 }

@@ -3,7 +3,7 @@
 {% set price = row.getPriceDivBy100() %}
 <td>
     {% if price >= 0.0 %}
-    {{ price }} zł/{{ row.unit }}
+    {{ price }} {{ row.jednostkaDlaCenyJEdnostkowej }}
     {% endif %}
 </td>
 <td></td>

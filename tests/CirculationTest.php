@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 use App\Entity\Catalog;
 use App\Entity\Circulation\Equipment_N_U;
 use App\Entity\Circulation\Labor;
+use App\Entity\Circulation\Material;
+use App\Entity\Circulation\Equipment;
 
 require_once('src/Service/Constants.php');
 
@@ -184,6 +186,42 @@ class CirculationTest extends TestCase
         $this->assertEquals(713.5128,$rob->getKoszt());
         
     }
-    
+    public function testJednostkaDlaCenyJednostkowej()
+    {
+        $material = new Material;
+        $nau = new Material_N_U;
+        $nau->setUnit('m2');
+        $material->setNameAndUnit($nau);
+        $this->assertEquals('zł/m2',$material->getJednostkaDlaCenyJEdnostkowej());
+    }
+    public function testJednostkaDlaCenyJednostkowe_procenty()
+    {
+        $material = new Material;
+        $nau = new Material_N_U;
+        $nau->setUnit('%');
+        $material->setNameAndUnit($nau);
+        $this->assertEquals('zł',$material->getJednostkaDlaCenyJEdnostkowej());
+    }
+    public function testJednostkaDlaNakladuJednostkowego()
+    {
+        
+        $sprz = new Equipment;
+        $nau = new Equipment_N_U;
+        $nau->setUnit('m-g');
+        $sprz->setNameAndUnit($nau);
+        $sprz->UstalJednostkiDlaJednostkiObmiaru('m3');
+        $this->assertEquals('m-g/m3',$sprz->getJednostkaDlaNakladuJednostkowego());
+    }
+    public function testJednostkaDlaNakladuJednostkowego_procenty()
+    {
+        
+        $sprz = new Equipment;
+        $nau = new Equipment_N_U;
+        $nau->setUnit('%');
+        $sprz->setNameAndUnit($nau);
+        $sprz->UstalJednostkiDlaJednostkiObmiaru('m3');
+        $this->assertEquals('%',$sprz->getJednostkaDlaNakladuJednostkowego());
+    }
+
 
 }
