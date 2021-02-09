@@ -395,4 +395,102 @@ class TableAndTableRowTest extends TestCase
         
         $this->assertEquals(21,$tr->getLabors()[2]->getValue());
     }
+    public function testJednostkiPrzezCreateDependecyForRenderAndTest()
+    {
+        $tabl = [
+            'value'=>[0.5,0.35,21,4],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['m2','szt','%','m'],
+            'price_value'=>[10,42,53,34]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $param['unit'] = "m3";
+        $tr->CreateDependecyForRenderAndTest($param);
+        $this->assertEquals('zł/m2',$tr->getMaterials()[0]->getJednostkaDlaCenyJednostkowej());
+        $this->assertEquals('zł',$tr->getMaterials()[2]->getJednostkaDlaCenyJednostkowej());
+        $this->assertEquals('szt/m3',$tr->getMaterials()[1]->getJednostkaDlaNakladuJednostkowego());
+        $this->assertEquals('%',$tr->getMaterials()[2]->getJednostkaDlaNakladuJednostkowego());
+    }
+
+    public function testCreateDependency_Jednostki()
+    {
+        $tr = new TableRow;
+        $par = ['unit' => 'm2',
+        'tr_id' => 75288,
+        'myNumber' => 3,
+        'subDescription' => '39$1$^$łukowe gr.20cm wys.do 4m$$$ - 03',
+        'mainDescription' => '94$0.6$Ściany betonowe $$$$06',
+        'ct_id' => 10787,
+        'ct_myNumber' => 6,
+        'cp_name' => 'Rozdział 02',
+        'cat_name' => 'KNR 2-02',
+        'labors' => ['0' => ['value' => 0.14,
+        'name' => 'betoniarze gr.II',
+        'unit' => 'r-g',
+        ],
+        '1' => ['value' => 2.96,
+        'name' => 'cieśle gr.II',
+        'unit' => 'r-g',
+        ],
+        '2' => ['value' => 2.39,
+        'name' => 'robotnicy gr.I',
+        'unit' => 'r-g',
+        ],
+        ],
+        'materials' => ['0' => ['value' => 0.203,
+        'name' => 'beton zwykły z kruszywa naturalnego',
+        'unit' => 'm3',
+        'price_value' => 28810,
+        ],
+        '1' => ['value' => 0.002,
+        'name' => 'drewno okrągłe na stemple budowlane',
+        'unit' => 'm3',
+        'price_value' => 19214,
+        ],
+        '2' => ['value' => 0.019,
+        'name' => 'deski iglaste obrzynane 25 mm kl.III',
+        'unit' => 'm3',
+        'price_value' => 16899,
+        ],
+        '3' => ['value' => 0.009,
+        'name' => 'deski iglaste obrzynane 38 mm kl.III',
+        'unit' => 'm3',
+        'price_value' => 16488,
+        ],
+        '4' => ['value' => 1.2,
+        'name' => 'gwoździe budowlane okrągłe gołe',
+        'unit' => 'kg',
+        'price_value' => 3140,
+        ],
+        '5' => ['value' => 0.5,
+        'name' => 'drut stalowy okrągły',
+        'unit' => 'kg',
+        'price_value' => 27404,
+        ],
+        '6' => ['value' => 1.5,
+        'name' => 'materiały pomocnicze',
+        'unit' => '%',
+        'price_value' => 10243,
+        ],
+        ],
+        'equipments' => ['0' => ['value' => 0.67,
+        'name' => 'wyciąg',
+        'unit' => 'm-g',
+        'price_value' => 28419,
+        ],
+        '1' => ['value' => 0.04,
+        'name' => 'środek transportowy',
+        'unit' => 'm-g',
+        'price_value' => 13403,
+        ],
+        ],
+        ];
+        $tr->CreateDependecyForRenderAndTest($par);
+        $this->assertEquals('zł/m3',$tr->getMaterials()[0]->getJednostkaDlaCenyJednostkowej());
+        $this->assertEquals('zł',$tr->getMaterials()[6]->getJednostkaDlaCenyJednostkowej());
+        $this->assertEquals('kg/m2',$tr->getMaterials()[5]->getJednostkaDlaNakladuJednostkowego());
+        $this->assertEquals('%',$tr->getMaterials()[6]->getJednostkaDlaNakladuJednostkowego());
+    }
 }

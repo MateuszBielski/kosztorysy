@@ -7,7 +7,7 @@
 	<tr>
 		{% block cols %}
 			<td>{{ row.name }}</td>
-			<td>{{ row.value }} {{ row.unit }}/{{ table_row.unit }}</td>
+			<td>{{ row.value }} {{ row.getJednostkaDlaNakladuJednostkowego() }}</td>
 			<td>{{ row.unit }}</td>
 			<td></td>
 			{% block koszty %}{% endblock %}

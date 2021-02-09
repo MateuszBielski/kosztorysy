@@ -4,7 +4,7 @@
 {% endblock %}
 {% block cols %}
 	<td>{{ row.name }}</td>
-	<td>{{ row.value }}</td>
+	<td>{{ row.value }} {{ row.getJednostkaDlaNakladuJednostkowego() }}</td>
     <td>{{ row.unit }}</td>
 	<td>{{ row.groupNumber }}</td>
 	{% block koszty %}{% endblock %}

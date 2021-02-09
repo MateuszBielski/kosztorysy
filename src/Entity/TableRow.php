@@ -477,6 +477,7 @@ class TableRow
                 $cnu->setUnit($row['unit']);
                 if (array_key_exists('price_value',$row))$naklady->setPrice($row['price_value']);
                 $naklady->setNameAndUnit($cnu);
+                $naklady->UstalJednostkiDlaJednostkiObmiaru($this->unit);
                 $this->$dodajNaklad($naklady);
             }
         };

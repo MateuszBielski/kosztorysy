@@ -60,7 +60,33 @@ class PozycjaKosztorysowaController extends AbstractController
         $pozycjaKosztorysowa = new PozycjaKosztorysowa();
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
         $priceListId = $kosztorys->getPoczatkowaListaCen()->getId();
-        $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
+        // $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
+        // print("<pre>");
+        $table_row = new TableRow;
+        $dane = $trRep->findParametersForLoading($table_row_id,$priceListId);
+        $table_row->CreateDependecyForRenderAndTest($dane);
+        $wypisz = function($tablica) use(&$wypisz){
+            print("[");
+            foreach($tablica as $key => $val)
+            {
+                if(is_array($val))
+                {
+                    $key = "'".$key."'";
+                    print("$key => ");
+                    $wypisz($val);
+                } 
+                else 
+                {
+                    if(!is_numeric($val)) $val ="'".$val."'";
+                    $key = "'".$key."'";
+                    print("$key => $val".',');
+                } 
+                print("<br>");
+            }
+            print("],");
+        };
+        // $wypisz($dane);
+        // print("</pre>");
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
         $pozycjaKosztorysowa->PrzeliczDlaAktualnegoObmiaru();
         $form = $this->createForm(PozycjaKosztorysowaType::class, $pozycjaKosztorysowa);
@@ -93,8 +119,11 @@ class PozycjaKosztorysowaController extends AbstractController
         $table_row_id = $request->query->get("table_row_id");
         $obmiar = $request->query->get("obmiar");
         $priceListId = $request->query->get("price_list_id");
-        $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
-        echo $koszt_id." ".$table_row_id." ".$obmiar." ".$priceListId;
+        // $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
+        $table_row = new TableRow;
+        $dane = $trRep->findParametersForLoading($table_row_id,$priceListId);
+        $table_row->CreateDependecyForRenderAndTest($dane);
+        // echo $koszt_id." ".$table_row_id." ".$obmiar." ".$priceListId;
         $kosztorys  = $kRep->find($koszt_id);
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);

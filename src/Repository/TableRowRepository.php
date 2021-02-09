@@ -167,6 +167,55 @@ class TableRowRepository extends ServiceEntityRepository
         return $tableRow;
     }
 
+    public function findParametersForLoading($tr_id,$price_list_id = null)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery("SELECT 
+        tr.unit,
+        tr.id as tr_id,
+        tr.myNumber, 
+        tr.subDescription, 
+        ct.mainDescription,
+        ct.id as ct_id, 
+        ct.myNumber as ct_myNumber ,
+        cp.name as cp_name,
+        cat.name as cat_name
+        FROM App\Entity\TableRow tr 
+        INNER JOIN App\Entity\ClTable ct WITH tr.myTable = ct 
+        INNER JOIN App\Entity\Chapter cp WITH ct.myChapter = cp
+        INNER JOIN App\Entity\Catalog cat WITH cp.myCatalog = cat
+        WHERE tr.id = $tr_id");
+        // $query->setParameter(1, $id);
+        $result = $query->getResult()[0];
+        
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('value', 'value');
+        $rsm->addScalarResult('name','name');
+        $rsm->addScalarResult('unit','unit');
+        $rsm->addScalarResult('price_value','price_value');
+        
+        $queryL = $em->createNativeQuery("select c.value,cnu.name,cnu.unit  from labor n 
+        join circulation c on n.id = c.id 
+        join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id 
+        where table_row_id = $tr_id",$rsm);
+        $result['labors'] = $queryL->getResult();
+
+        $queryM = $em->createNativeQuery("select c.value,cnu.name,cnu.unit,ip.price_value  from material n 
+        join circulation c on n.id = c.id 
+        join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id 
+        join item_price ip on ip.name_and_unit_id = cnu.id
+        where table_row_id = $tr_id and ip.price_list_id = $price_list_id",$rsm);
+        $result['materials'] = $queryM->getResult();
+
+        $queryE = $em->createNativeQuery("select c.value,cnu.name,cnu.unit,ip.price_value  from equipment n 
+        join circulation c on n.id = c.id 
+        join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id 
+        join item_price ip on ip.name_and_unit_id = cnu.id
+        where table_row_id = $tr_id and ip.price_list_id = $price_list_id",$rsm);
+        $result['equipments'] = $queryE->getResult();
+        return $result;
+    }
+
     // /**
     //  * @return TableRow[] Returns an array of TableRow objects
     //  */
