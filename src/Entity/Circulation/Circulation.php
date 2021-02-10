@@ -38,6 +38,8 @@ class Circulation
     private $price = 0;
     private $koszt = 0.0;
     private $jednostkaDlaNakladuJednostkowego = '';
+    private $kosztJednostkowy = 0;
+    private $naklad = 0;
     
     
     public function getId(): ?int
@@ -150,5 +152,21 @@ class Circulation
     {
         return $this->jednostkaDlaNakladuJednostkowego;
     }
-    
+    public function ObliczKosztJednostkowy()
+    {
+        $this->kosztJednostkowy = $this->value * $this->price / 100;
+    }
+    public function getKosztJednostkowy()
+    {
+        return $this->kosztJednostkowy;
+    }
+
+    public function ObliczNakladDlaObmiaru(float $obmiar)
+    {
+        $this->naklad = $obmiar * $this->value;
+    }
+    public function getNaklad()
+    {
+        return $this->naklad;
+    }
 }

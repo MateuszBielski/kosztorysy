@@ -105,6 +105,8 @@ class PozycjaKosztorysowa
         foreach($this->podstawaNormowa->getCirculations() as $cir)
         {
             $cir->obliczKosztDlaObmiaru($this->obmiar);
+            $cir->ObliczNakladDlaObmiaru($this->obmiar);
+            $cir->ObliczKosztJednostkowy();
         }
         $labors = $this->podstawaNormowa->getLabors();
         $materials = $this->podstawaNormowa->getMaterials();

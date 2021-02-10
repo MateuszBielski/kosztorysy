@@ -223,5 +223,24 @@ class CirculationTest extends TestCase
         $this->assertEquals('%',$sprz->getJednostkaDlaNakladuJednostkowego());
     }
 
+    public function testObliczKosztJednostkowy()
+    {
+        $mat = new Material;
+        // $nau = new Material_N_U;
+        // $nau->set
+        $mat->setValue(1);
+        $mat->setPrice(200);
+        // $mat->obliczKosztDlaObmiaru(3);
+        $mat->ObliczKosztJednostkowy();
+        $this->assertEquals(2.0,$mat->getKosztJednostkowy());
 
+    }
+    public function testObliczNakladDlaObmiaru()
+    {
+        $mat = new Material;
+        
+        $mat->setValue(1);
+        $mat->ObliczNakladDlaObmiaru(23);
+        $this->assertEquals(23,$mat->getNaklad());
+    }
 }

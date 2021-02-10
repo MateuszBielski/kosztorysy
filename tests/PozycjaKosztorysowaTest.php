@@ -162,6 +162,26 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
         $this->assertEquals(0.315,$tr->getEquipments()[2]->getKoszt());
     }
+    public function testPrzeliczDlaObmiaru_nakladyIkosztyJednostkowe()
+    {   
+        $tabl = [
+            'value'=>[0.5,0.35,21,4],
+            'name'=>['name1','name3','name5','name4'],
+            'unit'=>['a','b','c','m'],
+            'price_value'=>[10,42,53,34]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $pozycja->setObmiar(124);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        $this->assertEquals(43.4,$tr->getMaterials()[1]->getNaklad());
+        $this->assertEquals(1.36,$tr->getMaterials()[3]->getKosztJednostkowy());
+    }
+
 
     
 
