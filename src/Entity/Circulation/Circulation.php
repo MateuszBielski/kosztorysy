@@ -122,7 +122,7 @@ class Circulation
     }
     public function getKoszt()
     {
-        return $this->koszt;
+        return round($this->koszt,2);
     }
     public function setKoszt(float $koszt)      
     {
@@ -154,7 +154,7 @@ class Circulation
     }
     public function ObliczKosztJednostkowy()
     {
-        $this->kosztJednostkowy = $this->value * $this->price / 100;
+        $this->kosztJednostkowy = round($this->value * $this->price / 100,2);
     }
     public function getKosztJednostkowy()
     {

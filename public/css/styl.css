@@ -21,8 +21,12 @@ input{
 table{
 	border-collapse: collapse;
 }
-table,  th, td {
+td {
 	border: 1px rgb(82, 212, 212);
+	text-align: right;
+}
+td.opis {
+	text-align: left;
 }
 thead,tr
 {

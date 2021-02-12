@@ -1,16 +1,41 @@
 {% set table_row = pozycja_kosztorysowa.podstawaNormowa %}
 <tr>
-    <th width="40%">opis</th>
-    <th width="11%"></th>
+    <th width="30%">opis</th>
+    <th width="15%"></th>
     <th width="4%">j.m.</th>
     <th width="4%">gr</th>
     <th width="12%">cena jedn.</th>
     <th width="7%">nakłady</th>
     <th width="7%">koszt. jedn.</th>
-    <th width="7%">R</th>
-    <th width="7%">M</th>
-    <th width="7%">S</th>
+    <th width="7%" >R</th>
+    <th width="7%" >M</th>
+    <th width="7%" >S</th>
 </tr>
+
 {{ include ('pozycja_kosztorysowa/kol_koszty/labor.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.labors}) }}
 {{ include ('pozycja_kosztorysowa/kol_koszty/material.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.materials}) }}
 {{ include ('pozycja_kosztorysowa/kol_koszty/equipment.html.twig',{circulations: pozycja_kosztorysowa.podstawaNormowa.equipments}) }}
+<tr>
+    <td></td>
+    <td>Razem z narzutami: {{ pozycja_kosztorysowa.cenaZnarzutami }}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>{{ pozycja_kosztorysowa.cenaRobociznyZnarzutami }}</td>
+    <td>{{ pozycja_kosztorysowa.cenaMaterialowZnarzutami }}</td>
+    <td>{{ pozycja_kosztorysowa.cenaSprzetuZnarzutami }}</td>
+</tr>
+<tr>
+    <td></td>
+    <td>ceny jednostkowe: </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>

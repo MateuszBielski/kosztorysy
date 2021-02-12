@@ -183,7 +183,7 @@ class CirculationTest extends TestCase
         $rob->setValue(23.4);
         $rob->setPrice(252);
         $rob->obliczKosztDlaObmiaru(12.1);
-        $this->assertEquals(713.5128,$rob->getKoszt());
+        $this->assertEquals(713.51,$rob->getKoszt());//koszt jest zaokrąglony
         
     }
     public function testJednostkaDlaCenyJednostkowej()

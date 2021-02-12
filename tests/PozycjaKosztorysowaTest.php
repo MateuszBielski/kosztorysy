@@ -67,7 +67,7 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $tableRow->addMaterial($material);
         $pozycja->setPodstawaNormowa($tableRow);
         $pozycja->ZmienObmiarIprzelicz(132);
-        $this->assertEquals(73.6560,$material->getKoszt());
+        $this->assertEquals(73.66,$material->getKoszt());
     }
     public function testPrzeliczDlaAktualnegoObmiaru()
     {
@@ -117,7 +117,7 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->setObmiar(5);
         $pozycja->setPodstawaNormowa($tr);
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
-        $this->assertEquals(0.225,$tr->getMaterials()[0]->getKoszt());
+        $this->assertEquals(0.23,$tr->getMaterials()[0]->getKoszt());
     }
     public function testProcentyWyliczaDlaPozostalychKosztowJesliNieMaWswojejKategorii()
     {
@@ -160,7 +160,7 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->setObmiar(10);
         $pozycja->setPodstawaNormowa($tr);
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
-        $this->assertEquals(0.315,$tr->getEquipments()[2]->getKoszt());
+        $this->assertEquals(0.32,$tr->getEquipments()[2]->getKoszt());
     }
     public function testPrzeliczDlaObmiaru_nakladyIkosztyJednostkowe()
     {   
@@ -181,8 +181,58 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $this->assertEquals(43.4,$tr->getMaterials()[1]->getNaklad());
         $this->assertEquals(1.36,$tr->getMaterials()[3]->getKosztJednostkowy());
     }
-
-
+    public function testPrzeliczDlaObmiaru_cenaZnarzutami()
+    {
+        $tabl = [
+            'value'=>[0.5,1.35],
+            'name'=>['name1','name3'],
+            'unit'=>['a','%'],
+            'price_value'=>[10,42]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $pozycja->setObmiar(10);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        $this->assertEquals(0.51,$pozycja->getCenaZnarzutami());
+    }
+    public function testPrzeliczDlaObmiaru_cenaRobociznyMaterialowIsprzetuZnarzutami()
+    {
+        $tabl = [
+            'value'=>[0.5,24],
+            'name'=>['name1','name3'],
+            'unit'=>['a','%'],
+            'price_value'=>[10,42]
+        ];
+        $tabl2 = [
+            'value'=>[0.5,1.35],
+            'name'=>['name1','name3'],
+            'unit'=>['a','m'],
+            'price_value'=>[11,42]
+        ];
+        $tabl3 = [
+            'value'=>[0.2,1.35],
+            'name'=>['name1','name3'],
+            'unit'=>['a','m'],
+            'price_value'=>[11,42]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['labors'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl2);
+        $param['equipments'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl3);
+        $tr->CreateDependecyForRenderAndTest($param);
+        $pozycja = new PozycjaKosztorysowa;
+        $pozycja->setObmiar(10);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        $this->assertEquals(0.62,$pozycja->getCenaRobociznyZnarzutami());
+        $this->assertEquals(6.22,$pozycja->getCenaMaterialowZnarzutami());
+        $this->assertEquals(5.89,$pozycja->getCenaSprzetuZnarzutami());
+    }
     
 
 }

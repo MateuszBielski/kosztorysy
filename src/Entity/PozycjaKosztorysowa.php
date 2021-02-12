@@ -33,6 +33,11 @@ class PozycjaKosztorysowa
      */
     private $obmiar = 1;
 
+    private $cenaZnarzutami = 0.0;
+    private $cenaRobociznyZnarzutami = 0.0;
+    private $cenaMaterialowZnarzutami = 0.0;
+    private $cenaSprzetuZnarzutami = 0.0;
+
 
 
     public function getId(): ?int
@@ -138,6 +143,30 @@ class PozycjaKosztorysowa
         foreach($matProcentowe as $mProc)$mProc->setKoszt($mProc->getValue() * $matKoszt / 100);
         foreach($sprzProcentowe as $eProc)$eProc->setKoszt($eProc->getValue() * $sprzKoszt / 100);
         foreach($robProcentowe as $rProc)$rProc->setKoszt($rProc->getValue() * $robKoszt / 100);
+        $this->cenaMaterialowZnarzutami = 0;
+        $this->cenaRobociznyZnarzutami = 0;
+        $this->cenaSprzetuZnarzutami = 0;
+        foreach($materials as $mat)$this->cenaMaterialowZnarzutami += $mat->getKoszt();
+        foreach($labors as $lab)$this->cenaRobociznyZnarzutami += $lab->getKoszt();
+        foreach($sprzet as $e)$this->cenaSprzetuZnarzutami += $e->getKoszt();
+        $this->cenaZnarzutami = $this->cenaMaterialowZnarzutami + $this->cenaRobociznyZnarzutami + $this->cenaSprzetuZnarzutami;
+        // foreach($this->podstawaNormowa->getCirculations() as $cir)$this->cenaZnarzutami += $cir->getKoszt();
 
+    }
+    public function getCenaZnarzutami()
+    {
+        return round($this->cenaZnarzutami,2);
+    }
+    public function getCenaRobociznyZnarzutami()
+    {
+        return round($this->cenaRobociznyZnarzutami,2);
+    }
+    public function getCenaMaterialowZnarzutami()
+    {
+        return round($this->cenaMaterialowZnarzutami,2);
+    }
+    public function getCenaSprzetuZnarzutami()
+    {
+        return round($this->cenaSprzetuZnarzutami,2);
     }
 }
