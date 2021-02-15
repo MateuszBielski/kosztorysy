@@ -234,5 +234,4 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $this->assertEquals(5.89,$pozycja->getCenaSprzetuZnarzutami());
     }
     
-
 }
