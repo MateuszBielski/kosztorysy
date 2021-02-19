@@ -47,4 +47,14 @@ class PozycjaKosztorysowaRepository extends ServiceEntityRepository
         ;
     }
     */
+    /*
+    -- obmiar,pk.podstawa_normowa_id,c.value,
+Select count(ip.price_value) from pozycja_kosztorysowa pk 
+join material mat on pk.podstawa_normowa_id = mat.table_row_id 
+join equipment equ on pk.podstawa_normowa_id = equ.table_row_id
+join labor lab on pk.podstawa_normowa_id = lab.table_row_id
+join circulation c on equ.id = c.id or mat.id = c.id or lab.id = c.id
+join item_price ip on c.name_and_unit_id = ip.name_and_unit_id
+where pk.kosztorys_id = 1 and ip.price_list_id = 47;
+    */
 }
