@@ -55,7 +55,8 @@ class KosztorysRepository extends ServiceEntityRepository
         $query = $em->createQuery(
             "SELECT 
             pk.id as pk_id,
-            tr.myNumber, 
+            tr.myNumber,
+            tr.unit,
             tr.subDescription, 
             ct.mainDescription, 
             ct.myNumber as ct_myNumber ,

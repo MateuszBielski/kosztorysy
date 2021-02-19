@@ -21,14 +21,14 @@
             </tr>
             {% for pozycja in kosztory.pozycjeKosztorysowe %}
                 <tr>
-                    <td>
+                    <td class="opis">
                         <a href="
                         {{ path('pozycja_kosztorysowa_edit',{'id': pozycja.id}) }}
                         ">
                             {{ pozycja.getPodstawaNormowa().getFullName() }}
                             </a>
                         </td>
-                    <td>
+                    <td class="opis">
                             {{ pozycja.podstawaNormowa.CompoundDescription() }}
                         </td>
                     <td>
