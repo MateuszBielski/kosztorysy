@@ -24,7 +24,7 @@ class Kosztorys
     private $poczatkowaListaCen;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PozycjaKosztorysowa", mappedBy="kosztorys", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\PozycjaKosztorysowa", mappedBy="kosztorys", orphanRemoval=true, fetch="LAZY")
      */
     private $pozycjeKosztorysowe;
 
@@ -101,5 +101,25 @@ class Kosztorys
         $this->roboczogodzina = $roboczogodzina;
 
         return $this;
+    }
+    public static function KonwersjaDomyslnejTabeliZRepository($rawTable)
+    {
+        $res = [];
+        $pola = [];
+        foreach($rawTable[0] as $nazwaPola => $wartosc)$pola[]=$nazwaPola;
+        foreach($rawTable as $rekord)
+        {
+            foreach($pola as $pole)$res[$pole][] = $rekord[$pole];
+        }
+        return $res;
+    }
+    public static function WartoscICeneZbazyDotablicy_KluczamiPozycjaKosztId($rawTable)
+    {
+        $res = [];
+        foreach($rawTable as $rek)
+        {
+            $res[array_shift($rek)][] = $rek;
+        }
+        return $res;
     }
 }

@@ -56,7 +56,10 @@ class KosztorysController extends AbstractController
     {
         
         $kosztorys = $kosztorysRepository->findLoadingFieldsSeparately($id);
-        
+        $listaCenId = $kosztorysRepository->getListaCenIdDlaKosztorysu($id);
+
+        $obmiaryNakladyCeny = $kosztorysRepository->getObmiarWartoscCenaDlaKosztorysIlistaCen($id,$listaCenId);
+        // print_r($obmiaryNakladyCeny);
         return $this->render('kosztorys/show.html.twig', [
             'kosztory' => $kosztorys,
         ]);

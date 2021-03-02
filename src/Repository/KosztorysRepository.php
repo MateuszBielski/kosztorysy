@@ -2,10 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Circulation\Material;
 use App\Entity\Kosztorys;
 use App\Entity\PozycjaKosztorysowa;
 use App\Entity\TableRow;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -72,15 +74,58 @@ class KosztorysRepository extends ServiceEntityRepository
             WHERE pk.kosztorys = $id"
             );
         $results = $query->getResult();
-
+        print_r($results);
         $kosztorys = new Kosztorys;
         $kosztorys->setId($id);
+        // $kosztorys = 
+        // $listaCenId = $results['listaCenId'];
+        // $kosztorys->setPoczatkowaListaCen($listaCenId);
         foreach($results as $result)
         {
             $pozycja = new PozycjaKosztorysowa;
             $pozycja->CreateDependecyForRenderAndTest($result);
             $kosztorys->addPozycjeKosztorysowe($pozycja);
         }
+        
+        
         return $kosztorys;
     }
+    public function getListaCenIdDlaKosztorysu($id)
+    {
+        $em = $this->getEntityManager();
+        $query = "SELECT k.poczatkowa_lista_cen_id AS listaCenId FROM kosztorys k WHERE k.id =  $id";
+        $rsm = new ResultSetMapping;
+        $rsm->addScalarResult('listaCenId', 'listaCenId');
+        return $em->createNativeQuery($query,$rsm)->getResult()[0]['listaCenId'];
+    }
+    public function getObmiarWartoscCenaDlaKosztorysIlistaCen($k_id, $l_id)
+    {
+        $em = $this->getEntityManager();
+        $query = "SELECT sub.pk_id,ip.price_value,c.value FROM 
+        (
+            SELECT mat.id AS cir_id, pk.kosztorys_id AS koszt_id, pk.id AS pk_id FROM material mat  
+            JOIN pozycja_kosztorysowa pk ON pk.podstawa_normowa_id = mat.table_row_id
+            UNION 
+            SELECT equ.id AS cir_id, pk.kosztorys_id AS koszt_id, pk.id AS pk_id FROM equipment equ
+            JOIN pozycja_kosztorysowa pk ON pk.podstawa_normowa_id = equ.table_row_id
+            UNION 
+            SELECT lab.id AS cir_id, pk.kosztorys_id AS koszt_id, pk.id AS pk_id FROM labor lab
+            JOIN pozycja_kosztorysowa pk ON pk.podstawa_normowa_id = lab.table_row_id
+        ) AS sub
+        JOIN circulation c ON sub.cir_id = c.id
+        JOIN item_price ip ON c.name_and_unit_id = ip.name_and_unit_id
+        WHERE sub.koszt_id = $k_id AND ip.price_list_id = 47";
+        $rsm = new ResultSetMapping;
+        $rsm->addScalarResult('pk_id', 'pk_id');
+        $rsm->addScalarResult('price_value', 'price_value');
+        $rsm->addScalarResult('value', 'value');
+        $query = $em->createNativeQuery($query,$rsm);
+        $rawResult = $query->getResult();
+
+        // Kosztorys::KonwersjaDomyslnejTabeliZRepository($rawResult);
+        return $rawResult;
+       
+
+    }
+    
 }
