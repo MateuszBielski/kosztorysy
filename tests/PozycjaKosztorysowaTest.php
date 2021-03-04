@@ -233,5 +233,9 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $this->assertEquals(6.22,$pozycja->getCenaMaterialowZnarzutami());
         $this->assertEquals(5.89,$pozycja->getCenaSprzetuZnarzutami());
     }
-    
+    public function testCreateDependencyForCalculate()
+    {
+        $pozycja = new PozycjaKosztorysowa;
+        
+    }
 }

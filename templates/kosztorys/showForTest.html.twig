@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kosztorys{% endblock %}
+
+{% block body %}
+
+{% for rekord in dane %}
+    <br>
+    {{ rekord }},
+{% endfor %}
+{% endblock %}

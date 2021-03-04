@@ -54,14 +54,46 @@ class KosztorysController extends AbstractController
      */
     public function show(KosztorysRepository $kosztorysRepository, int $id): Response
     {
-        
-        $kosztorys = $kosztorysRepository->findLoadingFieldsSeparately($id);
         $listaCenId = $kosztorysRepository->getListaCenIdDlaKosztorysu($id);
+        $symboleIopisy = $kosztorysRepository->getIdNumberDescriptionsNames_PozycjiKosztorysowychDlaKosztorysu($id);
+        $wartosciIceny = $kosztorysRepository->getPkIdWartoscCenaDlaKosztorysIlistaCen($id,$listaCenId);
+        $kosztorys = new Kosztorys;
+        $kosztorys->setId($id);
+        $kosztorys->ZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia($symboleIopisy,$wartosciIceny);
 
-        $obmiaryNakladyCeny = $kosztorysRepository->getObmiarWartoscCenaDlaKosztorysIlistaCen($id,$listaCenId);
-        // print_r($obmiaryNakladyCeny);
+        // $kosztorys = $kosztorysRepository->findLoadingFieldsSeparately($id);
         return $this->render('kosztorys/show.html.twig', [
             'kosztory' => $kosztorys,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/forTest", name="kosztorys_show_for_test", methods={"GET"})
+     */
+    public function showForTest(KosztorysRepository $kosztorysRepository, int $id): Response
+    {
+        $dane = [];
+        $widokTablicy = function($raw,&$dane)
+        {
+            foreach($raw as $rekord){
+                $sRekord = '[';
+                foreach($rekord as $k => $v)
+                {
+                    $sRekord .= "'".$k."'=>";
+                    $sRekord .= is_numeric($v) ? $v :"'".$v."'";
+                    $sRekord .=",";
+                }
+                $sRekord = rtrim($sRekord,',');
+                $sRekord .= ']';
+                $dane[] = $sRekord;
+            }
+        };
+        $listaCenId = $kosztorysRepository->getListaCenIdDlaKosztorysu($id);
+        $widokTablicy($kosztorysRepository->getIdNumberDescriptionsNames_PozycjiKosztorysowychDlaKosztorysu($id),$dane);
+        $widokTablicy($kosztorysRepository->getPkIdWartoscCenaDlaKosztorysIlistaCen($id,$listaCenId),$dane);
+
+        return $this->render('kosztorys/showForTest.html.twig', [
+            'dane' => $dane,
         ]);
     }
 

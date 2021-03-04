@@ -102,6 +102,34 @@ class Kosztorys
 
         return $this;
     }
+    public function ZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia($symboleIopisy,$wartosciIceny)
+    {
+        
+        $wartosciIndeksowane = [];
+        
+        foreach($wartosciIceny as $rek)
+        {
+            $pk_id = array_shift($rek);
+            $rodzaj =  array_shift($rek);
+            $wartosciIndeksowane[$pk_id][$rodzaj][] = $rek;
+        }
+        foreach($symboleIopisy as $rekord)
+        {
+            $indeks = $rekord['pk_id'];
+            if(array_key_exists($indeks,$wartosciIndeksowane)) 
+            {
+                $wartosci = $wartosciIndeksowane[$indeks];
+                $rekord['materials'] = @$wartosci['m'];
+                $rekord['equipments'] = @$wartosci['e'];
+                $rekord['labors'] = @$wartosci['l'];
+            }
+            $pozycja = new PozycjaKosztorysowa;
+            $pozycja->CreateDependecyForRenderAndTest($rekord);
+            $pozycja->PrzeliczDlaAktualnegoObmiaru();
+            $this->addPozycjeKosztorysowe($pozycja);
+        }
+        
+    }
     public static function KonwersjaDomyslnejTabeliZRepository($rawTable)
     {
         $res = [];

@@ -18,6 +18,7 @@
                 <th>opis</th>
                 <th>obmiar</th>
                 <th>jednostka</th>
+                <th>cena</th>
             </tr>
             {% for pozycja in kosztory.pozycjeKosztorysowe %}
                 <tr>
@@ -36,6 +37,9 @@
                     </td>
                     <td>
                         {{ pozycja.jednostka }}
+                    </td>
+                    <td>
+                        {{ pozycja.cenaZnarzutami }}
                     </td>
 
                 </tr>

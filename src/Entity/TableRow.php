@@ -471,10 +471,10 @@ class TableRow
             foreach($naklady as $row)
             {
                 $naklady = new $klasa;
-                $naklady->setValue($row['value']);
+                $naklady->setValue(@$row['value']);
                 $cnu = new $klasaNu;
-                $cnu->setName($row['name']);
-                $cnu->setUnit($row['unit']);
+                $cnu->setName(@$row['name']);
+                $cnu->setUnit(@$row['unit']);
                 if (array_key_exists('price_value',$row))$naklady->setPrice($row['price_value']);
                 $naklady->setNameAndUnit($cnu);
                 $naklady->UstalJednostkiDlaJednostkiObmiaru($this->unit);

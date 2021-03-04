@@ -49,7 +49,7 @@ abstract class CirculationNameAndUnit
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -61,7 +61,7 @@ abstract class CirculationNameAndUnit
         return $this->unit;
     }
 
-    public function setUnit(string $unit): self
+    public function setUnit(?string $unit): self
     {
         $this->unit = $unit;
 
