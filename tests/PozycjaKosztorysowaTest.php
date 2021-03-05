@@ -199,14 +199,8 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
         $this->assertEquals(0.51,$pozycja->getCenaZnarzutami());
     }
-    public function testPrzeliczDlaObmiaru_cenaRobociznyMaterialowIsprzetuZnarzutami()
+    public function testPrzeliczDlaObmiaru_cenaMaterialowIsprzetuZnarzutami()
     {
-        $tabl = [
-            'value'=>[0.5,24],
-            'name'=>['name1','name3'],
-            'unit'=>['a','%'],
-            'price_value'=>[10,42]
-        ];
         $tabl2 = [
             'value'=>[0.5,1.35],
             'name'=>['name1','name3'],
@@ -221,7 +215,6 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         ];
         $param = [];
         $tr = new TableRow;
-        $param['labors'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
         $param['materials'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl2);
         $param['equipments'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl3);
         $tr->CreateDependecyForRenderAndTest($param);
@@ -229,13 +222,26 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->setObmiar(10);
         $pozycja->setPodstawaNormowa($tr);
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
-        $this->assertEquals(0.62,$pozycja->getCenaRobociznyZnarzutami());
         $this->assertEquals(6.22,$pozycja->getCenaMaterialowZnarzutami());
         $this->assertEquals(5.89,$pozycja->getCenaSprzetuZnarzutami());
     }
-    public function testCreateDependencyForCalculate()
+    public function testPrzeliczDlaObmiaru_cenaRobociznyZnarzutami()
     {
+        $tabl = [
+            'value'=>[0.5,24],
+            'name'=>['name1','name3'],
+            'unit'=>['a','%'],
+            'price_value'=>[10,42]
+        ];
+        $param = [];
+        $tr = new TableRow;
+        $param['labors'] = $tr->KonwertujTabliceParametrowWzgodzieZrepo($tabl);
+        $tr->CreateDependecyForRenderAndTest($param);
         $pozycja = new PozycjaKosztorysowa;
-        
+        $pozycja->setObmiar(10);
+        $pozycja->setPodstawaNormowa($tr);
+        $pozycja->PrzeliczDlaAktualnegoObmiaru();
+        $this->assertEquals(0.62,$pozycja->getCenaRobociznyZnarzutami());
     }
+    
 }

@@ -109,6 +109,41 @@ class KosztorysRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $query = "SELECT sub.pk_id,sub.r,cnu.unit as u,ip.price_value,c.value FROM 
         (
+        SELECT mat.id AS cir_id, pk.kosztorys_id AS koszt_id, pk.id AS pk_id,'m' as r FROM material mat  
+        JOIN pozycja_kosztorysowa pk ON pk.podstawa_normowa_id = mat.table_row_id
+        UNION 
+        SELECT equ.id AS cir_id, pk.kosztorys_id AS koszt_id, pk.id AS pk_id,'e' as r FROM equipment equ
+        JOIN pozycja_kosztorysowa pk ON pk.podstawa_normowa_id = equ.table_row_id
+        ) AS sub
+        JOIN circulation c ON sub.cir_id = c.id
+        JOIN circulation_name_and_unit cnu ON c.name_and_unit_id = cnu.id
+        JOIN item_price ip ON cnu.id = ip.name_and_unit_id
+        WHERE sub.koszt_id = $k_id AND ip.price_list_id = $l_id
+        UNION
+        SELECT pk.id as pk_id,'l' as r,'r-g' as u, 0 as price_value,c.value FROM pozycja_kosztorysowa pk 
+        JOIN labor lab ON pk.podstawa_normowa_id = lab.table_row_id
+        JOIN circulation c ON lab.id = c.id
+        WHERE pk.kosztorys_id = $k_id
+        ";
+        $rsm = new ResultSetMapping;
+        $rsm->addScalarResult('pk_id', 'pk_id');
+        $rsm->addScalarResult('price_value', 'price_value');
+        $rsm->addScalarResult('value', 'value');
+        $rsm->addScalarResult('r','r');
+        $rsm->addScalarResult('u','unit');
+        $query = $em->createNativeQuery($query,$rsm);
+        $rawResult = $query->getResult();
+
+        // Kosztorys::KonwersjaDomyslnejTabeliZRepository($rawResult);
+        return $rawResult;
+       
+
+    }
+    public function getPkIdWartoscCenaDlaKosztorysIlistaCenOLD($k_id, $l_id)
+    {
+        $em = $this->getEntityManager();
+        $query = "SELECT sub.pk_id,sub.r,cnu.unit as u,ip.price_value,c.value FROM 
+        (
             SELECT mat.id AS cir_id, pk.kosztorys_id AS koszt_id, pk.id AS pk_id,'m' as r FROM material mat  
             JOIN pozycja_kosztorysowa pk ON pk.podstawa_normowa_id = mat.table_row_id
             UNION 

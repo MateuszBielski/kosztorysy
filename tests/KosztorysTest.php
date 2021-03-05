@@ -75,6 +75,21 @@ class KosztorysTest extends TestCase
         $pozycja = $kosztorys->getPozycjeKosztorysowe()[2];
         $this->assertEquals(10505.23,$pozycja->getCenaZnarzutami());
     }
+    public function testZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia_UstawWartoscRobociznyWnakladach()
+    {
+        $kosztorys = new Kosztorys;
+        $kosztorys->setRoboczogodzina(2130);
+        $kosztorys->ZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia($this->SymboleIopisy1(),$this->WartosciIceny1());
+        $nakladRobocizny = $kosztorys->getPozycjeKosztorysowe()[4]->getPodstawaNormowa()->getLabors()[0];
+        $this->assertEquals(21.30,$nakladRobocizny->getPriceDivBy100());
+    }
+    public function testZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia_RobociznaWybranejPozycji()
+    {
+        $kosztorys = new Kosztorys;
+        $kosztorys->ZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia($this->SymboleIopisy1(),$this->WartosciIceny1());
+        $pozycja = $kosztorys->getPozycjeKosztorysowe()[4];
+        $this->assertEquals(11,$pozycja->getCenaRobociznyZnarzutami());
+    }
     
 
     private function SymboleIopisy1()
@@ -123,7 +138,16 @@ class KosztorysTest extends TestCase
             ['pk_id'=>1,'r'=>'e','unit'=>'m-g','price_value'=>7164,'value'=>0.21],
             ['pk_id'=>2,'r'=>'e','unit'=>'m-g','price_value'=>7164,'value'=>0.09],
             ['pk_id'=>3,'r'=>'e','unit'=>'m-g','price_value'=>7164,'value'=>0.09],
-            ['pk_id'=>4,'r'=>'e','unit'=>'m-g','price_value'=>13403,'value'=>0.0005]
+            ['pk_id'=>4,'r'=>'e','unit'=>'m-g','price_value'=>13403,'value'=>0.0005],
+            ['pk_id'=>1,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>8.8],
+            ['pk_id'=>1,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.6],
+            ['pk_id'=>2,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>2.97],
+            ['pk_id'=>2,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.4],
+            ['pk_id'=>3,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>2.97],
+            ['pk_id'=>3,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.4],
+            ['pk_id'=>4,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.063],
+            ['pk_id'=>4,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.0603],
+            ['pk_id'=>5,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.2]
         ];
     }
     

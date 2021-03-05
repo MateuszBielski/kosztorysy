@@ -122,6 +122,14 @@ class Kosztorys
                 $rekord['materials'] = @$wartosci['m'];
                 $rekord['equipments'] = @$wartosci['e'];
                 $rekord['labors'] = @$wartosci['l'];
+                if($this->roboczogodzina)
+                {
+                   foreach($rekord['labors'] as $lab)
+                   {
+                       $lab['price_value'] = $this->roboczogodzina;
+                       print("\n".$lab['value']."  ".$lab['price_value']);
+                   }
+                }
             }
             $pozycja = new PozycjaKosztorysowa;
             $pozycja->CreateDependecyForRenderAndTest($rekord);
