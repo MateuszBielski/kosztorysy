@@ -104,6 +104,14 @@ class KosztorysRepository extends ServiceEntityRepository
         $rsm->addScalarResult('listaCenId', 'listaCenId');
         return $em->createNativeQuery($query,$rsm)->getResult()[0]['listaCenId'];
     }
+    public function getRoboczogodzina($id)
+    {
+        $em = $this->getEntityManager();
+        $query = "SELECT k.roboczogodzina FROM kosztorys k WHERE k.id =  $id";
+        $rsm = new ResultSetMapping;
+        $rsm->addScalarResult('roboczogodzina','roboczogodzina');
+        return $em->createNativeQuery($query,$rsm)->getResult()[0]['roboczogodzina'];
+    }
     public function getPkIdWartoscCenaDlaKosztorysIlistaCen($k_id, $l_id)
     {
         $em = $this->getEntityManager();

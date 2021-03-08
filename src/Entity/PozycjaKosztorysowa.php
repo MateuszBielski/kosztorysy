@@ -169,4 +169,8 @@ class PozycjaKosztorysowa
     {
         return round($this->cenaSprzetuZnarzutami,2);
     }
+    public function setCenaZnarzutami(?float $cena)
+    {
+        $this->cenaZnarzutami = $cena;
+    }
 }

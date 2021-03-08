@@ -33,6 +33,8 @@ class Kosztorys
      */
     private $roboczogodzina;
 
+    private $cenaZnarzutami = 0.0;
+
     public function __construct()
     {
         $this->pozycjeKosztorysowe = new ArrayCollection();
@@ -122,19 +124,20 @@ class Kosztorys
                 $rekord['materials'] = @$wartosci['m'];
                 $rekord['equipments'] = @$wartosci['e'];
                 $rekord['labors'] = @$wartosci['l'];
-                if($this->roboczogodzina)
+                
+                if($this->roboczogodzina != 0)
                 {
-                   foreach($rekord['labors'] as $lab)
+                   $ile = count($rekord['labors']);
+                    for($i = 0 ; $i < $ile; $i++)
                    {
-                       $lab['price_value'] = $this->roboczogodzina;
-                       print("\n".$lab['value']."  ".$lab['price_value']);
+                    $rekord['labors'][$i]['price_value'] = $this->roboczogodzina;
                    }
                 }
             }
             $pozycja = new PozycjaKosztorysowa;
+            $this->addPozycjeKosztorysowe($pozycja);
             $pozycja->CreateDependecyForRenderAndTest($rekord);
             $pozycja->PrzeliczDlaAktualnegoObmiaru();
-            $this->addPozycjeKosztorysowe($pozycja);
         }
         
     }
@@ -157,5 +160,9 @@ class Kosztorys
             $res[array_shift($rek)][] = $rek;
         }
         return $res;
+    }
+    public function getCenaZnarzutami()
+    {
+        return $this->cenaZnarzutami;
     }
 }

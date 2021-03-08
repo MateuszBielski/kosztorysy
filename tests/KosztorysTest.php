@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\Kosztorys;
+use App\Entity\PozycjaKosztorysowa;
 use PHPUnit\Framework\TestCase;
 
 class KosztorysTest extends TestCase
@@ -86,9 +87,22 @@ class KosztorysTest extends TestCase
     public function testZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia_RobociznaWybranejPozycji()
     {
         $kosztorys = new Kosztorys;
+        $kosztorys->setRoboczogodzina(2130);
         $kosztorys->ZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia($this->SymboleIopisy1(),$this->WartosciIceny1());
         $pozycja = $kosztorys->getPozycjeKosztorysowe()[4];
-        $this->assertEquals(11,$pozycja->getCenaRobociznyZnarzutami());
+        $this->assertEquals(120.44,$pozycja->getCenaRobociznyZnarzutami());
+    }
+    public function testKosztZnarzutami()
+    {
+        $kosztorys = new Kosztorys;
+        $kosztyPozycji = [2,3,4];
+        foreach($kosztyPozycji as $k)
+        {
+            $pozycja = new PozycjaKosztorysowa;
+            $pozycja->setCenaZnarzutami($k);
+            $kosztorys->addPozycjeKosztorysowe($pozycja);
+        }
+        $this->assertEquals(9,$kosztorys->getCenaZnarzutami());
     }
     
 
@@ -147,7 +161,7 @@ class KosztorysTest extends TestCase
             ['pk_id'=>3,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.4],
             ['pk_id'=>4,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.063],
             ['pk_id'=>4,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.0603],
-            ['pk_id'=>5,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.2]
+            ['pk_id'=>5,'r'=>'l','unit'=>'r-g','price_value'=>0,'value'=>0.2235]
         ];
     }
     

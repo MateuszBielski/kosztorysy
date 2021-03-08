@@ -55,9 +55,11 @@ class KosztorysController extends AbstractController
     public function show(KosztorysRepository $kosztorysRepository, int $id): Response
     {
         $listaCenId = $kosztorysRepository->getListaCenIdDlaKosztorysu($id);
+        $roboczogodzina = $kosztorysRepository->getRoboczogodzina($id);
         $symboleIopisy = $kosztorysRepository->getIdNumberDescriptionsNames_PozycjiKosztorysowychDlaKosztorysu($id);
         $wartosciIceny = $kosztorysRepository->getPkIdWartoscCenaDlaKosztorysIlistaCen($id,$listaCenId);
         $kosztorys = new Kosztorys;
+        $kosztorys->setRoboczogodzina($roboczogodzina);
         $kosztorys->setId($id);
         $kosztorys->ZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia($symboleIopisy,$wartosciIceny);
 
