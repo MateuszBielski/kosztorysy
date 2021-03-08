@@ -58,10 +58,13 @@ class KosztorysController extends AbstractController
         $roboczogodzina = $kosztorysRepository->getRoboczogodzina($id);
         $symboleIopisy = $kosztorysRepository->getIdNumberDescriptionsNames_PozycjiKosztorysowychDlaKosztorysu($id);
         $wartosciIceny = $kosztorysRepository->getPkIdWartoscCenaDlaKosztorysIlistaCen($id,$listaCenId);
+        
         $kosztorys = new Kosztorys;
         $kosztorys->setRoboczogodzina($roboczogodzina);
         $kosztorys->setId($id);
+        
         $kosztorys->ZaladujSymboleIopisyPozycjiOrazWartosciIcenyDoWyliczenia($symboleIopisy,$wartosciIceny);
+        $kosztorys->SumujPrzeliczonePozycje();
 
         // $kosztorys = $kosztorysRepository->findLoadingFieldsSeparately($id);
         return $this->render('kosztorys/show.html.twig', [

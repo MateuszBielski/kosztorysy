@@ -10,6 +10,14 @@
                 <th>Id</th>
                 <td>{{ kosztory.id }}</td>
             </tr>
+            <tr>
+                <th>cena roboczogodziny</th>
+                <td>{{ kosztory.roboczogodzinaDivBy100|number_format(2) }}</td>
+            </tr>
+            <tr>
+                <th>cena z narzutami</th>
+                <td>{{ kosztory.cenaZnarzutami|number_format(2, '.', ' ') }}</td>
+            </tr>
         </tbody>
     </table>
     <table>
@@ -39,7 +47,7 @@
                         {{ pozycja.jednostka }}
                     </td>
                     <td>
-                        {{ pozycja.cenaZnarzutami }}
+                        {{ pozycja.cenaZnarzutami|number_format(2, '.', ' ') }}
                     </td>
 
                 </tr>

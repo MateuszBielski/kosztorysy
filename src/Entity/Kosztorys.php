@@ -98,6 +98,11 @@ class Kosztorys
         return $this->roboczogodzina;
     }
 
+    public function getRoboczogodzinaDivBy100(): ?float
+    {
+        return $this->roboczogodzina / 100;
+    }
+
     public function setRoboczogodzina(int $roboczogodzina): self
     {
         $this->roboczogodzina = $roboczogodzina;
@@ -164,5 +169,11 @@ class Kosztorys
     public function getCenaZnarzutami()
     {
         return $this->cenaZnarzutami;
+    }
+    public function SumujPrzeliczonePozycje()
+    {
+        $this->cenaZnarzutami = 0;
+        foreach($this->pozycjeKosztorysowe as $p)
+            $this->cenaZnarzutami += $p->getCenaZnarzutami();
     }
 }

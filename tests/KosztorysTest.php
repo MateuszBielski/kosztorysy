@@ -92,7 +92,7 @@ class KosztorysTest extends TestCase
         $pozycja = $kosztorys->getPozycjeKosztorysowe()[4];
         $this->assertEquals(120.44,$pozycja->getCenaRobociznyZnarzutami());
     }
-    public function testKosztZnarzutami()
+    public function testSumujPrzeliczonePozycje_CenaZnarzutami()
     {
         $kosztorys = new Kosztorys;
         $kosztyPozycji = [2,3,4];
@@ -102,6 +102,7 @@ class KosztorysTest extends TestCase
             $pozycja->setCenaZnarzutami($k);
             $kosztorys->addPozycjeKosztorysowe($pozycja);
         }
+        $kosztorys->SumujPrzeliczonePozycje();
         $this->assertEquals(9,$kosztorys->getCenaZnarzutami());
     }
     
