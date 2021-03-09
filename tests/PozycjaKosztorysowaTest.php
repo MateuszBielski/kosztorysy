@@ -181,7 +181,7 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $this->assertEquals(43.4,$tr->getMaterials()[1]->getNaklad());
         $this->assertEquals(1.36,$tr->getMaterials()[3]->getKosztJednostkowy());
     }
-    public function testPrzeliczDlaObmiaru_cenaZnarzutami()
+    public function testPrzeliczDlaObmiaru_cenaZnarzutami_narzutyZerowe()
     {
         $tabl = [
             'value'=>[0.5,1.35],
@@ -199,7 +199,7 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $pozycja->PrzeliczDlaAktualnegoObmiaru();
         $this->assertEquals(0.51,$pozycja->getCenaZnarzutami());
     }
-    public function testPrzeliczDlaObmiaru_cenaMaterialowIsprzetuZnarzutami()
+    public function testPrzeliczDlaObmiaru_cenaMaterialowIsprzetuZnarzutami_narzutyZerowe()
     {
         $tabl2 = [
             'value'=>[0.5,1.35],
@@ -225,7 +225,7 @@ class PozycjaKosztorysowaTest extends KernelTestCase
         $this->assertEquals(6.22,$pozycja->getCenaMaterialowZnarzutami());
         $this->assertEquals(5.89,$pozycja->getCenaSprzetuZnarzutami());
     }
-    public function testPrzeliczDlaObmiaru_cenaRobociznyZnarzutami()
+    public function testPrzeliczDlaObmiaru_cenaRobociznyZnarzutami_narzutyZerowe()
     {
         $tabl = [
             'value'=>[0.5,24],

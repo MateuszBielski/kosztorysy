@@ -5,15 +5,16 @@ jQuery(document).ready(function() {
     input_obmiar.on('input',function(){
         var obmiar = input_obmiar.val();
         if( !obmiar )obmiar = 0.0;
-        var kosztorys_id = $('#div_poz_oznaczenie').attr('kosztorys_id');
-        var price_list_id = $('#div_poz_oznaczenie').attr('price_list_id');
+        // var kosztorys_id = $('#div_poz_oznaczenie').attr('kosztorys_id');
+        var kosztorys_id = $('#pozycja_kosztorysowa_kosztorys option:selected').val();
+        // var price_list_id = $('#div_poz_oznaczenie').attr('price_list_id');
         var table_row_id = $('#div_poz_oznaczenie').attr('table_row_id');
         var adres = "/pozycja/kosztorysowa/przeliczAjax";
         adres += '?obmiar='+obmiar;
         if(typeof kosztorys_id !== 'undefined')
         adres += '&kosztorys_id='+kosztorys_id;
-        if(typeof price_list_id !== 'undefined')
-        adres += '&price_list_id='+price_list_id;
+        // if(typeof price_list_id !== 'undefined')
+        // adres += '&price_list_id='+price_list_id;
         if(typeof table_row_id !== 'undefined')
         adres += '&table_row_id='+table_row_id;
         

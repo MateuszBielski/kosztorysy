@@ -60,8 +60,6 @@ class PozycjaKosztorysowaController extends AbstractController
         $pozycjaKosztorysowa = new PozycjaKosztorysowa();
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
         $priceListId = $kosztorys->getPoczatkowaListaCen()->getId();
-        // $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
-        // print("<pre>");
         $table_row = new TableRow;
         $dane = $trRep->findParametersForLoading($table_row_id,$priceListId);
         $table_row->CreateDependecyForRenderAndTest($dane);
@@ -118,19 +116,20 @@ class PozycjaKosztorysowaController extends AbstractController
         $koszt_id = $request->query->get("kosztorys_id");
         $table_row_id = $request->query->get("table_row_id");
         $obmiar = $request->query->get("obmiar");
-        $priceListId = $request->query->get("price_list_id");
-        // $table_row = $trRep->findLoadingSeparatelyWithPrices($table_row_id,$priceListId);
+        $kosztorys  = $kRep->find($koszt_id);
+        $priceListId = $kosztorys->getPoczatkowaListaCen()->getId();
         $table_row = new TableRow;
         $dane = $trRep->findParametersForLoading($table_row_id,$priceListId);
         $table_row->CreateDependecyForRenderAndTest($dane);
-        // echo $koszt_id." ".$table_row_id." ".$obmiar." ".$priceListId;
-        $kosztorys  = $kRep->find($koszt_id);
         $pozycjaKosztorysowa->setKosztorys($kosztorys);
         $pozycjaKosztorysowa->setPodstawaNormowa($table_row);
         $pozycjaKosztorysowa->ZmienObmiarIprzelicz($obmiar);
-        return $this->render('pozycja_kosztorysowa/table_naklady.html.twig',[
+
+        $response = $this->render('pozycja_kosztorysowa/table_naklady.html.twig',[
             'pozycja_kosztorysowa' => $pozycjaKosztorysowa,
-            ]);    
+            ]);
+        $response->headers->set('Symfony-Debug-Toolbar-Replace', 1);
+        return  $response;   
 
     }
     /**

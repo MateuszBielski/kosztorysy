@@ -167,7 +167,7 @@ class TableRowRepository extends ServiceEntityRepository
         return $tableRow;
     }
 
-    public function findParametersForLoading($tr_id,$price_list_id = '')
+    public function findParametersForLoading($tr_id,int $price_list_id = null)
     {
         $em = $this->getEntityManager();
         $query = $em->createQuery("SELECT 
@@ -199,7 +199,7 @@ class TableRowRepository extends ServiceEntityRepository
             return "select c.value,cnu.name,cnu.unit$uzup[0] from $nakl n join circulation c on n.id = c.id join circulation_name_and_unit cnu on c.name_and_unit_id = cnu.id$uzup[1] where table_row_id = $tr_id$uzup[2]";
         };
         $koszty = [",ip.price_value"," join item_price ip on ip.name_and_unit_id = cnu.id ",''];
-        if(is_integer($price_list_id))$koszty[2] = " and ip.price_list_id = $price_list_id";
+        if($price_list_id != null)$koszty[2] = " and ip.price_list_id = $price_list_id";
         $bezKosztow = ['','',''];
         $result['labors'] = $em->createNativeQuery($createCirculationQuery($bezKosztow,'labor'),$rsm)->getResult();
         $result['materials'] = $em->createNativeQuery($createCirculationQuery($koszty,'material'),$rsm)->getResult();
